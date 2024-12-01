@@ -11,7 +11,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
-DATABASE_URL = f"postgresql://{os.getenv('username_db')}:{os.getenv('password_db')}@localhost:5432/happy_birthday_anime_db"
+DATABASE_URL = (f"""postgresql://{os.getenv('username_db')}:{os.getenv('password_db')}"""
+                """@localhost:5432/happy_birthday_anime_db""")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
