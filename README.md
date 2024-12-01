@@ -27,3 +27,17 @@ pip install -r requirements.txt
 ```
 uvicorn main:app --reload
 ```
+# How to create database tables?
+
+## Prerequisites
+1. PostgreSQL v16 installed
+2. Environment variables configured in the `.env` file with PostgreSQL user and password
+3. Create a PostgreSQL database with the name `happy_birthday_anime_db`.
+
+## Command to create the database
+1. To be at the root of the project
+2. Execute the command
+```
+python init_db.py
+```
+3. Verify the creation of tables
