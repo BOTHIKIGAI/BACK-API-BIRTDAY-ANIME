@@ -6,7 +6,7 @@ validate the Anime data structure.
 from datetime import datetime
 from pydantic import BaseModel
 
-class Anime(BaseModel):
+class AnimeSchema(BaseModel):
     """
     Represents the schema for the validation of
     the Anime object data.

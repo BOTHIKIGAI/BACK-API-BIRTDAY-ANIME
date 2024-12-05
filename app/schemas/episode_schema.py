@@ -6,7 +6,7 @@ validate the Episode data structure.
 from datetime import datetime
 from pydantic import BaseModel
 
-class Episode(BaseModel):
+class EpisodeSchema(BaseModel):
     """
     Represents the schema for the validation of
     the Episode object data.

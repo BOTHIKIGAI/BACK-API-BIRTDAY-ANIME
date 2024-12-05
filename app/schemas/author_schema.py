@@ -5,8 +5,9 @@ validate the Author data structure.
 
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Optional
 
-class Author(BaseModel):
+class AuthorSchema(BaseModel):
     """
     Represents the schema for the validation of
     the Author object data.
@@ -18,6 +19,6 @@ class Author(BaseModel):
     """
 
     # Attributes
-    name: str
-    alias: str
-    birthday: datetime
+    name: Optional[str] = None
+    alias: Optional[str] = None
+    birthday: Optional[datetime] = None 
