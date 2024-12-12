@@ -12,4 +12,4 @@ app = FastAPI(
     title="BIRTHDAY ANIME",
     description="API for the consumption of episode release dates.")
 
-app.include_router(AuthorRouter)
+app.include_router(AuthorRouter, tags=["Author"], prefix='/v1/authors')

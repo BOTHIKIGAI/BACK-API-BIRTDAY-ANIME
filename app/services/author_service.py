@@ -118,6 +118,8 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
+        if not self.get(author_id):
+            raise HTTPException(status_code=404, detail="Author not found")
         return self.author_repository.update(
             author_id,
             Author(name=author_body.name,
@@ -132,6 +134,8 @@ class AuthorService:
         Args:
             author_id (int): The ID of the author to delete.
         """
+        if not self.get(author_id):
+            raise HTTPException(status_code=404, detail="Author not found")
         return self.author_repository.delete(author_id)
 
     def get_animes(self, author_id: int) -> List[Anime]:
@@ -146,6 +150,8 @@ class AuthorService:
             List[Anime]: A list of animes associated with the
             author.
         """
+        if not self.get(author_id):
+            raise HTTPException(status_code=404, detail="Author not found")
         return self.author_repository.get(author_id).animes
 
     def get_episodes(self, author_id: int) -> List[Episode]:
@@ -160,4 +166,6 @@ class AuthorService:
             List[Episode]: A list of episodes associated with the
             author.
         """
+        if not self.get(author_id):
+            raise HTTPException(status_code=404, detail="Author not found")
         return self.author_repository.get(author_id).episodes
