@@ -2,7 +2,7 @@
 This module contains the modul of the Episode table.
 """
 
-from sqlalchemy import Column, BigInteger, String, Integer, Date
+from sqlalchemy import Column, BigInteger, String, Integer, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 from app.models.relationships.episode_author_association import episode_author_association
@@ -22,6 +22,7 @@ class Episode(Base):
 
     # Columns
     id = Column(BigInteger, primary_key=True, index=True, nullable=False)
+    anime_id = Column(BigInteger, ForeignKey('anime.id'), nullable=False)
     arc = Column(String, index=True, nullable=True)
     temp = Column(Integer, index=True, nullable=False)
     episode = Column(Integer, index=True, nullable=False)
@@ -33,3 +34,4 @@ class Episode(Base):
         secondary=episode_author_association,
         back_populates="episodes"
     )
+    anime = relationship("Anime", back_populates="episodes")

@@ -31,3 +31,5 @@ class Anime(Base):
         secondary=anime_author_association,
         back_populates="animes"
     )
+
+    episodes = relationship("Episode", back_populates="anime")
