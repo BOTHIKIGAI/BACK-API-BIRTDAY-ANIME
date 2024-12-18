@@ -3,7 +3,7 @@ This module contains the schema to define and
 validate the Author data structure.
 """
 
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 from typing import Optional
 
@@ -21,4 +21,4 @@ class AuthorSchema(BaseModel):
     # Attributes
     name: Optional[str] = None
     alias: Optional[str] = None
-    birthday: Optional[datetime] = None 
+    birthday: Optional[date] = None

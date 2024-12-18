@@ -3,7 +3,7 @@ This module contains the schema to define and
 validate the Anime data structure.
 """
 
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 
 class AnimeSchema(BaseModel):
@@ -20,4 +20,4 @@ class AnimeSchema(BaseModel):
     # Attributes
     name: str
     category: str
-    release_date: datetime
+    release_date: date

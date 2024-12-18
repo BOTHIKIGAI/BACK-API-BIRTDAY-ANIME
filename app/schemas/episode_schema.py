@@ -3,7 +3,7 @@ This module contains the schema to define and
 validate the Episode data structure.
 """
 
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 
 class EpisodeSchema(BaseModel):
@@ -22,4 +22,4 @@ class EpisodeSchema(BaseModel):
     arc: str
     temp: int
     episode: int
-    air_date: datetime
+    air_date: date

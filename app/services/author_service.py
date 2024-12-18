@@ -66,8 +66,11 @@ class AuthorService:
             given filters and pagination settings.
         """
         return self.author_repository.list(
-            name, alias, birthday, page_size, start_index
-        )
+            name=name,
+            alias=alias,
+            birthday=birthday,
+            limit=page_size,
+            start=start_index)
 
     def get(self, author_id: int) -> Optional[Author]:
         """
@@ -136,7 +139,7 @@ class AuthorService:
         """
         if not self.get(author_id):
             raise HTTPException(status_code=404, detail="Author not found")
-        return self.author_repository.delete(author_id)
+        self.author_repository.delete(author_id)
 
     def get_animes(self, author_id: int) -> List[Anime]:
         """

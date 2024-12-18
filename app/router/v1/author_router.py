@@ -91,7 +91,7 @@ def update(author_id: int,
     return author_service.update(author_id, author)
 
 @AuthorRouter.delete('/{author_id}',
-                     response_model=AuthorSchema)
+                     status_code=status.HTTP_204_NO_CONTENT)
 def delete(author_id: int, author_service: AuthorService = Depends()):
     """
     Deletes an author by their ID.
@@ -106,7 +106,7 @@ def delete(author_id: int, author_service: AuthorService = Depends()):
     Raises:
         HTTPException: If the author is not found.
     """
-    return author_service.delete(author_id)
+    author_service.delete(author_id)
 
 @AuthorRouter.get('/{author_id}/animes',
                   response_model=List[AnimeSchema])
