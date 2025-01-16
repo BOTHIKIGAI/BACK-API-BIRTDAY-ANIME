@@ -19,7 +19,9 @@ class EpisodeSchema(BaseModel):
     """
 
     # Attributes
+    anime_id: int
     arc: str
     temp: int
+    name: str
     episode: int
     air_date: date

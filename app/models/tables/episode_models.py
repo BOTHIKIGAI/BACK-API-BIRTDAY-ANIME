@@ -13,6 +13,7 @@ class Episode(Base):
 
     Attributes:
         id (int): The primary key of the episode.
+        anime_id (int): The anime ID of the episode.
         arc (str): The name of the arc.
         temp (int): The number of the temp.
         episode (int): The number of the episode.
@@ -25,6 +26,7 @@ class Episode(Base):
     anime_id = Column(BigInteger, ForeignKey('anime.id'), nullable=False)
     arc = Column(String, index=True, nullable=True)
     temp = Column(Integer, index=True, nullable=False)
+    name = Column(String, index=True, nullable=False)
     episode = Column(Integer, index=True, nullable=False)
     air_date = Column(Date, index=True, nullable=False)
 
@@ -32,6 +34,8 @@ class Episode(Base):
     authors = relationship(
         "Author",
         secondary=episode_author_association,
-        back_populates="episodes"
-    )
-    anime = relationship("Anime", back_populates="episodes")
+        back_populates="episodes")
+
+    anime = relationship(
+        "Anime",
+        back_populates="episodes")

@@ -29,7 +29,8 @@ class Anime(Base):
     authors = relationship(
         "Author",
         secondary=anime_author_association,
-        back_populates="animes"
-    )
+        back_populates="animes")
 
-    episodes = relationship("Episode", back_populates="anime")
+    episodes = relationship(
+        "Episode",
+        back_populates="anime")
