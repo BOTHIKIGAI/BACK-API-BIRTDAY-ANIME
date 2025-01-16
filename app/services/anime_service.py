@@ -168,4 +168,23 @@ class AnimeService:
             associated with the anime.
         """
         if not self.get(anime_id):
-            raise HTTPException
+            raise HTTPException(status_code=404,
+                                detail="Author not found")
+        return self.anime_repository.get(anime_id).authors
+
+    def get_episodes(self, anime_id: int) -> List[Episode]:
+        """
+        Retrieves the list of episodes associated
+        with a specific anime.
+        
+        Args:
+            anime_id (int): The ID of the anime.
+
+        Returns:
+            List[Episode]: A list of episoddes associated
+            with the author.
+        """
+        if not self.get(anime_id):
+            raise HTTPException(status_code=404,
+                                detail="Anime not found")
+        return self.anime_repository.get(anime_id).episodes
