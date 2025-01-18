@@ -2,8 +2,11 @@
 This module contains the modul of the Episode table.
 """
 
-from sqlalchemy import Column, BigInteger, String, Integer, Date, ForeignKey
+from sqlalchemy import (
+    Column, BigInteger, String,
+    Integer, Date, ForeignKey, DateTime)
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from app.config.database import Base
 from app.models.relationships.episode_author_association import episode_author_association
 
@@ -18,6 +21,8 @@ class Episode(Base):
         temp (int): The number of the temp.
         episode (int): The number of the episode.
         air_date (date): The air date of the episode.
+        created_at (datetime): The date of creation of the registry.
+        updated_at (datetime): The date of update of the registry.
     """
     __tablename__ = 'episode'
 
@@ -29,6 +34,11 @@ class Episode(Base):
     name = Column(String, index=True, nullable=False)
     episode = Column(Integer, index=True, nullable=False)
     air_date = Column(Date, index=True, nullable=False)
+    created_at = Column(DateTime(timezone=True),
+                        server_default=func.now(),
+                        nullable=False)
+    updated_at = Column(DateTime(timezone=True),
+                        onupdate=func.now())
 
     # Relationships
     authors = relationship(
