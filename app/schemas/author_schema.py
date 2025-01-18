@@ -22,3 +22,6 @@ class AuthorSchema(BaseModel):
     name: Optional[str] = None
     alias: Optional[str] = None
     birthday: Optional[date] = None
+
+    class Config:
+        from_attributes = True

@@ -25,3 +25,6 @@ class EpisodeSchema(BaseModel):
     name: str
     episode: int
     air_date: date
+
+    class Config:
+        from_attributes = True

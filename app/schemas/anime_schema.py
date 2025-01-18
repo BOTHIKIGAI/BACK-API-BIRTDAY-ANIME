@@ -21,3 +21,6 @@ class AnimeSchema(BaseModel):
     name: str
     category: str
     release_date: date
+
+    class Config:
+        from_attributes = True
