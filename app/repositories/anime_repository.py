@@ -27,13 +27,13 @@ class AnimeRepository:
     db: Session
 
     # Constructor
-    def __init__(self,
-                 db: Session = Depends(get_db_connection)) -> None:
+    def __init__(self, db: Session = Depends(get_db_connection)) -> None:
         """
         Initializes the AnimeRepository with a database session.
 
         Args:
-            db (Session): The database session used for querying the database.
+            db (Session): The database session used for querying
+            the database.
         """
         self.db = db
 
@@ -43,7 +43,7 @@ class AnimeRepository:
              category: Optional[str],
              release_date: Optional[str],
              limit: Optional[int],
-             start: Optional[int]) -> [List[Anime]]:
+             start: Optional[int]) -> List[Anime]:
         """
         Retrieves a list of anime with optional filters for name,
         category and release date and supports pagination.
@@ -135,3 +135,15 @@ class AnimeRepository:
         anime = self.db.query(Anime).filter_by(id=anime_id).first()
         self.db.delete(anime)
         self.db.commit()
+
+    def exists(self, anime_id: int):
+        """
+        Check if the anime exists by means of the anime id.
+        Args:
+            anime_id(int): The id of the anime to consult.
+
+        Returns:
+            Returns query state.
+        """
+        query = self.db.query(Anime).filter(Anime.id == anime_id)
+        return self.db.query(query.exists()).scalar()

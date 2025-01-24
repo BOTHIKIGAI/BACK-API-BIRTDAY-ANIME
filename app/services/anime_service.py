@@ -25,7 +25,8 @@ class AnimeService:
     """
 
     # Attributes
-    animeRepository: AnimeRepository
+    anime_repository: AnimeRepository
+
 
     # Constructor
     def __init__(self, anime_repository: AnimeRepository = Depends()) -> None:
@@ -38,6 +39,7 @@ class AnimeService:
             for accessing Anime data.
         """
         self.anime_repository = anime_repository
+
 
     def list(self,
              name: Optional[str] = None,
@@ -70,6 +72,7 @@ class AnimeService:
             limit=page_size,
             start=start_index)
 
+
     def get(self, anime_id: int) -> Optional[Anime]:
         """
         Retrieves a specific anime by ID, including related anime
@@ -78,10 +81,13 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime.
         """
-        anime = self.anime_repository.get(anime_id)
-        if not anime:
-            raise HTTPException(status_code=404, detail="Anime not found")
-        return anime
+
+        if not self.anime_exists(anime_id):
+            raise HTTPException(status_code=404,
+                                detail='The anime does not exist.')
+
+        return self.anime_repository.get(anime_id)
+
 
     def create(self, anime_body: AnimeSchema) -> Anime:
         """
@@ -100,6 +106,7 @@ class AnimeService:
                   category=anime_body.category,
                   release_date=anime_body.release_date))
 
+
     def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
         """
         Updates an existing anime in the database with the
@@ -112,13 +119,16 @@ class AnimeService:
         Returns:
             Anime: The updated anime with the data.
         """
-        if not self.get(anime_id):
-            raise HTTPException(status_code=404, detail="Anime not found")
+        if not self.anime_exists(anime_id):
+            raise HTTPException(status_code=404,
+                                detail='The anime does not exist.')
+
         return self.anime_repository.update(
             anime_id,
             Anime(name=anime_body.name,
                   category=anime_body.category,
                   release_date=anime_body.release_date))
+
 
     def delete(self, anime_id: int) -> None:
         """
@@ -128,10 +138,12 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime to delete.
         """
-        if not self.get(anime_id):
+        if not self.anime_exists(anime_id):
             raise HTTPException(status_code=404,
-                                detail="Anime not found")
+                                detail='The anime does not exist.')
+
         return self.anime_repository.delete(anime_id)
+
 
     def get_authors(self, anime_id: int) -> List[Author]:
         """
@@ -143,10 +155,12 @@ class AnimeService:
         Returns:
             List[Author]: A list of authors associated with the anime.
         """
-        if not self.get(anime_id):
+        if not self.anime_exists(anime_id):
             raise HTTPException(status_code=404,
-                                detail="Author not found")
+                                detail='The anime does not exist.')
+
         return self.anime_repository.get(anime_id).authors
+
 
     def get_episodes(self, anime_id: int) -> List[Episode]:
         """
@@ -158,6 +172,21 @@ class AnimeService:
         Returns:
             List[Episode]: A list of episodes associated with the author.
         """
-        if not self.get(anime_id):
-            raise HTTPException(status_code=404, detail="Anime not found")
+        if not self.anime_exists(anime_id):
+            raise HTTPException(status_code=404,
+                                detail='The anime does not exist.')
+
         return self.anime_repository.get(anime_id).episodes
+
+
+    def anime_exists(self, anime_id: int) -> bool:
+        """
+        Checks if an anime with the given ID exists in the repository.
+        
+        Args:
+            anime_id (int): The ID of the anime to check.
+        
+        Returns:
+            bool: True if the anime exists, False otherwise.
+        """
+        return self.anime_repository.exists(anime_id)
