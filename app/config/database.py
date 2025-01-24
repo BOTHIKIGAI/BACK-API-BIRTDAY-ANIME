@@ -8,11 +8,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-# Cargar las variables de entorno desde el archivo .env
+# load env variable
 load_dotenv()
 
-DATABASE_URL = (f"""{os.getenv('database_motor')}://{os.getenv('username_db')}:{os.getenv('password_db')}"""
-                """@localhost:5432/happy_birthday_anime_db""")
+DATABASE_MOTOR = os.getenv('database_motor')
+USERNAME_DB = os.getenv('username_db')
+PASSWORD_DB = os.getenv('password_db')
+HOST_PORT = os.getenv('host_port')
+NAME_DB = os.getenv('name_database')
+
+DATABASE_URL = f"{DATABASE_MOTOR}://{USERNAME_DB}:{PASSWORD_DB}@{HOST_PORT}/{NAME_DB}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
