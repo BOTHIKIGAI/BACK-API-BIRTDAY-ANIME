@@ -28,14 +28,11 @@ class Author(Base):
     name = Column(String, index=True, nullable=False, unique=True)
     alias = Column(String, index=True, nullable=True)
     birthday = Column(Date, index=True, nullable=True)
-    created_at = Column(DateTime(timezone=True),
-                        server_default=func.now(),
-                        nullable=False)
-    updated_at = Column(DateTime(timezone=True),
-                        onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
-    animes = relationship(
+    anime = relationship(
         "Anime",
         secondary=anime_author_association,
         back_populates="authors"

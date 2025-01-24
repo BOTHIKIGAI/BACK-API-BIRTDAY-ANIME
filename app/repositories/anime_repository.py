@@ -13,15 +13,14 @@ class AnimeRepository:
     """
     Repository class fot accessing Anime data.
 
-    This class provides methods to interact with
-    the Anime table in the database, incluiding
-    listing animes with optional filters, and
-    retrieving a specific anime by ID with related
+    This class provides methods to interact with the Anime table
+    in the database, including listing anime with optional
+    filters, and retrieving a specific anime by ID with related
     author and episodes.
 
     Attributes:
-        db (Session): The database session used
-                      for queryng the database.
+        db (Session): The database session used for querying the
+        database.
     """
 
     # Attributes
@@ -31,12 +30,10 @@ class AnimeRepository:
     def __init__(self,
                  db: Session = Depends(get_db_connection)) -> None:
         """
-        Initializes the AnimeRepository with
-        a database session.
+        Initializes the AnimeRepository with a database session.
 
         Args:
-            db (Session): The database session
-            used for querying the database.
+            db (Session): The database session used for querying the database.
         """
         self.db = db
 
@@ -46,75 +43,63 @@ class AnimeRepository:
              category: Optional[str],
              release_date: Optional[str],
              limit: Optional[int],
-             start: Optional[int]) -> Optional[List[Anime]]:
+             start: Optional[int]) -> [List[Anime]]:
         """
-        Retrieves a list of animes with optional
-        filters for name, category and release
-        date and supports pagination.
+        Retrieves a list of anime with optional filters for name,
+        category and release date and supports pagination.
 
         Args:
-            name (Optional[str]): The name of the
+            name (Optional[str]): The name of the anime to filter by.
+            category (Optional[str]): The name of category to filter by.
+            release_date (Optional[str]): The release date of the
             anime to filter by.
-            category (Optional[str]): The name of
-            category to filter by.
-            release_date (Optional[str]): The
-            release date of the anime to filter by.
-            limit (Optional[int]): The maximum
-            number of results to return.
-            start (Optional[int]): The index of the
-            first result to return.
+            limit (Optional[int]): The maximum number of results to return.
+            start (Optional[int]): The index of the first result to return.
 
         Returns:
-            List[Anime]: A list of authors that
-            match the given filters and
+            List[Anime]: A list of authors that match the given filters and
             pagination settings.
         """
 
         query = self.db.query(Anime)
 
         if name:
-            query = query.filter_by(name)
+            query = query.filter_by(name=name)
 
         if category:
-            query = query.filter_by(category)
+            query = query.filter_by(category=category)
 
         if release_date:
-            query = query.filter_by(release_date)
+            query = query.filter_by(release_date=release_date)
 
         return query.offset(start).limit(limit).all()
 
     def get(self, anime_id: int) -> Optional[Anime]:
         """
-        Retrieves a specific anime by ID, incluidig
-        related author and episodes.
+        Retrieves a specific anime by ID, include related author
+        and episodes.
 
         Args:
-            anime_id (int): The ID of the anime to
-            retrieve.
+            anime_id (int): The ID of the anime to retrieve.
 
         Returns:
-            Optional[Anime]: The anime with the 
-            given ID, incluiding related author
-            and episodes, or None if no author
-            is found.
+            Optional[Anime]: The anime with the given ID,
+            including related author and episodes, or
+            None if no author is found.
         """
         return self.db.query(Anime).options(
-                lazyload(Anime.authors),
-                lazyload(Anime.episodes)
-            ).filter_by(id=anime_id).first()
+            lazyload(Anime.authors),
+            lazyload(Anime.episodes)).filter_by(id=anime_id).first()
 
     def create(self, anime: Anime) -> Anime:
         """
-        Creates a new anime in the database and
-        return the created Anime.
+        Creates a new anime in the database and return the created Anime.
 
         Args:
-            anime (Anime): The Anime data to 
-            create.
+            anime (Anime): The Anime data to create.
         
         Returns:
-            Anime: The created anime with the
-            asigned ID.
+            Anime: The created anime with the assigned ID.
         """
         self.db.add(anime)
         self.db.commit()
@@ -123,19 +108,16 @@ class AnimeRepository:
 
     def update(self, anime_id: int, anime: Anime) -> Anime:
         """
-        Updates an existing anime in the database
-        with the provided data and returns the
-        update anime.
+        Updates an existing anime in the database with the
+        provided data and returns the update anime.
 
         Args:
-            anime_id (int): The ID of the anime
-            to update.
+            anime_id (int): The ID of the anime to update.
             anime (Anime): The updated anime data
 
         Returns:
-            Anime: The update anime, or None
-            if no anime is found with the given
-            ID.
+            Anime: The update anime, or None if no anime is
+            found with the given ID.
         """
         anime.id = anime_id
         self.db.merge(anime)
@@ -144,12 +126,11 @@ class AnimeRepository:
 
     def delete(self, anime_id: int) -> None:
         """
-        Deletes an existing anime in the
-        database with the given ID.
+        Deletes an existing anime in the database with the
+        given ID.
 
         Args:
-            anime_id (int): The ID of the
-            anime to delete
+            anime_id (int): The ID of the anime to delete
         """
         anime = self.db.query(Anime).filter_by(id=anime_id).first()
         self.db.delete(anime)

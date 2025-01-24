@@ -1,5 +1,5 @@
 """
-This module contains the routes for the management }
+This module contains the routes for the management
 of the authors 
 """
 
@@ -34,11 +34,9 @@ def index(
     Returns:
         List[AuthorSchema]: A list of authors matching the filters.
     """
-    return author_service.list(
-            name, alias, birthday, page_size, start_index)
+    return author_service.list(name, alias, birthday, page_size, start_index)
 
-@AuthorRouter.get('/{author_id}',
-                  response_model=AuthorSchema)
+@AuthorRouter.get('/{author_id}', response_model=AuthorSchema)
 def get(author_id: int, author_service: AuthorService = Depends()):
     """
     Retrieves an author by their ID.
@@ -52,11 +50,8 @@ def get(author_id: int, author_service: AuthorService = Depends()):
     """
     return author_service.get(author_id)
 
-@AuthorRouter.post('/',
-                   response_model=AuthorSchema,
-                   status_code=status.HTTP_201_CREATED)
-def create(author: AuthorSchema,
-           author_service: AuthorService = Depends()):
+@AuthorRouter.post('/', response_model=AuthorSchema, status_code=status.HTTP_201_CREATED)
+def create(author: AuthorSchema, author_service: AuthorService = Depends()):
     """
     Creates a new author.
 
@@ -69,11 +64,8 @@ def create(author: AuthorSchema,
     """
     return author_service.create(author)
 
-@AuthorRouter.put("/{author_id}",
-                  response_model=AuthorSchema)
-def update(author_id: int,
-           author: AuthorSchema,
-           author_service: AuthorService = Depends()):
+@AuthorRouter.put("/{author_id}", response_model=AuthorSchema)
+def update(author_id: int, author: AuthorSchema, author_service: AuthorService = Depends()):
     """
     Updates an existing author.
 
@@ -90,8 +82,7 @@ def update(author_id: int,
     """
     return author_service.update(author_id, author)
 
-@AuthorRouter.delete('/{author_id}',
-                     status_code=status.HTTP_204_NO_CONTENT)
+@AuthorRouter.delete('/{author_id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete(author_id: int, author_service: AuthorService = Depends()):
     """
     Deletes an author by their ID.
@@ -108,23 +99,21 @@ def delete(author_id: int, author_service: AuthorService = Depends()):
     """
     author_service.delete(author_id)
 
-@AuthorRouter.get('/{author_id}/animes',
-                  response_model=List[AnimeSchema])
-def get_animes(author_id: int, author_service: AuthorService = Depends()):
+@AuthorRouter.get('/{author_id}/anime', response_model=List[AnimeSchema])
+def get_anime(author_id: int, author_service: AuthorService = Depends()):
     """
     Get anime author by their ID.
 
     Args:
-        author_id (int): The id of the author to get their animes
+        author_id (int): The id of the author to get their anime
         author_service (AuthorService): The service to handle author operations.
 
     Returns:
         AnimeSchema: The anime author
     """
-    return author_service.get_animes(author_id)
+    return author_service.get_anime(author_id)
 
-@AuthorRouter.get('/{author_id}/episodes',
-              response_model=List[EpisodeSchema])
+@AuthorRouter.get('/{author_id}/episodes', response_model=List[EpisodeSchema])
 def get_episodes(author_id: int, author_service: AuthorService = Depends()):
     """
     Get episodes author by their ID.

@@ -1,6 +1,6 @@
 """
-This module represents the service layer or
-business logic for author.
+This module represents the service layer or business logic
+for author.
 """
 
 from typing import List, Optional
@@ -15,26 +15,25 @@ class AuthorService:
     """
     Service class for managing Author data.
 
-    This class provides methods to interact with the
-    AuthorRepository, including listing authors with
-    optional filters, retrieving a specific author by
-    ID, creating a new author, updating an existing
+    This class provides methods to interact with the AuthorRepository,
+    including listing authors with optional filters, retrieving
+    a specific author by ID, creating a new author, updating an existing
     author, and deleting an author.
 
     Attributes:
-        author_repository (AuthorRepository): The repository
-        used for accessing Author data.
+        author_repository (AuthorRepository): The repository used for
+        accessing Author data.
     """
     authorRepository: AuthorRepository
 
     def __init__(self, author_repository: AuthorRepository = Depends()) -> None:
         """
-        Initializes the AuthorService with a repository
-        for accessing Author data.
+        Initializes the AuthorService with a repository for accessing
+        Author data.
 
         Args:
-            author_repository (AuthorRepository): The 
-            repository used for accessing Author data.
+            author_repository (AuthorRepository): The  repository used
+            for accessing Author data.
         """
 
         self.author_repository = author_repository
@@ -46,24 +45,21 @@ class AuthorService:
              page_size: Optional[int] = 100,
              start_index: Optional[int] = 0) -> Optional[List[Author]]:
         """
-        Retrieves a list of authors with optional filters
-        for name, alias, and birthday, and supports pagination.
+        Retrieves a list of authors with optional filters for name,
+        alias, and birthday, and supports pagination.
 
         Args:
-            name (Optional[str]): The name of the author to 
-            filter by.
-            alias (Optional[str]): The alias of the author 
-            to filter by.
-            birthday (Optional[str]): The birthday of the
-            uthor to filter by.
-            page_size (Optional[int]): The maximum number
-            of results to return. Defaults to 100.
-            start_index (Optional[int]): The index of the
-            first result to return. Defaults to 0.
+            name (Optional[str]): The name of the author to  filter by.
+            alias (Optional[str]): The alias of the author  to filter by.
+            birthday (Optional[str]): The birthday of the author to filter by.
+            page_size (Optional[int]): The maximum number of results to return.
+                Defaults to 100.
+            start_index (Optional[int]): The index of the first result to return.
+                Defaults to 0.
 
         Returns:
-            List[Author]: A list of authors that match the
-            given filters and pagination settings.
+            List[Author]: A list of authors that match the given filters and
+            pagination settings.
         """
         return self.author_repository.list(
             name=name,
@@ -75,14 +71,14 @@ class AuthorService:
     def get(self, author_id: int) -> Optional[Author]:
         """
         Retrieves a specific author by ID, including related
-        animes and episodes.
+        anime's and episodes.
 
         Args:
             author_id (int): The ID of the author to retrieve.
 
         Returns:
             Author: The author with the given ID, including
-            related animes and episodes.
+            related anime's and episodes.
         """
         author = self.author_repository.get(author_id=author_id)
         if not author:
@@ -106,17 +102,13 @@ class AuthorService:
                    alias=author_body.alias,
                    birthday=author_body.birthday))
 
-    def update(self,
-               author_id: int,
-               author_body: AuthorSchema) -> Author:
+    def update(self, author_id: int, author_body: AuthorSchema) -> Author:
         """
-        Updates an existing author in the database with the
-        provided data.
+        Updates an existing author in the database with the provided data.
 
         Args:
             author_id (int): The ID of the author to update.
-            author_body (AuthorSchema): The updated data of
-            the author.
+            author_body (AuthorSchema): The updated data of the author.
 
         Returns:
             Author: The updated author with the new data.
@@ -141,21 +133,21 @@ class AuthorService:
             raise HTTPException(status_code=404, detail="Author not found")
         self.author_repository.delete(author_id)
 
-    def get_animes(self, author_id: int) -> List[Anime]:
+    def get_anime(self, author_id: int) -> List[Anime]:
         """
-        Retrieves the list of animes associated with a specific
+        Retrieves the list of anime's associated with a specific
         author.
 
         Args:
             author_id (int): The ID of the author.
 
         Returns:
-            List[Anime]: A list of animes associated with the
+            List[Anime]: A list of anime's associated with the
             author.
         """
         if not self.get(author_id):
             raise HTTPException(status_code=404, detail="Author not found")
-        return self.author_repository.get(author_id).animes
+        return self.author_repository.get(author_id).anime
 
     def get_episodes(self, author_id: int) -> List[Episode]:
         """

@@ -27,4 +27,11 @@ class EpisodeSchema(BaseModel):
     air_date: date
 
     class Config:
+        """
+        Configuration class for Pydantic model.
+        
+        Attributes:
+            from_attributes (bool): Indicates if the model
+            should be populated from attributes.
+        """
         from_attributes = True

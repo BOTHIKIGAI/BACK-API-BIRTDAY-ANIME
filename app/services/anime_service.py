@@ -1,6 +1,5 @@
 """
-This module the service layer or
-bussines logic for anime
+This module the service layer or business logic for anime
 """
 
 from typing import List, Optional
@@ -15,18 +14,14 @@ class AnimeService:
     """
     Service class for managing Anime class
 
-    This class provides methods to interact
-    with the AnimeService, including listing
-    authors with optional filters, retrieving
-    a specific anime by ID, creating a new
-    author by ID, creating a new author,
-    updating an existing anime, and deleting
-    an anime.
+    This class provides methods to interact with the AnimeService,
+    including listing authors with optional filters, retrieving
+    a specific anime by ID, creating a new author by ID, creating
+    a new author, updating an existing anime, and deleting an anime.
 
     Attributes:
-        anime_repository (AnimeRepository):
-        The repository used for accesing
-        Anime data.
+        anime_repository (AnimeRepository): The repository used for
+        accessing Anime data.
     """
 
     # Attributes
@@ -35,13 +30,12 @@ class AnimeService:
     # Constructor
     def __init__(self, anime_repository: AnimeRepository = Depends()) -> None:
         """
-        Initialize the AnimeService with a
-        repository for accesing Anime date.
+        Initialize the AnimeService with a repository for accessing
+        Anime date.
 
         Args:
-            anime_repository (AnimeRepository):
-            The repository used for accesing
-            Anime data.
+            anime_repository (AnimeRepository): The repository used
+            for accessing Anime data.
         """
         self.anime_repository = anime_repository
 
@@ -52,30 +46,22 @@ class AnimeService:
              page_size: Optional[int] = 100,
              start_index: Optional[int] = 0) -> Optional[List[Anime]]:
         """
-        Retrieves a list of anime with
-        optional filters for name,
-        category, release_date, limit,
-        start, and supports pagination.
+        Retrieves a list of anime with optional filters for name,
+        category, release_date, limit, start, and supports pagination.
 
         Args:
-            name (Optional[str]): The name
-            of the anime to filter by.
-            category (Optional[str]): The alias
-            of the anime to filter by.
-            release_date (Optional[str]): The
-            release date of the anime to filter
-            by.
-            page_size (Optional[int]): The
-            maximum number of results to returns.
-            Defaults to 100.
-            start_index (Optional[int]): The
-            index of the first result to return.
-            Default to 0.
+            name (Optional[str]): The name of the anime to filter by.
+            category (Optional[str]): The alias of the anime to filter by.
+            release_date (Optional[str]): The release date of the anime to
+                filter by.
+            page_size (Optional[int]): The maximum number of results to returns.
+                Defaults to 100.
+            start_index (Optional[int]): The index of the first result to return.
+                Default to 0.
 
         Returns:
-            List[Anime]: A list of anime that match
-            the given filters and pagination
-            settings.
+            List[Anime]: A list of anime that match the given
+            filters and pagination settings.
         """
         return self.anime_repository.list(
             name=name,
@@ -86,17 +72,15 @@ class AnimeService:
 
     def get(self, anime_id: int) -> Optional[Anime]:
         """
-        Retrieves a specific anime by ID, incluiding
-        related anime and episodes.
+        Retrieves a specific anime by ID, including related anime
+        and episodes.
 
         Args:
-            Anime: The anime with the given ID,
-            incluiding related author and episodes.
+            anime_id (int): The ID of the anime.
         """
         anime = self.anime_repository.get(anime_id)
         if not anime:
-            raise HTTPException(status_code=404,
-                                detail="Anime not found")
+            raise HTTPException(status_code=404, detail="Anime not found")
         return anime
 
     def create(self, anime_body: AnimeSchema) -> Anime:
@@ -116,25 +100,20 @@ class AnimeService:
                   category=anime_body.category,
                   release_date=anime_body.release_date))
 
-    def update(self,
-               anime_id: int,
-               anime_body: AnimeSchema) -> Anime:
+    def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
         """
-        Updates an existing anime in the database
-        with the provide data.
+        Updates an existing anime in the database with the
+        provide data.
 
         Args:
-            anime_id (int): The ID of the anime
-            to update
-            anime (AnimeSchema): 
+            anime_id (int): The ID of the anime to update.
+            anime_body (AnimeSchema): The anime schema.
 
         Returns:
-            Anime: The updated anime with the
-            data.
+            Anime: The updated anime with the data.
         """
         if not self.get(anime_id):
-            raise HTTPException(status_code=404,
-                                detail="Anime not found")
+            raise HTTPException(status_code=404, detail="Anime not found")
         return self.anime_repository.update(
             anime_id,
             Anime(name=anime_body.name,
@@ -147,8 +126,7 @@ class AnimeService:
         with the given ID.
 
         Args:
-            anime_id (int): The ID of the anime to
-            delete
+            anime_id (int): The ID of the anime to delete.
         """
         if not self.get(anime_id):
             raise HTTPException(status_code=404,
@@ -157,15 +135,13 @@ class AnimeService:
 
     def get_authors(self, anime_id: int) -> List[Author]:
         """
-        Retrieves the list of authors associated
-        with a specific anime.
+        Retrieves the list of authors associated with a specific anime.
 
         Args:
             anime_id (int): The ID of the anime.
 
         Returns:
-            List[Author]: A list of authors
-            associated with the anime.
+            List[Author]: A list of authors associated with the anime.
         """
         if not self.get(anime_id):
             raise HTTPException(status_code=404,
@@ -174,17 +150,14 @@ class AnimeService:
 
     def get_episodes(self, anime_id: int) -> List[Episode]:
         """
-        Retrieves the list of episodes associated
-        with a specific anime.
+        Retrieves the list of episodes associated with a specific anime.
         
         Args:
             anime_id (int): The ID of the anime.
 
         Returns:
-            List[Episode]: A list of episoddes associated
-            with the author.
+            List[Episode]: A list of episodes associated with the author.
         """
         if not self.get(anime_id):
-            raise HTTPException(status_code=404,
-                                detail="Anime not found")
+            raise HTTPException(status_code=404, detail="Anime not found")
         return self.anime_repository.get(anime_id).episodes

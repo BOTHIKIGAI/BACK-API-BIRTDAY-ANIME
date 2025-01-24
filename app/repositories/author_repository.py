@@ -13,71 +13,39 @@ class AuthorRepository:
     """
     Repository class for accessing Author data.
 
-    This class provides methods to interact with
-    the Author table in the database, including
-    listing authors with optional filters, and
-    retrieving a specific author by ID with 
-    related animes and episodes.
+    This class provides methods to interact with the Author table
+    in the database, including listing authors with optional filters,
+    and retrieving a specific author by ID with related anime and
+    episodes.
 
     Attributes:
-        db (Session): The database session used
-                      for querying the database.
-
-    Methods:
-        list(
-            name: Optional[str],
-            alias: Optional[str],
-            birthday: Optional[str],
-            limit: Optional[int],
-            start: Optional[int]) -> List[Author]:
-                Retrieves a list of authors with
-                optional filters for name, alias,
-                and birthday, and supports pagination.
-        
-        get(author_id: int) -> Optional[Author]:
-            Retrieves a specific author by ID, 
-            including related animes and episodes.
-
-        create(author: Author) -> Author:
-            Returns the author created with his data
-
-        update(author_id: int, author: Author) -> Author:
-            Update an existing author in the
-            database with the provided data
-            and returns the update authors.
-        
-        delete(self, author: Author) -> None:
-            Delete an existing author in the
-            database with the id author.
+        db (Session): The database session used for querying the database.
     """
 
     # Attributes
     db: Session
 
+    # Constructor
     def __init__(self,
                  db: Session = Depends(get_db_connection)) -> None:
         """
-        Initializes the AuthorRepository with 
-        a database session.
+        Initializes the AuthorRepository with a database session.
 
         Args:
-            db (Session): The database session
-            used for querying the database.
+            db (Session): The database session used for querying the database.
         """
         self.db = db
 
     # Methods
-
     def list(self,
              name: Optional[str],
              alias: Optional[str],
              birthday: Optional[str],
              limit: Optional[int],
-             start: Optional[int]) -> Optional[List[Author]]:
+             start: Optional[int]) -> [List[Author]]:
         """
-        Retrieves a list of authors with optional
-        filters for name, alias, and birthday, and
-        supports pagination.
+        Retrieves a list of authors with optional filters for name, alias, and
+        birthday, and supports pagination.
 
         Args:
             name (Optional[str]): The name of the author to filter by.
@@ -106,26 +74,25 @@ class AuthorRepository:
     def get(self, author_id: int) -> Optional[Author]:
         """
         Retrieves a specific author by ID, including
-        related animes and episodes.
+        related anime and episodes.
 
         Args:
             author_id (int): The ID of the author to
             retrieve.
 
         Returns:
-            Optional[Author]: The author with the given
-            ID, including related animes and episodes,
-            or None if no author is found.
+            Optional[Author]: The author with the given ID,
+            including related anime and episodes, or None
+            if no author is found.
         """
         return self.db.query(Author).options(
-            lazyload(Author.animes),
-            lazyload(Author.episodes)
-        ).filter_by(id=author_id).first()
+            lazyload(Author.anime),
+            lazyload(Author.episodes)).filter_by(id=author_id).first()
 
     def create(self, author: Author) -> Author:
         """
-        Creates a new author in the database and returns
-        the created author.
+        Creates a new author in the database and returns the
+        created author.
 
         Args:
             author (Author): The author data to create.

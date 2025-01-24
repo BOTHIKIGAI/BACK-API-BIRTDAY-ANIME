@@ -27,17 +27,14 @@ class Anime(Base):
     name = Column(String, index=True, nullable=False, unique=True)
     category = Column(String, index=True, nullable=False)
     release_date = Column(Date, index=True, nullable=False)
-    created_at = Column(DateTime(timezone=True),
-                        server_default=func.now(),
-                        nullable=False)
-    updated_at = Column(DateTime(timezone=True),
-                        onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     # Relationships
     authors = relationship(
         "Author",
         secondary=anime_author_association,
-        back_populates="animes")
+        back_populates="anime")
 
     episodes = relationship(
         "Episode",
