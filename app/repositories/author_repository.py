@@ -42,7 +42,7 @@ class AuthorRepository:
              alias: Optional[str],
              birthday: Optional[str],
              limit: Optional[int],
-             start: Optional[int]) -> [List[Author]]:
+             start: Optional[int]) -> List[Author]:
         """
         Retrieves a list of authors with optional filters for name, alias, and
         birthday, and supports pagination.
@@ -134,3 +134,16 @@ class AuthorRepository:
         author = self.db.query(Author).filter_by(id=author_id).first()
         self.db.delete(author)
         self.db.commit()
+
+
+    def exists(self, author_id: int) -> bool:
+        """
+        Check if the author exists by means of the author id.
+        Args:
+            author_id(int): The id of the author to consult.
+
+        Returns:
+            Returns query state.
+        """
+        query = self.db.query(Author).filter(Author.id == author_id)
+        return self.db.query(query.exists()).scalar()

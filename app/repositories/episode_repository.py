@@ -29,6 +29,7 @@ class EpisodeRepository:
     # Attributes
     db: Session
 
+
     # Constructor
     def __init__(self,
                  db: Session = Depends(get_db_connection)) -> None:
@@ -42,6 +43,7 @@ class EpisodeRepository:
         """
         self.db = db
 
+
     # Methods
     def list(self,
              arc: Optional[str],
@@ -50,7 +52,7 @@ class EpisodeRepository:
              episode: Optional[int],
              air_date: Optional[str],
              limit: Optional[int],
-             start: Optional[int]) -> [List[Episode]]:
+             start: Optional[int]) -> List[Episode]:
         """
         Retrieves a list of episodes with optional
         filters for name, category and release
@@ -89,6 +91,7 @@ class EpisodeRepository:
 
         return query.offset(start).limit(limit).all()
 
+
     def get(self, episode_id: int) -> Optional[Episode]:
         """
         Retrieves a specific episode by ID, include
@@ -109,6 +112,7 @@ class EpisodeRepository:
                 lazyload(Episode.authors)
             ).filter_by(id=episode_id).first()
 
+
     def create(self, episode: Episode) -> Episode:
         """
         Creates a new episode in the database
@@ -126,6 +130,7 @@ class EpisodeRepository:
         self.db.commit()
         self.db.refresh(episode)
         return episode
+
 
     def update(self,
                episode_id: int,
@@ -151,6 +156,7 @@ class EpisodeRepository:
         self.db.commit()
         return episode
 
+
     def delete(self, episode_id: int) -> None:
         """
         Deletes an existing episode in the
@@ -162,3 +168,16 @@ class EpisodeRepository:
         episode = self.db.query(Episode).filter_by(id=episode_id).first()
         self.db.delete(episode)
         self.db.commit()
+
+
+    def exists(self, episode_id: int) -> bool:
+        """
+        Check if the episode exists by means of the episode id.
+        Args:
+            episode_id(int): The id of the episode to consult.
+
+        Returns:
+            Returns query state.
+        """
+        query = self.db.query(Episode).filter(Episode.id == episode_id)
+        return self.db.query(query.exists()).scalar()

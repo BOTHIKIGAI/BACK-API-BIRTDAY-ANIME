@@ -136,7 +136,7 @@ class AnimeRepository:
         self.db.delete(anime)
         self.db.commit()
 
-    def exists(self, anime_id: int):
+    def exists(self, anime_id: int) -> bool:
         """
         Check if the anime exists by means of the anime id.
         Args:

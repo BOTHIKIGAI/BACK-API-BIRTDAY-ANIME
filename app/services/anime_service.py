@@ -41,6 +41,7 @@ class AnimeService:
         self.anime_repository = anime_repository
 
 
+    # Methods
     def list(self,
              name: Optional[str] = None,
              category: Optional[str] = None,

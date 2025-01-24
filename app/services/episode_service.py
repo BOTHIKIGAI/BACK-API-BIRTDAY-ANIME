@@ -40,7 +40,9 @@ class EpisodeService:
                 accessing Episode data.
         """
         self.episode_repository = episode_repository
-    
+
+
+    # Methods
     def list(self,
              arc: Optional[str] = None,
              temp: Optional[int] = None,
@@ -79,7 +81,8 @@ class EpisodeService:
             air_date=air_date,
             limit=page_size,
             start=start_index)
-    
+
+
     def get(self, episode_id: int) -> Optional[Episode]:
         """
         Retrieves a specific episode by ID, including related
@@ -92,13 +95,13 @@ class EpisodeService:
             Episode: The Episode with the given ID, including
             related author and anime.
         """
-        episode = self.episode_repository.get(episode_id)
-        if not episode:
-            raise HTTPException(
-                status_code=404,
-                detail="Episode not found")
-        return episode
-    
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
+        return self.episode_repository.get(episode_id)
+
+
     def create(self, episode_body: EpisodeSchema) -> Episode:
         """
         Creates a new episode in the database.
@@ -117,7 +120,8 @@ class EpisodeService:
                     name = episode_body.name,
                     episode = episode_body.episode,
                     air_date = episode_body.air_date))
-    
+
+
     def update(self, episode_id: int, episode_body: EpisodeSchema) -> Episode:
         """
         Updates an existing episode in the database with the
@@ -131,7 +135,10 @@ class EpisodeService:
         Returns:
             Author: The updated episode with the new data.
         """
-        self.get(episode_id)
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
         return self.episode_repository.update(
             episode_id=episode_id,
             episode=Episode(
@@ -141,7 +148,8 @@ class EpisodeService:
                 name = episode_body.name,
                 episode = episode_body.episode,
                 air_date = episode_body.air_date))
-    
+
+
     def delete(self, episode_id: int) -> None:
         """
         Deletes an existing episode in the database with the
@@ -150,9 +158,13 @@ class EpisodeService:
         Args:
             episode_id (int): The ID of the episode to delete.
         """
-        self.get(episode_id)
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
         self.episode_repository.delete(episode_id)
-    
+
+
     def get_anime(self, episode_id: int) -> Anime:
         """
         Retrieves the Anime associated with a specific episode.
@@ -163,9 +175,13 @@ class EpisodeService:
         Returns:
             Anime: A anime associated with the episode.
         """
-        self.get(episode_id)
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
         return self.episode_repository.get(episode_id).anime
-    
+
+
     def get_author(self, episode_id: int) -> List[Author]:
         """
         Retrieves the list of author/s
@@ -179,5 +195,21 @@ class EpisodeService:
             List[Episode]: A list of author/s associated with the
             episode.
         """
-        self.get(episode_id)
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
         return self.episode_repository.get(episode_id).authors
+
+
+    def episode_exists(self, episode_id: int) -> bool:
+        """
+        Checks if an episode with the given ID exists in the repository.
+        
+        Args:
+            episode_id (int): The ID of the episode to check.
+        
+        Returns:
+            bool: True if the episode exists, False otherwise.
+        """
+        return self.episode_repository.exists(episode_id)

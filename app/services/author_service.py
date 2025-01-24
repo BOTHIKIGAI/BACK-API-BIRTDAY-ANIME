@@ -24,8 +24,11 @@ class AuthorService:
         author_repository (AuthorRepository): The repository used for
         accessing Author data.
     """
-    authorRepository: AuthorRepository
+    # Attributes
+    author_repository: AuthorRepository
 
+
+    # Constructor
     def __init__(self, author_repository: AuthorRepository = Depends()) -> None:
         """
         Initializes the AuthorService with a repository for accessing
@@ -38,6 +41,8 @@ class AuthorService:
 
         self.author_repository = author_repository
 
+
+    # Methods
     def list(self,
              name: Optional[str] = None,
              alias: Optional[str] = None,
@@ -68,6 +73,7 @@ class AuthorService:
             limit=page_size,
             start=start_index)
 
+
     def get(self, author_id: int) -> Optional[Author]:
         """
         Retrieves a specific author by ID, including related
@@ -80,11 +86,12 @@ class AuthorService:
             Author: The author with the given ID, including
             related anime's and episodes.
         """
-        author = self.author_repository.get(author_id=author_id)
-        if not author:
+        if not self.author_exists(author_id):
             raise HTTPException(status_code=404,
-                                detail="Author not found")
-        return author
+                                detail='The author does not exist.')
+
+        return self.author_repository.get(author_id)
+
 
     def create(self, author_body: AuthorSchema) -> Author:
         """
@@ -102,6 +109,7 @@ class AuthorService:
                    alias=author_body.alias,
                    birthday=author_body.birthday))
 
+
     def update(self, author_id: int, author_body: AuthorSchema) -> Author:
         """
         Updates an existing author in the database with the provided data.
@@ -113,13 +121,16 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
-        if not self.get(author_id):
-            raise HTTPException(status_code=404, detail="Author not found")
+        if not self.author_exists(author_id):
+            raise HTTPException(status_code=404,
+                                detail='The author does not exist.')
+
         return self.author_repository.update(
             author_id,
             Author(name=author_body.name,
                    alias=author_body.alias,
                    birthday=author_body.birthday))
+
 
     def delete(self, author_id: int) -> None:
         """
@@ -129,9 +140,12 @@ class AuthorService:
         Args:
             author_id (int): The ID of the author to delete.
         """
-        if not self.get(author_id):
-            raise HTTPException(status_code=404, detail="Author not found")
+        if not self.author_exists(author_id):
+            raise HTTPException(status_code=404,
+                                detail='The author does not exist.')
+
         self.author_repository.delete(author_id)
+
 
     def get_anime(self, author_id: int) -> List[Anime]:
         """
@@ -145,9 +159,12 @@ class AuthorService:
             List[Anime]: A list of anime's associated with the
             author.
         """
-        if not self.get(author_id):
-            raise HTTPException(status_code=404, detail="Author not found")
+        if not self.author_exists(author_id):
+            raise HTTPException(status_code=404,
+                                detail='The author does not exist.')
+
         return self.author_repository.get(author_id).anime
+
 
     def get_episodes(self, author_id: int) -> List[Episode]:
         """
@@ -161,6 +178,21 @@ class AuthorService:
             List[Episode]: A list of episodes associated with the
             author.
         """
-        if not self.get(author_id):
-            raise HTTPException(status_code=404, detail="Author not found")
+        if not self.author_exists(author_id):
+            raise HTTPException(status_code=404,
+                                detail='The author does not exist.')
+
         return self.author_repository.get(author_id).episodes
+
+
+    def author_exists(self, author_id: int) -> bool:
+        """
+        Checks if an author with the given ID exists in the repository.
+        
+        Args:
+            author_id (int): The ID of the author to check.
+        
+        Returns:
+            bool: True if the author exists, False otherwise.
+        """
+        return self.author_repository.exists(author_id)
