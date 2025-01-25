@@ -4,7 +4,7 @@ management of the anime
 """
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
-from app.schemas.episode_schema import EpisodeSchema
+from app.schemas.episode_schema import EpisodeSchema, EpisodeAuthorRelationSchema
 from app.services.episode_service import EpisodeService
 
 EpisodeRouter = APIRouter()
@@ -142,3 +142,26 @@ def get_author(episode_id: int, episode_service: EpisodeService = Depends()):
         AuthorSchema: The episode author
     """
     return episode_service.get_author(episode_id)
+
+
+@EpisodeRouter.post('/{episode_id}/author/{author_id}',
+                    response_model = EpisodeAuthorRelationSchema,
+                    status_code = status.HTTP_201_CREATED)
+def create_author_relation(episode_id: int,
+                           author_id: int,
+                           episode_service: EpisodeService = Depends()):
+    """
+    Creates a relationship between an episode and an author.
+
+    Args:
+        episode_id (int): The ID of the episode.
+        author_id (int): The ID of the author.
+        episode_service (EpisodeService): The service to
+        handle episode operations.
+
+    Returns:
+        EpisodeAuthorRelationSchema: The created relationship
+        data.
+    """
+    return episode_service.create_author_relation(episode_id = episode_id,
+                                                  author_id = author_id)
