@@ -64,13 +64,13 @@ class AnimeRepository:
         query = self.db.query(Anime)
 
         if name:
-            query = query.filter_by(name=name)
+            query = query.filter_by(name = name)
 
         if category:
-            query = query.filter_by(category=category)
+            query = query.filter_by(category = category)
 
         if release_date:
-            query = query.filter_by(release_date=release_date)
+            query = query.filter_by(release_date = release_date)
 
         return query.offset(start).limit(limit).all()
 
@@ -89,7 +89,7 @@ class AnimeRepository:
         """
         return self.db.query(Anime).options(
             lazyload(Anime.authors),
-            lazyload(Anime.episodes)).filter_by(id=anime_id).first()
+            lazyload(Anime.episodes)).filter_by(id = anime_id).first()
 
     def create(self, anime: Anime) -> Anime:
         """
@@ -132,7 +132,7 @@ class AnimeRepository:
         Args:
             anime_id (int): The ID of the anime to delete
         """
-        anime = self.db.query(Anime).filter_by(id=anime_id).first()
+        anime = self.db.query(Anime).filter_by(id = anime_id).first()
         self.db.delete(anime)
         self.db.commit()
 

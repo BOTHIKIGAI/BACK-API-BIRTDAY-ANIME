@@ -61,13 +61,13 @@ class AuthorRepository:
         query = self.db.query(Author)
 
         if name:
-            query = query.filter_by(name=name)
+            query = query.filter_by(name = name)
 
         if alias:
-            query = query.filter_by(alias=alias)
+            query = query.filter_by(alias = alias)
 
         if birthday:
-            query = query.filter_by(birthday=birthday)
+            query = query.filter_by(birthday = birthday)
 
         return query.offset(start).limit(limit).all()
 
@@ -87,7 +87,7 @@ class AuthorRepository:
         """
         return self.db.query(Author).options(
             lazyload(Author.anime),
-            lazyload(Author.episodes)).filter_by(id=author_id).first()
+            lazyload(Author.episodes)).filter_by(id = author_id).first()
 
     def create(self, author: Author) -> Author:
         """
@@ -131,7 +131,7 @@ class AuthorRepository:
         Args:
             author_id (int): The ID of the author to delete.
         """
-        author = self.db.query(Author).filter_by(id=author_id).first()
+        author = self.db.query(Author).filter_by(id = author_id).first()
         self.db.delete(author)
         self.db.commit()
 

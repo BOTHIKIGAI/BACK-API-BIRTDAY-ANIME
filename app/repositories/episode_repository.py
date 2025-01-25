@@ -75,19 +75,19 @@ class EpisodeRepository:
         query = self.db.query(Episode)
 
         if arc:
-            query = query.filter_by(arc=arc)
+            query = query.filter_by(arc = arc)
 
         if temp:
-            query = query.filter_by(temp=temp)
+            query = query.filter_by(temp = temp)
 
         if name:
-            query = query.filter_by(name=name)
+            query = query.filter_by(name = name)
 
         if episode:
-            query = query.filter_by(episode=episode)
+            query = query.filter_by(episode = episode)
 
         if air_date:
-            query = query.filter_by(air_date=air_date)
+            query = query.filter_by(air_date = air_date)
 
         return query.offset(start).limit(limit).all()
 
@@ -165,7 +165,7 @@ class EpisodeRepository:
         Args:
             episode_id (int): The ID of the episode to delete.
         """
-        episode = self.db.query(Episode).filter_by(id=episode_id).first()
+        episode = self.db.query(Episode).filter_by(id = episode_id).first()
         self.db.delete(episode)
         self.db.commit()
 
