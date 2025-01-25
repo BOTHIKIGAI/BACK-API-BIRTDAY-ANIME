@@ -2,9 +2,9 @@
 This module contains the schema to define and
 validate the Anime data structure.
 """
-
 from datetime import date
 from pydantic import BaseModel
+
 
 class AnimeSchema(BaseModel):
     """
