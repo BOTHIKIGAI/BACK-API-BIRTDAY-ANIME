@@ -9,7 +9,8 @@ from app.models.tables.episode_models import Episode
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.repositories.episode_repository import EpisodeRepository
-from app.schemas.episode_schema import EpisodeSchema
+from app.services.author_service import AuthorService
+from app.schemas.episode_schema import EpisodeSchema, EpisodeAuthorRelationSchema
 
 class EpisodeService:
     """
@@ -27,19 +28,24 @@ class EpisodeService:
 
     # Attributes
     episode_repository: EpisodeRepository
+    author_service: AuthorService
     
     # Constructor
-    def __init__(self, episode_repository: EpisodeRepository = Depends()) -> None:
+    def __init__(self,
+                 episode_repository: EpisodeRepository = Depends(),
+                 author_service: AuthorService = Depends()) -> None:
         """
         Initializes the EpisodeService with a repository for
-        accessing Episode data.
+        accessing Episode data and a service for author logic.
 
         Args:
-            episode_repository (EpisodeRepository):
-                The repository used for
-                accessing Episode data.
+            episode_repository (EpisodeRepository): The repository
+            used for accessing Episode data.
+            author_service (AuthorService): The service used for
+            accessing author logic.
         """
         self.episode_repository = episode_repository
+        self.author_service = author_service
 
 
     # Methods
@@ -200,6 +206,34 @@ class EpisodeService:
                                 detail = 'The episode does not exist.')
 
         return self.episode_repository.get(episode_id).authors
+
+
+    def create_author_relation(self,
+                               episode_id: int,
+                               author_id: int) -> EpisodeAuthorRelationSchema:
+        """
+        Creates a relationship between an episode and an author.
+
+        Args:
+            episode_id (int): The ID of the episode.
+            author_id (int): The ID of the author.
+
+        Returns:
+            EpisodeAuthorRelationSchema: The created relationship data.
+
+        Raises:
+            HTTPException: If the episode or author does not exist.
+        """
+        if not self.episode_exists(episode_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The episode does not exist.')
+
+        if not self.author_service.author_exists(author_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
+
+        return self.episode_repository.create_author_relation(episode_id = episode_id,
+                                                              author_id = author_id)
 
 
     def episode_exists(self, episode_id: int) -> bool:
