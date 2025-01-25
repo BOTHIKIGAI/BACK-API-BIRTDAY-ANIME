@@ -2,7 +2,6 @@
 This module contains the routes for the management
 of the authors 
 """
-
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 from app.schemas.author_schema import AuthorSchema
@@ -12,7 +11,7 @@ from app.services.author_service import AuthorService
 
 AuthorRouter = APIRouter()
 
-@AuthorRouter.get('/', response_model=List[AuthorSchema])
+@AuthorRouter.get('/', response_model = List[AuthorSchema])
 def index(
     author_service: AuthorService = Depends(),
     name: Optional[str] = None,
@@ -34,9 +33,15 @@ def index(
     Returns:
         List[AuthorSchema]: A list of authors matching the filters.
     """
-    return author_service.list(name, alias, birthday, page_size, start_index)
+    return author_service.list(
+        name = name,
+        alias = alias,
+        birthday = birthday,
+        page_size = page_size,
+        start_index = start_index)
 
-@AuthorRouter.get('/{author_id}', response_model=AuthorSchema)
+
+@AuthorRouter.get('/{author_id}', response_model = AuthorSchema)
 def get(author_id: int, author_service: AuthorService = Depends()):
     """
     Retrieves an author by their ID.
@@ -50,7 +55,8 @@ def get(author_id: int, author_service: AuthorService = Depends()):
     """
     return author_service.get(author_id)
 
-@AuthorRouter.post('/', response_model=AuthorSchema, status_code=status.HTTP_201_CREATED)
+
+@AuthorRouter.post('/', response_model = AuthorSchema, status_code = status.HTTP_201_CREATED)
 def create(author: AuthorSchema, author_service: AuthorService = Depends()):
     """
     Creates a new author.
@@ -64,7 +70,8 @@ def create(author: AuthorSchema, author_service: AuthorService = Depends()):
     """
     return author_service.create(author)
 
-@AuthorRouter.put("/{author_id}", response_model=AuthorSchema)
+
+@AuthorRouter.put("/{author_id}", response_model = AuthorSchema)
 def update(author_id: int, author: AuthorSchema, author_service: AuthorService = Depends()):
     """
     Updates an existing author.
@@ -82,7 +89,8 @@ def update(author_id: int, author: AuthorSchema, author_service: AuthorService =
     """
     return author_service.update(author_id, author)
 
-@AuthorRouter.delete('/{author_id}', status_code=status.HTTP_204_NO_CONTENT)
+
+@AuthorRouter.delete('/{author_id}', status_code = status.HTTP_204_NO_CONTENT)
 def delete(author_id: int, author_service: AuthorService = Depends()):
     """
     Deletes an author by their ID.
@@ -99,7 +107,8 @@ def delete(author_id: int, author_service: AuthorService = Depends()):
     """
     author_service.delete(author_id)
 
-@AuthorRouter.get('/{author_id}/anime', response_model=List[AnimeSchema])
+
+@AuthorRouter.get('/{author_id}/anime', response_model = List[AnimeSchema])
 def get_anime(author_id: int, author_service: AuthorService = Depends()):
     """
     Get anime author by their ID.
@@ -113,7 +122,8 @@ def get_anime(author_id: int, author_service: AuthorService = Depends()):
     """
     return author_service.get_anime(author_id)
 
-@AuthorRouter.get('/{author_id}/episodes', response_model=List[EpisodeSchema])
+
+@AuthorRouter.get('/{author_id}/episodes', response_model = List[EpisodeSchema])
 def get_episodes(author_id: int, author_service: AuthorService = Depends()):
     """
     Get episodes author by their ID.

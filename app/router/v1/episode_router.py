@@ -2,7 +2,6 @@
 This module contains the routes for the
 management of the anime
 """
-
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 from app.schemas.episode_schema import EpisodeSchema
@@ -10,7 +9,7 @@ from app.services.episode_service import EpisodeService
 
 EpisodeRouter = APIRouter()
 
-@EpisodeRouter.get('/', response_model=List[EpisodeSchema])
+@EpisodeRouter.get('/', response_model = List[EpisodeSchema])
 def index(
     episode_service: EpisodeService = Depends(),
     arc: Optional[str] = None,
@@ -47,7 +46,8 @@ def index(
         start_index = start_index
     )
 
-@EpisodeRouter.get('/{episode_id}', response_model=EpisodeSchema)
+
+@EpisodeRouter.get('/{episode_id}', response_model = EpisodeSchema)
 def get(episode_id: int, episode_service: EpisodeService = Depends()):
     """
     Retrieves an episode by their ID.
@@ -61,9 +61,9 @@ def get(episode_id: int, episode_service: EpisodeService = Depends()):
     """
     return episode_service.get(episode_id)
 
-@EpisodeRouter.post('/', response_model=EpisodeSchema, status_code=status.HTTP_201_CREATED)
-def create(episode: EpisodeSchema,
-           episode_service: EpisodeService = Depends()):
+
+@EpisodeRouter.post('/', response_model = EpisodeSchema, status_code = status.HTTP_201_CREATED)
+def create(episode: EpisodeSchema, episode_service: EpisodeService = Depends()):
     """
     Creates a new episode.
 
@@ -76,8 +76,8 @@ def create(episode: EpisodeSchema,
     """
     return episode_service.create(episode)
 
-@EpisodeRouter.put('/{episode_id}',
-                   response_model=EpisodeSchema)
+
+@EpisodeRouter.put('/{episode_id}', response_model = EpisodeSchema)
 def update(episode_id: int, episode: EpisodeSchema, episode_service: EpisodeService = Depends()):
     """
     Updates an existing episode.
@@ -93,9 +93,10 @@ def update(episode_id: int, episode: EpisodeSchema, episode_service: EpisodeServ
     Raises:
         HTTPException: If the episode is not found.
     """
-    return episode_service.update(episode_id=episode_id, episode_body=episode)
+    return episode_service.update(episode_id = episode_id, episode_body = episode)
 
-@EpisodeRouter.delete('/{episode_id}', status_code=status.HTTP_204_NO_CONTENT)
+
+@EpisodeRouter.delete('/{episode_id}', status_code = status.HTTP_204_NO_CONTENT)
 def delete(episode_id: int, episode_service: EpisodeService = Depends()):
     """
     Deletes an episode by their ID.
@@ -112,6 +113,7 @@ def delete(episode_id: int, episode_service: EpisodeService = Depends()):
     """
     return episode_service.delete(episode_id)
 
+
 @EpisodeRouter.get('/{episode_id}/anime')
 def get_anime(episode_id: int, episode_service: EpisodeService = Depends()):
     """
@@ -125,6 +127,7 @@ def get_anime(episode_id: int, episode_service: EpisodeService = Depends()):
         AnimeSchema: The episode anime
     """
     return episode_service.get_anime(episode_id)
+
 
 @EpisodeRouter.get('/{episode_id}/authors')
 def get_author(episode_id: int, episode_service: EpisodeService = Depends()):

@@ -2,7 +2,6 @@
 This module contains the routes for the management
 of the anime
 """
-
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 from app.schemas.anime_schema import AnimeSchema
@@ -12,7 +11,7 @@ from app.services.anime_service import AnimeService
 
 AnimeRouter = APIRouter()
 
-@AnimeRouter.get('/', response_model=List[AnimeSchema])
+@AnimeRouter.get('/', response_model = List[AnimeSchema])
 def index(anime_service: AnimeService = Depends(),
           name: Optional[str] = None,
           category: Optional[str] = None,
@@ -23,7 +22,8 @@ def index(anime_service: AnimeService = Depends(),
     Retrieves a list of anime based on the provided filters.
 
     Args:
-        anime_service (AnimeService): The service to handle anime operations.
+        anime_service (AnimeService): The service to 
+        handle anime operations.
         name (Optional[str]): Filter by author name.
         category (Optional[str]): Filter by author category.
         release_date (Optional[str]): Filter by author release_date.
@@ -33,23 +33,31 @@ def index(anime_service: AnimeService = Depends(),
     Returns:
         List[AnimeSchema]: A list of anime matching the filters.
     """
-    return anime_service.list(name, category, release_date, page_size, start_index)
+    return anime_service.list(
+        name = name,
+        category = category,
+        release_date = release_date,
+        page_size = page_size,
+        start_index = start_index)
 
-@AnimeRouter.get('/{anime_id}', response_model=AnimeSchema)
+
+@AnimeRouter.get('/{anime_id}', response_model = AnimeSchema)
 def get(anime_id: int, anime_service: AnimeService = Depends()):
     """
     Retrieves an anime by their ID.
 
     Args:
         anime_id (int): The ID of the anime to retrieve.
-        anime_service (AnimeService): The service to handle anime operations.
+        anime_service (AnimeService): The service to handle
+        anime operations.
 
     Returns:
         AnimeSchema: The author with the specified ID.
     """
     return anime_service.get(anime_id)
 
-@AnimeRouter.post('/', response_model=AnimeSchema, status_code=status.HTTP_201_CREATED)
+
+@AnimeRouter.post('/', response_model = AnimeSchema, status_code=status.HTTP_201_CREATED)
 def create(anime: AnimeSchema, anime_service: AnimeService = Depends()):
     """
     Creates a new anime.
@@ -63,7 +71,8 @@ def create(anime: AnimeSchema, anime_service: AnimeService = Depends()):
     """
     return anime_service.create(anime)
 
-@AnimeRouter.put('/{anime_id}')
+
+@AnimeRouter.put('/{anime_id}', response_model = AnimeSchema)
 def update(anime_id: int, anime: AnimeSchema, anime_service: AnimeService = Depends()):
     """
     Updates an existing anime.
@@ -81,7 +90,8 @@ def update(anime_id: int, anime: AnimeSchema, anime_service: AnimeService = Depe
     """
     return anime_service.update(anime_id, anime)
 
-@AnimeRouter.delete('/{anime_id}', status_code=status.HTTP_204_NO_CONTENT)
+
+@AnimeRouter.delete('/{anime_id}', status_code = status.HTTP_204_NO_CONTENT)
 def delete(anime_id: int, anime_service: AnimeService = Depends()):
     """
     Deletes an anime by their ID.
@@ -98,7 +108,8 @@ def delete(anime_id: int, anime_service: AnimeService = Depends()):
     """
     return anime_service.delete(anime_id)
 
-@AnimeRouter.get('/{anime_id}/authors', response_model=List[AuthorSchema])
+
+@AnimeRouter.get('/{anime_id}/authors', response_model = List[AuthorSchema])
 def get_authors(anime_id: int, anime_service: AnimeService = Depends()):
     """
     Get author anime by their ID.
@@ -112,7 +123,8 @@ def get_authors(anime_id: int, anime_service: AnimeService = Depends()):
     """
     return anime_service.get_authors(anime_id)
 
-@AnimeRouter.get('/{anime_id}/episodes', response_model=List[EpisodeSchema])
+
+@AnimeRouter.get('/{anime_id}/episodes', response_model = List[EpisodeSchema])
 def get_episodes(anime_id: int, anime_service: AnimeService = Depends()):
     """
     Get anime episodes by their ID.
