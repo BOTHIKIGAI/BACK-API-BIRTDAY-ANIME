@@ -67,11 +67,11 @@ class AuthorService:
             pagination settings.
         """
         return self.author_repository.list(
-            name=name,
-            alias=alias,
-            birthday=birthday,
-            limit=page_size,
-            start=start_index)
+            name = name,
+            alias = alias,
+            birthday = birthday,
+            limit = page_size,
+            start = start_index)
 
 
     def get(self, author_id: int) -> Optional[Author]:
@@ -87,8 +87,8 @@ class AuthorService:
             related anime's and episodes.
         """
         if not self.author_exists(author_id):
-            raise HTTPException(status_code=404,
-                                detail='The author does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
 
         return self.author_repository.get(author_id)
 
@@ -105,9 +105,9 @@ class AuthorService:
             Author: The created author with the assigned ID.
         """
         return self.author_repository.create(
-            Author(name=author_body.name,
-                   alias=author_body.alias,
-                   birthday=author_body.birthday))
+            Author(name = author_body.name,
+                   alias = author_body.alias,
+                   birthday = author_body.birthday))
 
 
     def update(self, author_id: int, author_body: AuthorSchema) -> Author:
@@ -122,14 +122,14 @@ class AuthorService:
             Author: The updated author with the new data.
         """
         if not self.author_exists(author_id):
-            raise HTTPException(status_code=404,
-                                detail='The author does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
 
         return self.author_repository.update(
             author_id,
-            Author(name=author_body.name,
-                   alias=author_body.alias,
-                   birthday=author_body.birthday))
+            Author(name = author_body.name,
+                   alias = author_body.alias,
+                   birthday = author_body.birthday))
 
 
     def delete(self, author_id: int) -> None:
@@ -141,8 +141,8 @@ class AuthorService:
             author_id (int): The ID of the author to delete.
         """
         if not self.author_exists(author_id):
-            raise HTTPException(status_code=404,
-                                detail='The author does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
 
         self.author_repository.delete(author_id)
 
@@ -160,8 +160,8 @@ class AuthorService:
             author.
         """
         if not self.author_exists(author_id):
-            raise HTTPException(status_code=404,
-                                detail='The author does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
 
         return self.author_repository.get(author_id).anime
 
@@ -179,8 +179,8 @@ class AuthorService:
             author.
         """
         if not self.author_exists(author_id):
-            raise HTTPException(status_code=404,
-                                detail='The author does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
 
         return self.author_repository.get(author_id).episodes
 

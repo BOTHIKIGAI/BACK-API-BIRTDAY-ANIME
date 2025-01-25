@@ -74,13 +74,13 @@ class EpisodeService:
             given filters and pagination settings.
         """
         return self.episode_repository.list(
-            arc=arc,
-            temp=temp,
-            name=name,
-            episode=episode,
-            air_date=air_date,
-            limit=page_size,
-            start=start_index)
+            arc = arc,
+            temp = temp,
+            name = name,
+            episode = episode,
+            air_date = air_date,
+            limit = page_size,
+            start = start_index)
 
 
     def get(self, episode_id: int) -> Optional[Episode]:

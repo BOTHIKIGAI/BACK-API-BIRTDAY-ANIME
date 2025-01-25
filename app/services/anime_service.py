@@ -67,11 +67,11 @@ class AnimeService:
             filters and pagination settings.
         """
         return self.anime_repository.list(
-            name=name,
-            category=category,
-            release_date=release_date,
-            limit=page_size,
-            start=start_index)
+            name = name,
+            category = category,
+            release_date = release_date,
+            limit = page_size,
+            start = start_index)
 
 
     def get(self, anime_id: int) -> Optional[Anime]:
@@ -84,8 +84,8 @@ class AnimeService:
         """
 
         if not self.anime_exists(anime_id):
-            raise HTTPException(status_code=404,
-                                detail='The anime does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
 
         return self.anime_repository.get(anime_id)
 
@@ -103,9 +103,9 @@ class AnimeService:
             ID.
         """
         return self.anime_repository.create(
-            Anime(name=anime_body.name,
-                  category=anime_body.category,
-                  release_date=anime_body.release_date))
+            Anime(name = anime_body.name,
+                  category = anime_body.category,
+                  release_date = anime_body.release_date))
 
 
     def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
@@ -121,14 +121,14 @@ class AnimeService:
             Anime: The updated anime with the data.
         """
         if not self.anime_exists(anime_id):
-            raise HTTPException(status_code=404,
-                                detail='The anime does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
 
         return self.anime_repository.update(
             anime_id,
-            Anime(name=anime_body.name,
-                  category=anime_body.category,
-                  release_date=anime_body.release_date))
+            Anime(name = anime_body.name,
+                  category = anime_body.category,
+                  release_date = anime_body.release_date))
 
 
     def delete(self, anime_id: int) -> None:
@@ -140,8 +140,8 @@ class AnimeService:
             anime_id (int): The ID of the anime to delete.
         """
         if not self.anime_exists(anime_id):
-            raise HTTPException(status_code=404,
-                                detail='The anime does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
 
         return self.anime_repository.delete(anime_id)
 
@@ -157,8 +157,8 @@ class AnimeService:
             List[Author]: A list of authors associated with the anime.
         """
         if not self.anime_exists(anime_id):
-            raise HTTPException(status_code=404,
-                                detail='The anime does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
 
         return self.anime_repository.get(anime_id).authors
 
@@ -174,8 +174,8 @@ class AnimeService:
             List[Episode]: A list of episodes associated with the author.
         """
         if not self.anime_exists(anime_id):
-            raise HTTPException(status_code=404,
-                                detail='The anime does not exist.')
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
 
         return self.anime_repository.get(anime_id).episodes
 
