@@ -2,9 +2,9 @@
 This module contains the schema to define and
 validate the Episode data structure.
 """
-
 from datetime import date
 from pydantic import BaseModel
+
 
 class EpisodeSchema(BaseModel):
     """
@@ -35,3 +35,18 @@ class EpisodeSchema(BaseModel):
             should be populated from attributes.
         """
         from_attributes = True
+
+
+class EpisodeAuthorRelationSchema(BaseModel):
+    """
+    Represents the schema for the creation of a relationship
+    between an episode and an author.
+
+    Attributes:
+        episode_id (int): The ID of the episode.
+        author_id (int): The ID of the author.
+    """
+
+    # Attributes
+    episode_id: int
+    author_id: int
