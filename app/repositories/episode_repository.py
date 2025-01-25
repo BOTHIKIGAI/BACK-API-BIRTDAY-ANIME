@@ -8,6 +8,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session, lazyload
 from app.config.database import get_db_connection
 from app.models.tables.episode_models import Episode
+from app.models.relationships.episode_author_association import episode_author_association
 
 class EpisodeRepository:
     """
@@ -168,6 +169,25 @@ class EpisodeRepository:
         episode = self.db.query(Episode).filter_by(id = episode_id).first()
         self.db.delete(episode)
         self.db.commit()
+
+
+    def create_author_relation(self, episode_id: int, author_id: int):
+        insert_statement = episode_author_association.insert().values(author_id = author_id,
+                                                                      episode_id = episode_id)
+        """
+        Creates a relationship between an episode and an author.
+
+        Args:
+            episode_id (int): The ID of the episode.
+            author_id (int): The ID of the author.
+
+        Returns:
+            dict: A dictionary containing the episode_id and author_id.
+        """
+        self.db.execute(insert_statement)
+        self.db.commit()
+
+        return {"episode_id": episode_id, "author_id": author_id}
 
 
     def exists(self, episode_id: int) -> bool:
