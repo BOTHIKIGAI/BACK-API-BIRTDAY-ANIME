@@ -2,10 +2,10 @@
 This module contains the schema to define and
 validate the Author data structure.
 """
-
 from datetime import date
 from pydantic import BaseModel
 from typing import Optional
+
 
 class AuthorSchema(BaseModel):
     """
@@ -32,3 +32,18 @@ class AuthorSchema(BaseModel):
             should be populated from attributes.
         """
         from_attributes = True
+
+
+class AuthorAnimeRelationSchema(BaseModel):
+    """
+    Represents the schema for the creation of a relationship
+    between an author and an anime.
+
+    Attributes:
+        author_id (int): The ID of the author.
+        anime_id (int): The ID of the anime.
+    """
+
+    # Attributes
+    author_id: int
+    anime_id: int
