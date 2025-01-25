@@ -4,7 +4,7 @@ of the authors
 """
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
-from app.schemas.author_schema import AuthorSchema
+from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
 from app.schemas.anime_schema import AnimeSchema
 from app.schemas.episode_schema import EpisodeSchema
 from app.services.author_service import AuthorService
@@ -121,6 +121,27 @@ def get_anime(author_id: int, author_service: AuthorService = Depends()):
         AnimeSchema: The anime author
     """
     return author_service.get_anime(author_id)
+
+
+@AuthorRouter.post('/{author_id}/anime/{anime_id}',
+                   response_model = AuthorAnimeRelationSchema,
+                   status_code = status.HTTP_201_CREATED)
+def create_anime_relation(author_id: int,
+                          anime_id: int,
+                          author_service: AuthorService = Depends()):
+    """
+    Creates a relationship between an author and an anime.
+
+    Args:
+        author_id (int): The ID of the author.
+        anime_id (int): The ID of the anime.
+        author_service (AuthorService): The service to handle author operations.
+
+    Returns:
+        AnimeAuthorRelationSchema: The created relationship data.
+    """
+    return author_service.create_anime_relation(author_id = author_id,
+                                                anime_id = anime_id)
 
 
 @AuthorRouter.get('/{author_id}/episodes', response_model = List[EpisodeSchema])

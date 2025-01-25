@@ -8,6 +8,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session, lazyload
 from app.config.database import get_db_connection
 from app.models.tables.author_models import Author
+from app.models.relationships.anime_author_association import anime_author_association
 
 class AuthorRepository:
     """
@@ -25,6 +26,7 @@ class AuthorRepository:
     # Attributes
     db: Session
 
+
     # Constructor
     def __init__(self,
                  db: Session = Depends(get_db_connection)) -> None:
@@ -35,6 +37,7 @@ class AuthorRepository:
             db (Session): The database session used for querying the database.
         """
         self.db = db
+
 
     # Methods
     def list(self,
@@ -71,6 +74,7 @@ class AuthorRepository:
 
         return query.offset(start).limit(limit).all()
 
+
     def get(self, author_id: int) -> Optional[Author]:
         """
         Retrieves a specific author by ID, including
@@ -89,6 +93,7 @@ class AuthorRepository:
             lazyload(Author.anime),
             lazyload(Author.episodes)).filter_by(id = author_id).first()
 
+
     def create(self, author: Author) -> Author:
         """
         Creates a new author in the database and returns the
@@ -104,6 +109,7 @@ class AuthorRepository:
         self.db.commit()
         self.db.refresh(author)
         return author
+
 
     def update(self, author_id: int, author: Author) -> Author:
         """
@@ -123,6 +129,7 @@ class AuthorRepository:
         self.db.commit()
         return author
 
+
     def delete(self, author_id: Author) -> None:
         """
         Deletes an existing author in the database with
@@ -135,6 +142,25 @@ class AuthorRepository:
         self.db.delete(author)
         self.db.commit()
 
+
+    def create_anime_relation(self, author_id: int, anime_id: int):
+        """
+        Creates a relationship between an author and an anime.
+
+        Args:
+            author_id (int): The ID of the author.
+            anime_id (int): The ID of the anime.
+
+        Returns:
+            dict: A dictionary containing the author_id and anime_id.
+        """
+        insert_statement  = anime_author_association.insert().values(author_id = author_id,
+                                                                     anime_id = anime_id)
+        self.db.execute(insert_statement)
+        self.db.commit()
+
+        return {"author_id": author_id, "anime_id": anime_id}
+        
 
     def exists(self, author_id: int) -> bool:
         """

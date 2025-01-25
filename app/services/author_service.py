@@ -9,7 +9,8 @@ from app.models.tables.author_models import Author
 from app.models.tables.anime_models import Anime
 from app.models.tables.episode_models import Episode
 from app.repositories.author_repository import AuthorRepository
-from app.schemas.author_schema import AuthorSchema
+from app.services.anime_service import AnimeService
+from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
 
 class AuthorService:
     """
@@ -26,10 +27,12 @@ class AuthorService:
     """
     # Attributes
     author_repository: AuthorRepository
-
+    anime_service: AnimeService
 
     # Constructor
-    def __init__(self, author_repository: AuthorRepository = Depends()) -> None:
+    def __init__(self,
+                 author_repository: AuthorRepository = Depends(),
+                 anime_service: AnimeService = Depends()) -> None:
         """
         Initializes the AuthorService with a repository for accessing
         Author data.
@@ -40,6 +43,7 @@ class AuthorService:
         """
 
         self.author_repository = author_repository
+        self.anime_service = anime_service
 
 
     # Methods
@@ -164,6 +168,32 @@ class AuthorService:
                                 detail = 'The author does not exist.')
 
         return self.author_repository.get(author_id).anime
+
+
+    def create_anime_relation(self, author_id: int, anime_id: int) -> AuthorAnimeRelationSchema:
+        """
+        Creates a relationship between an author and an anime.
+
+        Args:
+            author_id (int): The ID of the author.
+            anime_id (int): The ID of the anime.
+
+        Returns:
+            AnimeAuthorRelationSchema: The created relationship data.
+
+        Raises:
+            HTTPException: If the author or anime does not exist.
+        """
+        if not self.author_exists(author_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The author does not exist.')
+
+        if not self.anime_service.anime_exists(anime_id):
+            raise HTTPException(status_code = 404,
+                                detail = 'The anime does not exist.')
+
+        return self.author_repository.create_anime_relation(author_id = author_id,
+                                                            anime_id = anime_id)
 
 
     def get_episodes(self, author_id: int) -> List[Episode]:
