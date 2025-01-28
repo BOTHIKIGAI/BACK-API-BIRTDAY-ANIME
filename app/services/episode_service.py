@@ -11,40 +11,51 @@ from app.models.tables.author_models import Author
 from app.repositories.episode_repository import EpisodeRepository
 from app.services.author_service import AuthorService
 from app.schemas.episode_schema import EpisodeSchema, EpisodeAuthorRelationSchema
+from app.factory.episode_factory import EpisodeFactory
 
 class EpisodeService:
     """
     Service class for managing Episode data.
 
     This class provides methods to interact with the EpisodeRepository,
-    including listing episode with optional filters, retrieving a
+    including listing episodes with optional filters, retrieving a
     specific episode by ID, creating a new episode, updating an
-    existing episode, and deleting an episode.
+    existing episode, deleting an episode, and creating relationships
+    between episodes and authors.
 
     Attributes:
-        episode_repository (EpisodeRepository): The repository
-        used for accessing Episode data.
+        episode_repository (EpisodeRepository): The repository used for
+        accessing Episode data.
+        episode_factory (EpisodeFactory): The factory used for creating
+        Episode instances.
+        author_service (AuthorService): The service used for accessing
+        Author data.
     """
 
     # Attributes
     episode_repository: EpisodeRepository
+    episode_factory: EpisodeFactory
     author_service: AuthorService
     
     # Constructor
     def __init__(self,
                  episode_repository: EpisodeRepository = Depends(),
+                 episode_factory: EpisodeFactory = Depends(),
                  author_service: AuthorService = Depends()) -> None:
         """
-        Initializes the EpisodeService with a repository for
-        accessing Episode data and a service for author logic.
+        Initializes the EpisodeService with repositories and services
+        for accessing Episode data and author logic.
 
         Args:
             episode_repository (EpisodeRepository): The repository
             used for accessing Episode data.
+            episode_factory (EpisodeFactory): The factory used for
+            creating Episode instances.
             author_service (AuthorService): The service used for
             accessing author logic.
         """
         self.episode_repository = episode_repository
+        self.episode_factory = episode_factory
         self.author_service = author_service
 
 
@@ -119,13 +130,8 @@ class EpisodeService:
         Returns:
             Episode: The created episode with the assigned ID.
         """
-        return self.episode_repository.create(
-            Episode(anime_id = episode_body.anime_id,
-                    arc = episode_body.arc,
-                    temp = episode_body.temp,
-                    name = episode_body.name,
-                    episode = episode_body.episode,
-                    air_date = episode_body.air_date))
+        episode = self.episode_factory.create(episode_body)
+        return self.episode_repository.create(episode)
 
 
     def update(self, episode_id: int, episode_body: EpisodeSchema) -> Episode:
@@ -145,15 +151,9 @@ class EpisodeService:
             raise HTTPException(status_code = 404,
                                 detail = 'The episode does not exist.')
 
-        return self.episode_repository.update(
-            episode_id=episode_id,
-            episode=Episode(
-                anime_id = episode_body.anime_id,
-                arc = episode_body.arc,
-                temp = episode_body.temp,
-                name = episode_body.name,
-                episode = episode_body.episode,
-                air_date = episode_body.air_date))
+        episode = self.episode_factory.create(episode_body)
+        return self.episode_repository.update(episode_id = episode_id,
+                                              episode = episode)
 
 
     def delete(self, episode_id: int) -> None:
