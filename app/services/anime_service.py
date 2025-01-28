@@ -2,13 +2,16 @@
 This module the service layer or business logic for anime
 """
 
+from datetime import datetime
 from typing import List, Optional
 from fastapi import Depends, HTTPException
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
+from app.factory.anime_factory import AnimeFactory
 from app.schemas.anime_schema import AnimeSchema
+from app.validation.anime_validator import AnimeValidator
 
 class AnimeService:
     """
@@ -29,7 +32,9 @@ class AnimeService:
 
 
     # Constructor
-    def __init__(self, anime_repository: AnimeRepository = Depends()) -> None:
+    def __init__(self,
+                 anime_repository: AnimeRepository = Depends(),
+                 anime_validator: AnimeValidator = Depends()) -> None:
         """
         Initialize the AnimeService with a repository for accessing
         Anime date.
@@ -39,6 +44,7 @@ class AnimeService:
             for accessing Anime data.
         """
         self.anime_repository = anime_repository
+        self.anime_validator = anime_validator
 
 
     # Methods
@@ -82,11 +88,7 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime.
         """
-
-        if not self.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
+        self.anime_validator.anime_exists(anime_id)
         return self.anime_repository.get(anime_id)
 
 
@@ -102,10 +104,9 @@ class AnimeService:
             Author: The created anime with the assigned
             ID.
         """
-        return self.anime_repository.create(
-            Anime(name = anime_body.name,
-                  category = anime_body.category,
-                  release_date = anime_body.release_date))
+        self.anime_validator.validate_anime(anime_body)
+        anime = AnimeFactory.create(anime_body)
+        return self.anime_repository.create(anime)
 
 
     def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
@@ -120,15 +121,10 @@ class AnimeService:
         Returns:
             Anime: The updated anime with the data.
         """
-        if not self.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
-        return self.anime_repository.update(
-            anime_id,
-            Anime(name = anime_body.name,
-                  category = anime_body.category,
-                  release_date = anime_body.release_date))
+        self.anime_validator.anime_exists(anime_id)
+        self.anime_validator.validate_anime(anime_body)
+        anime = AnimeFactory.create(anime_body)
+        return self.anime_repository.update(anime_id, anime)
 
 
     def delete(self, anime_id: int) -> None:
@@ -139,10 +135,7 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime to delete.
         """
-        if not self.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
+        self.anime_validator.anime_exists(anime_id)
         return self.anime_repository.delete(anime_id)
 
 
@@ -156,10 +149,7 @@ class AnimeService:
         Returns:
             List[Author]: A list of authors associated with the anime.
         """
-        if not self.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
+        self.anime_validator.anime_exists(anime_id)
         return self.anime_repository.get(anime_id).authors
 
 
@@ -173,21 +163,5 @@ class AnimeService:
         Returns:
             List[Episode]: A list of episodes associated with the author.
         """
-        if not self.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
+        self.anime_validator.anime_exists(anime_id)
         return self.anime_repository.get(anime_id).episodes
-
-
-    def anime_exists(self, anime_id: int) -> bool:
-        """
-        Checks if an anime with the given ID exists in the repository.
-        
-        Args:
-            anime_id (int): The ID of the anime to check.
-        
-        Returns:
-            bool: True if the anime exists, False otherwise.
-        """
-        return self.anime_repository.exists(anime_id)

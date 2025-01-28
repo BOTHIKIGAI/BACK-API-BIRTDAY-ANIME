@@ -26,6 +26,7 @@ class AnimeRepository:
     # Attributes
     db: Session
 
+
     # Constructor
     def __init__(self, db: Session = Depends(get_db_connection)) -> None:
         """
@@ -36,6 +37,7 @@ class AnimeRepository:
             the database.
         """
         self.db = db
+
 
     # Methods
     def list(self,
@@ -74,6 +76,7 @@ class AnimeRepository:
 
         return query.offset(start).limit(limit).all()
 
+
     def get(self, anime_id: int) -> Optional[Anime]:
         """
         Retrieves a specific anime by ID, include related author
@@ -91,6 +94,7 @@ class AnimeRepository:
             lazyload(Anime.authors),
             lazyload(Anime.episodes)).filter_by(id = anime_id).first()
 
+
     def create(self, anime: Anime) -> Anime:
         """
         Creates a new anime in the database and return the created Anime.
@@ -105,6 +109,7 @@ class AnimeRepository:
         self.db.commit()
         self.db.refresh(anime)
         return anime
+
 
     def update(self, anime_id: int, anime: Anime) -> Anime:
         """
@@ -124,6 +129,7 @@ class AnimeRepository:
         self.db.commit()
         return anime
 
+
     def delete(self, anime_id: int) -> None:
         """
         Deletes an existing anime in the database with the
@@ -136,9 +142,11 @@ class AnimeRepository:
         self.db.delete(anime)
         self.db.commit()
 
+
     def exists(self, anime_id: int) -> bool:
         """
         Check if the anime exists by means of the anime id.
+
         Args:
             anime_id(int): The id of the anime to consult.
 
@@ -146,4 +154,19 @@ class AnimeRepository:
             Returns query state.
         """
         query = self.db.query(Anime).filter(Anime.id == anime_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    def name_exists(self, anime_name: str) -> bool:
+        """
+        Check if the given anime name already exists in
+        the database.
+
+        Args:
+            name (str): The name of the anime to check.
+
+        Returns:
+            bool: True if the name is unique, False otherwise.
+        """
+        query = self.db.query(Anime).filter(Anime.name == anime_name)
         return self.db.query(query.exists()).scalar()
