@@ -2,16 +2,17 @@
 This module represents the service layer or business logic
 for author.
 """
-
 from typing import List, Optional
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from app.models.tables.author_models import Author
 from app.models.tables.anime_models import Anime
 from app.models.tables.episode_models import Episode
 from app.repositories.author_repository import AuthorRepository
-from app.services.anime_service import AnimeService
 from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
 from app.factory.author_factory import AuthorFactory
+from app.validation.author_validator import AuthorValidator
+from app.validation.anime_validator import AnimeValidator
+from app.services.anime_service import AnimeService
 
 class AuthorService:
     """
@@ -20,31 +21,50 @@ class AuthorService:
     This class provides methods to interact with the AuthorRepository,
     including listing authors with optional filters, retrieving
     a specific author by ID, creating a new author, updating an existing
-    author, and deleting an author.
+    author, deleting an author, and creating relationships between authors
+    and animes.
 
     Attributes:
         author_repository (AuthorRepository): The repository used for
         accessing Author data.
+        author_validator (AuthorValidator): The validator used for
+        validating Author data.
+        anime_service (AnimeService): The service used for accessing
+        Anime data.
+        anime_validator (AnimeValidator): The validator used for
+        validating Anime data.
     """
     # Attributes
     author_repository: AuthorRepository
+    author_validator: AuthorValidator
     anime_service: AnimeService
+    anime_validator: AnimeValidator
+    
 
     # Constructor
     def __init__(self,
                  author_repository: AuthorRepository = Depends(),
-                 anime_service: AnimeService = Depends()) -> None:
+                 author_validator: AuthorValidator = Depends(),
+                 anime_service: AnimeService = Depends(),
+                 anime_validator: AnimeValidator = Depends()) -> None:
         """
-        Initializes the AuthorService with a repository for accessing
-        Author data.
+        Initializes the AuthorService with repositories and validators
+        for accessing and validating Author and Anime data.
 
         Args:
-            author_repository (AuthorRepository): The  repository used
+            author_repository (AuthorRepository): The repository used
             for accessing Author data.
+            author_validator (AuthorValidator): The validator used for
+            validating Author data.
+            anime_service (AnimeService): The service used for accessing
+            Anime data.
+            anime_validator (AnimeValidator): The validator used for
+            validating Anime data.
         """
-
         self.author_repository = author_repository
+        self.author_validator = author_validator
         self.anime_service = anime_service
+        self.anime_validator = anime_validator
 
 
     # Methods
@@ -91,10 +111,7 @@ class AuthorService:
             Author: The author with the given ID, including
             related anime's and episodes.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
+        self.author_validator.author_exists(author_id)
         return self.author_repository.get(author_id)
 
 
@@ -109,7 +126,8 @@ class AuthorService:
         Returns:
             Author: The created author with the assigned ID.
         """
-        author = AuthorFactory(author_body)
+        self.author_validator.validate_author(author_body)
+        author = AuthorFactory.create(author_body)
         return self.author_repository.create(author)
 
 
@@ -124,11 +142,9 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
-        author = AuthorFactory(author_body)
+        self.author_validator.author_exists(author_id)
+        self.author_validator.validate_author(author_body)
+        author = AuthorFactory.create(author_body)
         return self.author_repository.update(author_id, author)
 
 
@@ -140,10 +156,7 @@ class AuthorService:
         Args:
             author_id (int): The ID of the author to delete.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
+        self.author_validator.author_exists(author_id)
         self.author_repository.delete(author_id)
 
 
@@ -159,10 +172,7 @@ class AuthorService:
             List[Anime]: A list of anime's associated with the
             author.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
+        self.author_validator.author_exists(author_id)
         return self.author_repository.get(author_id).anime
 
 
@@ -180,14 +190,8 @@ class AuthorService:
         Raises:
             HTTPException: If the author or anime does not exist.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
-        if not self.anime_service.anime_exists(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
-
+        self.author_validator.author_exists(author_id)
+        self.anime_validator.anime_exists(anime_id)
         return self.author_repository.create_anime_relation(author_id = author_id,
                                                             anime_id = anime_id)
 
@@ -204,8 +208,5 @@ class AuthorService:
             List[Episode]: A list of episodes associated with the
             author.
         """
-        if not self.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
+        self.author_validator.author_exists(author_id)
         return self.author_repository.get(author_id).episodes
