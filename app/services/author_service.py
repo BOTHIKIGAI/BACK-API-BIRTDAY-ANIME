@@ -11,6 +11,7 @@ from app.models.tables.episode_models import Episode
 from app.repositories.author_repository import AuthorRepository
 from app.services.anime_service import AnimeService
 from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
+from app.factory.author_factory import AuthorFactory
 
 class AuthorService:
     """
@@ -108,10 +109,8 @@ class AuthorService:
         Returns:
             Author: The created author with the assigned ID.
         """
-        return self.author_repository.create(
-            Author(name = author_body.name,
-                   alias = author_body.alias,
-                   birthday = author_body.birthday))
+        author = AuthorFactory(author_body)
+        return self.author_repository.create(author)
 
 
     def update(self, author_id: int, author_body: AuthorSchema) -> Author:
@@ -129,11 +128,8 @@ class AuthorService:
             raise HTTPException(status_code = 404,
                                 detail = 'The author does not exist.')
 
-        return self.author_repository.update(
-            author_id,
-            Author(name = author_body.name,
-                   alias = author_body.alias,
-                   birthday = author_body.birthday))
+        author = AuthorFactory(author_body)
+        return self.author_repository.update(author_id, author)
 
 
     def delete(self, author_id: int) -> None:
@@ -213,16 +209,3 @@ class AuthorService:
                                 detail = 'The author does not exist.')
 
         return self.author_repository.get(author_id).episodes
-
-
-    def author_exists(self, author_id: int) -> bool:
-        """
-        Checks if an author with the given ID exists in the repository.
-        
-        Args:
-            author_id (int): The ID of the author to check.
-        
-        Returns:
-            bool: True if the author exists, False otherwise.
-        """
-        return self.author_repository.exists(author_id)
