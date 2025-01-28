@@ -31,6 +31,21 @@ class AnimeValidator:
 
 
     # High Level Functions
+    def validate_anime(self, anime_body: AnimeSchema):
+        """
+        Validates the given anime data.
+
+        Args:
+            anime_body (AnimeSchema): The anime data to validate.
+
+        Returns:
+            bool: True if the anime data is valid, False otherwise.
+        """
+        self.validate_name(anime_body.name)
+        self.validate_release_date(anime_body.release_date)
+
+
+    # Low Level Functions
     def anime_exists(self, anime_id: int):
         """
         Checks if an anime with the given ID exists.
@@ -49,21 +64,6 @@ class AnimeValidator:
                                 detail = 'The anime does not exist.')
 
 
-    def validate_anime(self, anime_body: AnimeSchema):
-        """
-        Validates the given anime data.
-
-        Args:
-            anime_body (AnimeSchema): The anime data to validate.
-
-        Returns:
-            bool: True if the anime data is valid, False otherwise.
-        """
-        self.validate_name(anime_body.name)
-        self.validate_release_date(anime_body.release_date)
-
-
-    # Low Level Functions 
     def validate_name(self, anime_name: str):
         """
         Validates if the given anime name already exists.
