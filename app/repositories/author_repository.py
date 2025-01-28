@@ -160,7 +160,7 @@ class AuthorRepository:
         self.db.commit()
 
         return {"author_id": author_id, "anime_id": anime_id}
-        
+
 
     def exists(self, author_id: int) -> bool:
         """
@@ -172,4 +172,19 @@ class AuthorRepository:
             Returns query state.
         """
         query = self.db.query(Author).filter(Author.id == author_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    def name_exists(self, author_name: str) -> bool:
+        """
+        Check if the given author name already exists in
+        the database.
+
+        Args:
+            name (str): The name of the author to check.
+
+        Returns:
+            bool: True if the author is unique, False otherwise.
+        """
+        query = self.db.query(Author).filter(Author.name == author_name)
         return self.db.query(query.exists()).scalar()
