@@ -20,6 +20,6 @@ class EpisodeFactory:
         return Episode(anime_id = episode_body.anime_id,
                        arc = episode_body.arc,
                        temp = episode_body.temp,
-                       name = episode_body.temp,
+                       name = episode_body.name,
                        episode = episode_body.episode,
                        air_date = episode_body.air_date)
