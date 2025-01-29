@@ -47,6 +47,7 @@ class EpisodeRepository:
 
     # Methods
     def list(self,
+             anime_id: Optional[int],
              arc: Optional[str],
              temp: Optional[int],
              name: Optional[str],
@@ -55,11 +56,11 @@ class EpisodeRepository:
              limit: Optional[int],
              start: Optional[int]) -> List[Episode]:
         """
-        Retrieves a list of episodes with optional
-        filters for name, category and release
-        date and supports pagination.
+        Retrieves a list of episodes with optional filters for
+        name, category, release, etc. Supports pagination.
         
         Args:
+            anime_id (Optional[int]): The anime id to filter by.
             arc (Optional[str]): The name of the arc to filter by.
             temp (Optional[str]): The name of the temp to filter by.
             name (Optional[str]): The name of the name episode to filter by.
@@ -74,6 +75,9 @@ class EpisodeRepository:
         """
 
         query = self.db.query(Episode)
+
+        if anime_id:
+            query = query.filter_by(anime_id = anime_id)
 
         if arc:
             query = query.filter_by(arc = arc)
@@ -190,7 +194,7 @@ class EpisodeRepository:
         return {"episode_id": episode_id, "author_id": author_id}
 
 
-    def exists(self, episode_id: int) -> bool:
+    def exists_by_id(self, episode_id: int) -> bool:
         """
         Check if the episode exists by means of the episode id.
         Args:
@@ -200,4 +204,55 @@ class EpisodeRepository:
             Returns query state.
         """
         query = self.db.query(Episode).filter(Episode.id == episode_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    def exists_episodes_for_anime(self, anime_id: int) -> bool:
+        """
+        Checks if there are any episodes for the given anime.
+
+        Args:
+            anime_id (int): The ID of the anime to check.
+
+        Returns:
+            bool: True if there are episodes for the anime,
+            False otherwise.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id == anime_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    def exists_episode_number(self, anime_id: int, episode: int) -> bool:
+        """
+        Checks if a specific episode number is already registered
+        for a given anime.
+
+        Args:
+            anime_id (int): The ID of the anime.
+            episode_number (int): The episode number to check.
+
+        Returns:
+            bool: True if the episode number is already registered
+            for the anime, False otherwise.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id == anime_id,
+                                              Episode.episode == episode)
+        return self.db.query(query.exists()).scalar()
+
+
+    def exists_episode_name(self, anime_id: int, name: int) -> bool:
+        """
+        Checks if a specific episode name is already registered
+        for a given anime.
+
+        Args:
+            anime_id (int): The ID of the anime.
+            episode_name (str): The name of the episode to check.
+
+        Returns:
+            bool: True if the episode name is already registered
+            for the anime, False otherwise.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id == anime_id,
+                                              Episode.name == name)
         return self.db.query(query.exists()).scalar()

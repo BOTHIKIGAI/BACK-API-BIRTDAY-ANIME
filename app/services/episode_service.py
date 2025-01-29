@@ -9,9 +9,10 @@ from app.models.tables.episode_models import Episode
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.repositories.episode_repository import EpisodeRepository
-from app.services.author_service import AuthorService
 from app.schemas.episode_schema import EpisodeSchema, EpisodeAuthorRelationSchema
 from app.factory.episode_factory import EpisodeFactory
+from app.validation.episode_validator import EpisodeValidator
+from app.validation.author_validator import AuthorValidator
 
 class EpisodeService:
     """
@@ -28,20 +29,22 @@ class EpisodeService:
         accessing Episode data.
         episode_factory (EpisodeFactory): The factory used for creating
         Episode instances.
-        author_service (AuthorService): The service used for accessing
+        author_validator (AuthorValidator): The service used for accessing
         Author data.
     """
 
     # Attributes
     episode_repository: EpisodeRepository
     episode_factory: EpisodeFactory
-    author_service: AuthorService
+    episode_validator: EpisodeValidator
+    author_validator: AuthorValidator
     
     # Constructor
     def __init__(self,
                  episode_repository: EpisodeRepository = Depends(),
                  episode_factory: EpisodeFactory = Depends(),
-                 author_service: AuthorService = Depends()) -> None:
+                 episode_validator: EpisodeValidator = Depends(),
+                 author_validator: AuthorValidator = Depends()) -> None:
         """
         Initializes the EpisodeService with repositories and services
         for accessing Episode data and author logic.
@@ -51,16 +54,18 @@ class EpisodeService:
             used for accessing Episode data.
             episode_factory (EpisodeFactory): The factory used for
             creating Episode instances.
-            author_service (AuthorService): The service used for
+            author_validator (AuthorValidator): The service used for
             accessing author logic.
         """
         self.episode_repository = episode_repository
         self.episode_factory = episode_factory
-        self.author_service = author_service
+        self.episode_validator = episode_validator
+        self.author_validator = author_validator
 
 
     # Methods
     def list(self,
+             anime_id: Optional[int] = None,
              arc: Optional[str] = None,
              temp: Optional[int] = None,
              name: Optional[str] = None,
@@ -68,29 +73,8 @@ class EpisodeService:
              air_date: Optional[str] = None,
              page_size: Optional[int] = 100,
              start_index: Optional[int] = None) -> Optional[List[Episode]]:
-        """
-        Retrieves a list of episodes with optional filters
-        for arc, temp, episode, air_date and supports pagination.
-
-        Args:
-            arc (Optional[str]): The arc of the episode to
-            filter by.
-            temp (Optional[int]): The alias of the episode 
-            to filter by.
-            name (Optional[str]): The name of the episode.
-            episode (Optional[int]): The episode to filter by.
-            air_date (Optional[str]): The air_date of the
-            episode to filter by.
-            page_size (Optional[int]): The maximum number
-            of results to return. Defaults to 100.
-            start_index (Optional[int]): The index of the
-            first result to return. Defaults to 0.
-
-        Returns:
-            List[Episode]: A list of episode that match the
-            given filters and pagination settings.
-        """
         return self.episode_repository.list(
+            anime_id = anime_id,
             arc = arc,
             temp = temp,
             name = name,
@@ -102,20 +86,18 @@ class EpisodeService:
 
     def get(self, episode_id: int) -> Optional[Episode]:
         """
-        Retrieves a specific episode by ID, including related
-        author and anime.
+        Retrieves a specific episode by ID.
 
         Args:
             episode_id (int): The ID of the episode to retrieve.
 
         Returns:
-            Episode: The Episode with the given ID, including
-            related author and anime.
-        """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
+            Episode: The episode object if found.
 
+        Raises:
+            HTTPException: If the episode does not exist (status code 404).
+        """
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id)
 
 
@@ -124,12 +106,16 @@ class EpisodeService:
         Creates a new episode in the database.
 
         Args:
-            episode_body (EpisodeSchema): The data of the author
-            to create.
+            episode_body (EpisodeSchema): The data of the
+            episode to create.
 
         Returns:
             Episode: The created episode with the assigned ID.
+
+        Raises:
+            HTTPException: If the episode data is invalid.
         """
+        self.episode_validator.validate_episode(episode_body)
         episode = self.episode_factory.create(episode_body)
         return self.episode_repository.create(episode)
 
@@ -141,16 +127,18 @@ class EpisodeService:
 
         Args:
             episode_id (int): The ID of the episode to update.
-            episode_body (EpisodeSchema): The updated data of
-            the episode.
+            episode_body (EpisodeSchema): The data of the episode
+            to update.
 
         Returns:
-            Author: The updated episode with the new data.
-        """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
+            Episode: The updated episode with the new data.
 
+        Raises:
+            HTTPException: If the episode does not exist or the
+            episode data is invalid.
+        """
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.episode_validator.validate_episode(episode_body)
         episode = self.episode_factory.create(episode_body)
         return self.episode_repository.update(episode_id = episode_id,
                                               episode = episode)
@@ -163,48 +151,48 @@ class EpisodeService:
 
         Args:
             episode_id (int): The ID of the episode to delete.
-        """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
 
+        Raises:
+            HTTPException: If the episode does not exist (status code 404).
+        """
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
         self.episode_repository.delete(episode_id)
 
 
     def get_anime(self, episode_id: int) -> Anime:
         """
-        Retrieves the Anime associated with a specific episode.
+        Retrieves the anime associated with a specific episode
+        by episode ID.
 
         Args:
             episode_id (int): The ID of the episode.
 
         Returns:
-            Anime: A anime associated with the episode.
-        """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
+            Anime: The anime associated with the episode.
 
+        Raises:
+            HTTPException: If the episode does not exist (status code 404).
+        """
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id).anime
 
 
     def get_author(self, episode_id: int) -> List[Author]:
         """
-        Retrieves the list of author/s
-        associated with a specific
-        episode.
+        Retrieves the list of authors associated with a
+        specific episode.
 
         Args:
             episode_id (int): The ID of the episode.
 
         Returns:
-            List[Episode]: A list of author/s associated with the
-            episode.
-        """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
+            List[Author]: A list of authors associated with
+            the episode.
 
+        Raises:
+            HTTPException: If the episode does not exist (status code 404).
+        """
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id).authors
 
 
@@ -222,28 +210,9 @@ class EpisodeService:
             EpisodeAuthorRelationSchema: The created relationship data.
 
         Raises:
-            HTTPException: If the episode or author does not exist.
+            HTTPException: If the episode or author does not exist (status code 404).
         """
-        if not self.episode_exists(episode_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The episode does not exist.')
-
-        if not self.author_service.author_exists(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
-
+        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.author_validator.author_exists(author_id)
         return self.episode_repository.create_author_relation(episode_id = episode_id,
                                                               author_id = author_id)
-
-
-    def episode_exists(self, episode_id: int) -> bool:
-        """
-        Checks if an episode with the given ID exists in the repository.
-        
-        Args:
-            episode_id (int): The ID of the episode to check.
-        
-        Returns:
-            bool: True if the episode exists, False otherwise.
-        """
-        return self.episode_repository.exists(episode_id)
