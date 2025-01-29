@@ -12,6 +12,7 @@ EpisodeRouter = APIRouter()
 @EpisodeRouter.get('/', response_model = List[EpisodeSchema])
 def index(
     episode_service: EpisodeService = Depends(),
+    anime_id: Optional[int] = None,
     arc: Optional[str] = None,
     temp: Optional[int] = None,
     name: Optional[str] = None,
@@ -37,6 +38,7 @@ def index(
         List[EpisodeSchema]: A list of episode matching the filters.
     """
     return episode_service.list(
+        anime_id = anime_id,
         arc = arc,
         temp = temp,
         name = name,
