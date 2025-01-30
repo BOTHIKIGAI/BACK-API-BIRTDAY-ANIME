@@ -9,7 +9,8 @@ class AnimeFactory:
     Creates an Anime instance from an AnimeSchema.
 
     Args:
-        anime_body (AnimeSchema): The schema containing the anime data.
+        anime_body (AnimeSchema): The schema
+        containing the anime data.
 
     Returns:
         Anime: The created Anime instance.

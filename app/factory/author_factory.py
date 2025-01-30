@@ -9,7 +9,8 @@ class AuthorFactory:
     Creates an Author instance from an AuthorSchema.
 
     Args:
-        author_body (AuthorSchema): The schema containing the author data.
+        author_body (AuthorSchema): The schema
+        containing the author data.
 
     Returns:
         Author: The created Author instance.
