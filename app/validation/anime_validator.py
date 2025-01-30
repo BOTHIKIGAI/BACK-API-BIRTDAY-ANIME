@@ -46,7 +46,7 @@ class AnimeValidator:
 
 
     # Low Level Functions
-    def validate_exists_by_id(self, anime_id: int):
+    def validate_exists_by_id(self, anime_id: int) -> None:
         """
         Checks if an anime with the given ID exists.
 
@@ -64,7 +64,22 @@ class AnimeValidator:
                                 detail = 'The anime does not exist.')
 
 
-    def validate_unique_name(self, anime_name: str):
+    def validate_is_related_to_episode(self, anime_id: int) -> None:
+        """
+        Validates if the anime is related to any episode.
+
+        Args:
+            anime_id (int): The ID of the anime to validate.
+
+        Raises:
+            HTTPException: If the anime is related to any episode (status code 409).
+        """
+        if self.anime_repository.is_related_to_episode(anime_id):
+            raise HTTPException(status_code = 409,
+                                detail = "The anime is releated to episode")
+
+
+    def validate_unique_name(self, anime_name: str) -> None:
         """
         Validates if the given anime name already exists.
 
@@ -82,7 +97,7 @@ class AnimeValidator:
                                 detail = "There is an anime with that name")
 
 
-    def validate_release_date_not_in_future(self, release_date: str):
+    def validate_release_date_not_in_future(self, release_date: str) -> None:
         """
         Validates if the given release date is not in the future.
 
