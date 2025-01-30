@@ -186,13 +186,17 @@ class AuthorService:
             anime_id (int): The ID of the anime.
 
         Returns:
-            AnimeAuthorRelationSchema: The created relationship data.
+            AuthorAnimeRelationSchema: The created relationship data.
 
         Raises:
-            HTTPException: If the author or anime does not exist.
+            HTTPException: If the author does not exist (status code 404).
+            HTTPException: If the anime does not exist (status code 404).
+            HTTPException: If the relationship already exists (status code 409).
         """
         self.author_validator.validate_exists_by_id(author_id)
         self.anime_validator.validate_exists_by_id(anime_id)
+        self.author_validator.validate_has_relationship_with_anime(author_id = author_id,
+                                                                   anime_id = anime_id)
         return self.author_repository.create_anime_relation(author_id = author_id,
                                                             anime_id = anime_id)
 
