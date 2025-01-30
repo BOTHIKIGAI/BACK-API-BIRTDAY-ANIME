@@ -59,7 +59,7 @@ class AnimeValidator:
         Returns:
             bool: True if the anime exists, False otherwise.
         """
-        if not self.anime_repository.exists(anime_id):
+        if not self.anime_repository.exists_by_id(anime_id):
             raise HTTPException(status_code = 404,
                                 detail = 'The anime does not exist.')
 
@@ -77,7 +77,7 @@ class AnimeValidator:
         Returns:
             bool: True if the name is valid, False otherwise.
         """
-        if self.anime_repository.name_exists(anime_name):
+        if self.anime_repository.is_name_taken(anime_name):
             raise HTTPException(status_code = 409,
                                 detail = "There is an anime with that name")
 

@@ -2,7 +2,6 @@
 This module represents the abstraction of the
 Anime's data access logic.
 """
-
 from typing import List, Optional
 from fastapi import Depends
 from sqlalchemy.orm import Session, lazyload
@@ -143,7 +142,7 @@ class AnimeRepository:
         self.db.commit()
 
 
-    def exists(self, anime_id: int) -> bool:
+    def exists_by_id(self, anime_id: int) -> bool:
         """
         Check if the anime exists by means of the anime id.
 
@@ -157,7 +156,7 @@ class AnimeRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def name_exists(self, anime_name: str) -> bool:
+    def is_name_taken(self, anime_name: str) -> bool:
         """
         Check if the given anime name already exists in
         the database.
