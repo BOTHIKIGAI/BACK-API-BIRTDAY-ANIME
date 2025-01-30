@@ -140,7 +140,7 @@ class AuthorValidator:
         Raises:
             HTTPException: If the author is related to any anime (status code 409).
         """
-        if self.author_repository.is_related_to_anime(author_id):
+        if self.author_repository.is_related_to_animes(author_id):
             raise HTTPException(status_code = 409,
                                 detail = "The author is releated to anime")
 
@@ -155,6 +155,23 @@ class AuthorValidator:
         Raises:
             HTTPException: If the author is related to any episode (status code 409).
         """
-        if self.author_repository.is_related_to_episode(author_id):
+        if self.author_repository.is_related_to_episodes(author_id):
             raise HTTPException(status_code = 409,
                                 detail = "The author is releated to episode")
+
+
+    def validate_has_relationship_with_anime(self, author_id: int, anime_id: int):
+        """
+        Validates if the relationship between the author and anime already exists.
+
+        Args:
+            author_id (int): The ID of the author.
+            anime_id (int): The ID of the anime.
+
+        Raises:
+            HTTPException: If the relationship already exists (status code 409).
+        """
+        if self.author_repository.has_relationship_with_anime(author_id = author_id,
+                                                              anime_id = anime_id):
+            raise HTTPException(status_code = 409,
+                                detail = "The relationship between the author and anime already exists.")
