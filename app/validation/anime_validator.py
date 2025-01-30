@@ -31,7 +31,7 @@ class AnimeValidator:
 
 
     # High Level Functions
-    def validate_anime(self, anime_body: AnimeSchema):
+    def validate_data(self, anime_body: AnimeSchema) -> None:
         """
         Validates the given anime data.
 
@@ -41,12 +41,12 @@ class AnimeValidator:
         Returns:
             bool: True if the anime data is valid, False otherwise.
         """
-        self.validate_name(anime_body.name)
-        self.validate_release_date(anime_body.release_date)
+        self.validate_unique_name(anime_body.name)
+        self.validate_release_date_not_in_future(anime_body.release_date)
 
 
     # Low Level Functions
-    def anime_exists(self, anime_id: int):
+    def validate_exists_by_id(self, anime_id: int):
         """
         Checks if an anime with the given ID exists.
 
@@ -64,7 +64,7 @@ class AnimeValidator:
                                 detail = 'The anime does not exist.')
 
 
-    def validate_name(self, anime_name: str):
+    def validate_unique_name(self, anime_name: str):
         """
         Validates if the given anime name already exists.
 
@@ -82,7 +82,7 @@ class AnimeValidator:
                                 detail = "There is an anime with that name")
 
 
-    def validate_release_date(self, release_date: str):
+    def validate_release_date_not_in_future(self, release_date: str):
         """
         Validates if the given release date is not in the future.
 
@@ -97,5 +97,5 @@ class AnimeValidator:
         """
         current_date = datetime.now().date()
         if release_date > current_date:
-            raise HTTPException(status_code=409,
-                                detail="The date of publication should not be in the future.")
+            raise HTTPException(status_code = 409,
+                                detail = "The date of publication should not be in the future.")
