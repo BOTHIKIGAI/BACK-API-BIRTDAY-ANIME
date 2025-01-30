@@ -38,8 +38,9 @@ class AnimeValidator:
         Args:
             anime_body (AnimeSchema): The anime data to validate.
 
-        Returns:
-            bool: True if the anime data is valid, False otherwise.
+        Raises:
+            HTTPException: If the anime name already exists (status code 409).
+            HTTPException: If the release date is in the future (status code 409).
         """
         self.validate_unique_name(anime_body.name)
         self.validate_release_date_not_in_future(anime_body.release_date)

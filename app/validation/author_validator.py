@@ -39,10 +39,14 @@ class AuthorValidator:
         Validates the given author data.
 
         Args:
-            author_body (AuthorSchema): The author data to validate.
+            author_body (AuthorSchema): The author data
+            to validate.
 
-        Returns:
-            bool: True if the author data is valid, False otherwise.
+        Raises:
+            HTTPException: If the author name already
+            exists (status code 409).
+            HTTPException: If the birthday date is in
+            the future (status code 409).
         """
         self.validate_name(author_body.name)
         self.validate_birthday_date(author_body.birthday)
