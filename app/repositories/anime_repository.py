@@ -144,13 +144,13 @@ class AnimeRepository:
 
     def exists_by_id(self, anime_id: int) -> bool:
         """
-        Check if the anime exists by means of the anime id.
+        Checks if the anime exists by means of the anime ID.
 
         Args:
-            anime_id(int): The id of the anime to consult.
+            anime_id (int): The ID of the anime to check.
 
         Returns:
-            Returns query state.
+            bool: True if the anime exists, False otherwise.
         """
         query = self.db.query(Anime).filter(Anime.id == anime_id)
         return self.db.query(query.exists()).scalar()

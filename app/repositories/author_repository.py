@@ -164,12 +164,13 @@ class AuthorRepository:
 
     def exists_by_id(self, author_id: int) -> bool:
         """
-        Check if the author exists by means of the author id.
+        Checks if the author exists by means of the author ID.
+
         Args:
-            author_id(int): The id of the author to consult.
+            author_id (int): The ID of the author to check.
 
         Returns:
-            Returns query state.
+            bool: True if the author exists, False otherwise.
         """
         query = self.db.query(Author).filter(Author.id == author_id)
         return self.db.query(query.exists()).scalar()

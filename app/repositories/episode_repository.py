@@ -201,7 +201,7 @@ class EpisodeRepository:
             episode_id(int): The id of the episode to consult.
 
         Returns:
-            Returns query state.
+            bool: True if the episode exists, False otherwise.
         """
         query = self.db.query(Episode).filter(Episode.id == episode_id)
         return self.db.query(query.exists()).scalar()
