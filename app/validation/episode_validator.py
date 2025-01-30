@@ -71,7 +71,7 @@ class EpisodeValidator:
         Raises:
             HTTPException: If the anime does not have any episodes (status code 404).
         """
-        return self.episode_repository.exists_episodes_for_anime(anime_id)
+        return self.episode_repository.anime_has_episodes(anime_id)
 
 
     def validate_episode_exists_by_id(self, episode_id: int) -> None:
@@ -118,6 +118,6 @@ class EpisodeValidator:
         Raises:
             HTTPException: If the episode name is already registered (status code 409).
         """
-        if self.episode_repository.exists_episode_name(anime_id = anime_id, name = name):
+        if self.episode_repository.is_episode_name_taken(anime_id = anime_id, name = name):
             raise HTTPException(status_code=409,
                                 detail = "There is an episode with that name.")

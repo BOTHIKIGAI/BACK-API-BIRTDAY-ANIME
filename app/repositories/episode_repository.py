@@ -207,7 +207,7 @@ class EpisodeRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def exists_episodes_for_anime(self, anime_id: int) -> bool:
+    def anime_has_episodes(self, anime_id: int) -> bool:
         """
         Checks if there are any episodes for the given anime.
 
@@ -222,7 +222,7 @@ class EpisodeRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def exists_episode_number(self, anime_id: int, episode: int) -> bool:
+    def is_episode_number_taken_in_season(self, anime_id: int, episode: int, temp: str) -> bool:
         """
         Checks if a specific episode number is already registered
         for a given anime.
@@ -236,11 +236,12 @@ class EpisodeRepository:
             for the anime, False otherwise.
         """
         query = self.db.query(Episode).filter(Episode.anime_id == anime_id,
+                                              Episode.temp == temp,
                                               Episode.episode == episode)
         return self.db.query(query.exists()).scalar()
 
 
-    def exists_episode_name(self, anime_id: int, name: int) -> bool:
+    def is_episode_name_taken(self, anime_id: int, name: int) -> bool:
         """
         Checks if a specific episode name is already registered
         for a given anime.
