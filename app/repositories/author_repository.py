@@ -162,7 +162,7 @@ class AuthorRepository:
         return {"author_id": author_id, "anime_id": anime_id}
 
 
-    def exists(self, author_id: int) -> bool:
+    def exists_by_id(self, author_id: int) -> bool:
         """
         Check if the author exists by means of the author id.
         Args:
@@ -175,7 +175,7 @@ class AuthorRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def name_exists(self, author_name: str) -> bool:
+    def is_name_taken(self, author_name: str) -> bool:
         """
         Check if the given author name already exists in
         the database.

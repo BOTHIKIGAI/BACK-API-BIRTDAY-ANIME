@@ -59,7 +59,7 @@ class AuthorValidator:
         Returns:
             bool: True if the author exists, False otherwise.
         """
-        if not self.author_repository.exists(author_id):
+        if not self.author_repository.exists_by_id(author_id):
             raise HTTPException(status_code = 404,
                                 detail = 'The author does not exist.')
 
@@ -77,7 +77,7 @@ class AuthorValidator:
         Returns:
             bool: True if the name is valid, False otherwise.
         """
-        if self.author_repository.name_exists(author_name):
+        if self.author_repository.is_name_taken(author_name):
             raise HTTPException(status_code = 409,
                                 detail = "There is an auhor with that name")
 
