@@ -157,6 +157,7 @@ class AuthorService:
             author_id (int): The ID of the author to delete.
         """
         self.author_validator.validate_exists_by_id(author_id)
+        self.author_validator.validate_delete(author_id)
         self.author_repository.delete(author_id)
 
 
