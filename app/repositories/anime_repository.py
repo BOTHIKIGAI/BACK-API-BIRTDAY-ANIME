@@ -156,6 +156,20 @@ class AnimeRepository:
         return self.db.query(query.exists()).scalar()
 
 
+    def is_related_to_episode(self, anime_id: int) -> bool:
+        """
+        Checks if the anime is related to any episode.
+
+        Args:
+            anime_id (int): The ID of the anime to check.
+
+        Returns:
+            bool: True if the anime is related to any episode, False otherwise.
+        """
+        query = self.db.query(Anime).filter(Anime.id == anime_id).join(Anime.episodes)
+        return self.db.query(query.exists()).scalar()
+
+
     def is_name_taken(self, anime_name: str) -> bool:
         """
         Check if the given anime name already exists in
