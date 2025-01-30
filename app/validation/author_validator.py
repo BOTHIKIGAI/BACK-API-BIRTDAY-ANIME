@@ -48,6 +48,28 @@ class AuthorValidator:
         self.validate_birthday_date(author_body.birthday)
 
 
+    def validate_delete(self, author_id: int) -> None:
+        """
+        Validates if an author can be deleted.
+
+        This function checks if the author is related to
+        any anime or episode.
+        If the author is related to any anime or episode,
+        it raises an HTTPException.
+
+        Args:
+            author_id (int): The ID of the author to validate.
+
+        Raises:
+            HTTPException: If the author is related to
+            any anime (status code 409).
+            HTTPException: If the author is related to
+            any episode (status code 409).
+        """
+        self.validate_is_related_to_anime(author_id)
+        self.validate_is_related_to_episode(author_id)
+
+
     # Low Level Functions
     def validate_exists_by_id(self, author_id: int) -> bool:
         """
@@ -100,5 +122,35 @@ class AuthorValidator:
         """
         current_date = datetime.now().date()
         if birthday_date > current_date:
-            raise HTTPException(status_code=409,
-                                detail="The birthday date should not be in the future.")
+            raise HTTPException(status_code = 409,
+                                detail = "The birthday date should not be in the future.")
+
+
+    def validate_is_related_to_anime(self, author_id: int) -> None:
+        """
+        Validates if the author is related to any anime.
+
+        Args:
+            author_id (int): The ID of the author to validate.
+
+        Raises:
+            HTTPException: If the author is related to any anime (status code 409).
+        """
+        if self.author_repository.is_related_to_anime(author_id):
+            raise HTTPException(status_code = 409,
+                                detail = "The author is releated to anime")
+
+
+    def validate_is_related_to_episode(self, author_id: int) -> None:
+        """
+        Validates if the author is related to any episode.
+
+        Args:
+            author_id (int): The ID of the author to validate.
+
+        Raises:
+            HTTPException: If the author is related to any episode (status code 409).
+        """
+        if self.author_repository.is_related_to_episode(author_id):
+            raise HTTPException(status_code = 409,
+                                detail = "The author is releated to episode")
