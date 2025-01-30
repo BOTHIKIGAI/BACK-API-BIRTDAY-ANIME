@@ -175,6 +175,34 @@ class AuthorRepository:
         return self.db.query(query.exists()).scalar()
 
 
+    def is_related_to_anime(self, author_id: int) -> bool:
+        """
+        Checks if the author is related to any anime.
+
+        Args:
+            author_id (int): The ID of the author to check.
+
+        Returns:
+            bool: True if the author is related to any anime, False otherwise.
+        """
+        query = self.db.query(Author).filter(Author.id == author_id).join(Author.anime)
+        return self.db.query(query.exists()).scalar()
+
+
+    def is_related_to_episode(self, author_id: int) -> bool:
+        """
+        Checks if the author is related to any anime.
+
+        Args:
+            author_id (int): The ID of the author to check.
+
+        Returns:
+            bool: True if the author is related to any episode, False otherwise.
+        """
+        query = self.db.query(Author).filter(Author.id == author_id).join(Author.episodes)
+        return self.db.query(query.exists()).scalar()
+
+
     def is_name_taken(self, author_name: str) -> bool:
         """
         Check if the given author name already exists in
