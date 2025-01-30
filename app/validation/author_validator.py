@@ -34,7 +34,7 @@ class AuthorValidator:
 
 
     # High Level Functions
-    def validate_author(self, author_body: AuthorSchema):
+    def validate_data(self, author_body: AuthorSchema):
         """
         Validates the given author data.
 
@@ -49,13 +49,16 @@ class AuthorValidator:
 
 
     # Low Level Functions
-    def author_exists(self, author_id: int) -> bool:
+    def validate_exists_by_id(self, author_id: int) -> bool:
         """
         Checks if an author with the given ID exists in the repository.
         
         Args:
             author_id (int): The ID of the author to check.
-        
+
+        Raises:
+            HTTPException: If the anime does not exist (status code 404).
+
         Returns:
             bool: True if the author exists, False otherwise.
         """
@@ -64,7 +67,7 @@ class AuthorValidator:
                                 detail = 'The author does not exist.')
 
 
-    def validate_name(self, author_name: str):
+    def validate_unique_name(self, author_name: str):
         """
         Validates if the given author name already exists.
 
@@ -82,7 +85,7 @@ class AuthorValidator:
                                 detail = "There is an auhor with that name")
 
 
-    def validate_birthday_date(self, birthday_date: str):
+    def validate_birthday_date_not_in_future(self, birthday_date: str):
         """
         Validates if the given birthday date is not in the future.
 

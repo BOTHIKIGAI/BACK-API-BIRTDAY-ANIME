@@ -111,7 +111,7 @@ class AuthorService:
             Author: The author with the given ID, including
             related anime's and episodes.
         """
-        self.author_validator.author_exists(author_id)
+        self.author_validator.validate_exists_by_id(author_id)
         return self.author_repository.get(author_id)
 
 
@@ -126,7 +126,7 @@ class AuthorService:
         Returns:
             Author: The created author with the assigned ID.
         """
-        self.author_validator.validate_author(author_body)
+        self.author_validator.validate_data(author_body)
         author = AuthorFactory.create(author_body)
         return self.author_repository.create(author)
 
@@ -142,8 +142,8 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
-        self.author_validator.author_exists(author_id)
-        self.author_validator.validate_author(author_body)
+        self.author_validator.validate_exists_by_id(author_id)
+        self.author_validator.validate_data(author_body)
         author = AuthorFactory.create(author_body)
         return self.author_repository.update(author_id, author)
 
@@ -156,7 +156,7 @@ class AuthorService:
         Args:
             author_id (int): The ID of the author to delete.
         """
-        self.author_validator.author_exists(author_id)
+        self.author_validator.validate_exists_by_id(author_id)
         self.author_repository.delete(author_id)
 
 
@@ -172,7 +172,7 @@ class AuthorService:
             List[Anime]: A list of anime's associated with the
             author.
         """
-        self.author_validator.author_exists(author_id)
+        self.author_validator.validate_exists_by_id(author_id)
         return self.author_repository.get(author_id).anime
 
 
@@ -190,8 +190,8 @@ class AuthorService:
         Raises:
             HTTPException: If the author or anime does not exist.
         """
-        self.author_validator.author_exists(author_id)
-        self.anime_validator.anime_exists(anime_id)
+        self.author_validator.validate_exists_by_id(author_id)
+        self.anime_validator.validate_exists_by_id(anime_id)
         return self.author_repository.create_anime_relation(author_id = author_id,
                                                             anime_id = anime_id)
 
@@ -208,5 +208,5 @@ class AuthorService:
             List[Episode]: A list of episodes associated with the
             author.
         """
-        self.author_validator.author_exists(author_id)
+        self.author_validator.validate_exists_by_id(author_id)
         return self.author_repository.get(author_id).episodes
