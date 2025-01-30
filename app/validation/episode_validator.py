@@ -41,7 +41,7 @@ class EpisodeValidator:
 
 
     # High Level Function
-    def validate_episode(self, episode: EpisodeSchema) -> None:
+    def validate_data(self, episode: EpisodeSchema) -> None:
         """
         Validates the given episode data.
 
@@ -53,10 +53,10 @@ class EpisodeValidator:
             HTTPException: If the episode number is already registered (status code 409).
             HTTPException: If the episode name is already registered (status code 409).
         """
-        self.validate_air_date_in_future(air_date = episode.air_date)
+        self.validate_air_date_not_in_future(air_date = episode.air_date)
         
         if self.validate_anime_has_episodes(episode.anime_id):
-            self.validate_exists_episode_name(anime_id = episode.anime_id,
+            self.validate_unique_episode_name(anime_id = episode.anime_id,
                                               name = episode.name)
 
 
@@ -74,7 +74,7 @@ class EpisodeValidator:
         return self.episode_repository.anime_has_episodes(anime_id)
 
 
-    def validate_episode_exists_by_id(self, episode_id: int) -> None:
+    def validate_exists_by_id(self, episode_id: int) -> None:
         """
         Validates if an episode with the given ID exists.
 
@@ -89,7 +89,7 @@ class EpisodeValidator:
                                 detail = 'The episode does not exist.')
 
 
-    def validate_air_date_in_future(self, air_date: str) -> None:
+    def validate_air_date_not_in_future(self, air_date: str) -> None:
         """
         Validates that the air date of an episode is not in
         the future.
@@ -107,7 +107,7 @@ class EpisodeValidator:
                                 detail = "The air date should not be in the future.")
 
 
-    def validate_exists_episode_name(self, anime_id: int, name: str) -> None:
+    def validate_unique_episode_name(self, anime_id: int, name: str) -> None:
         """
         Validates if an episode name is already registered for a given anime.
 

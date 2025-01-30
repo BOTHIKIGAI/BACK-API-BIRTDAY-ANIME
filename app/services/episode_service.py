@@ -97,7 +97,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode does not exist (status code 404).
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.episode_validator.validate_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id)
 
 
@@ -115,7 +115,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode data is invalid.
         """
-        self.episode_validator.validate_episode(episode_body)
+        self.episode_validator.validate_data(episode_body)
         episode = self.episode_factory.create(episode_body)
         return self.episode_repository.create(episode)
 
@@ -137,8 +137,8 @@ class EpisodeService:
             HTTPException: If the episode does not exist or the
             episode data is invalid.
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
-        self.episode_validator.validate_episode(episode_body)
+        self.episode_validator.validate_exists_by_id(episode_id)
+        self.episode_validator.validate_data(episode_body)
         episode = self.episode_factory.create(episode_body)
         return self.episode_repository.update(episode_id = episode_id,
                                               episode = episode)
@@ -155,7 +155,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode does not exist (status code 404).
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.episode_validator.validate_exists_by_id(episode_id)
         self.episode_repository.delete(episode_id)
 
 
@@ -173,7 +173,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode does not exist (status code 404).
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.episode_validator.validate_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id).anime
 
 
@@ -192,7 +192,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode does not exist (status code 404).
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
+        self.episode_validator.validate_exists_by_id(episode_id)
         return self.episode_repository.get(episode_id).authors
 
 
@@ -212,7 +212,7 @@ class EpisodeService:
         Raises:
             HTTPException: If the episode or author does not exist (status code 404).
         """
-        self.episode_validator.validate_episode_exists_by_id(episode_id)
-        self.author_validator.author_exists(author_id)
+        self.episode_validator.validate_exists_by_id(episode_id)
+        self.author_validator.validate_exists_by_id(author_id)
         return self.episode_repository.create_author_relation(episode_id = episode_id,
                                                               author_id = author_id)
