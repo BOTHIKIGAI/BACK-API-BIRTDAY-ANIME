@@ -162,6 +162,22 @@ class AuthorRepository:
         return {"author_id": author_id, "anime_id": anime_id}
 
 
+    def has_relationship_with_anime(self, author_id: int, anime_id: int) -> bool:
+        """
+        Checks if the relationship between the author and anime exists.
+
+        Args:
+            author_id (int): The ID of the author.
+            anime_id (int): The ID of the anime.
+
+        Returns:
+            bool: True if the relationship exists, False otherwise.
+        """
+        query = self.db.query(anime_author_association).filter(anime_author_association.c.author_id == author_id,
+                                                               anime_author_association.c.anime_id == anime_id)
+        return self.db.query(query.exists()).scalar()
+
+
     def exists_by_id(self, author_id: int) -> bool:
         """
         Checks if the author exists by means of the author ID.
@@ -176,7 +192,7 @@ class AuthorRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def is_related_to_anime(self, author_id: int) -> bool:
+    def is_related_to_animes(self, author_id: int) -> bool:
         """
         Checks if the author is related to any anime.
 
@@ -190,7 +206,7 @@ class AuthorRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def is_related_to_episode(self, author_id: int) -> bool:
+    def is_related_to_episodes(self, author_id: int) -> bool:
         """
         Checks if the author is related to any anime.
 
