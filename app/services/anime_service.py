@@ -136,6 +136,7 @@ class AnimeService:
             anime_id (int): The ID of the anime to delete.
         """
         self.anime_validator.validate_exists_by_id(anime_id)
+        self.anime_validator.validate_is_related_to_episode(anime_id)
         return self.anime_repository.delete(anime_id)
 
 
