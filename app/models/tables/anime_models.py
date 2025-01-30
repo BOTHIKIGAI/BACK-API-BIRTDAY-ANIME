@@ -1,7 +1,6 @@
 """
 This module contains the model of the Anime table.
 """
-
 from sqlalchemy import Column, BigInteger, String, Date, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -23,19 +22,17 @@ class Anime(Base):
     __tablename__ = 'anime'
 
     # Columns
-    id = Column(BigInteger, primary_key=True, index=True, nullable=False)
-    name = Column(String, index=True, nullable=False, unique=True)
-    category = Column(String, index=True, nullable=False)
-    release_date = Column(Date, index=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    id = Column(BigInteger, primary_key = True, index = True, nullable = False)
+    name = Column(String, index = True, nullable = False, unique = True)
+    category = Column(String, index = True, nullable = False)
+    release_date = Column(Date, index = True, nullable = False)
+    created_at = Column(DateTime(timezone = True), server_default = func.now(), nullable = False)
+    updated_at = Column(DateTime(timezone = True), onupdate = func.now())
 
     # Relationships
-    authors = relationship(
-        "Author",
-        secondary=anime_author_association,
-        back_populates="anime")
+    authors = relationship("Author",
+                           secondary = anime_author_association,
+                           back_populates = "anime")
 
-    episodes = relationship(
-        "Episode",
-        back_populates="anime")
+    episodes = relationship("Episode",
+                            back_populates = "anime")

@@ -1,7 +1,6 @@
 """
 This module contains the model of the Author table.
 """
-
 from sqlalchemy import Column, BigInteger, String, Date, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -24,22 +23,18 @@ class Author(Base):
     __tablename__ = 'author'
 
     # Columns
-    id = Column(BigInteger, primary_key=True, index=True, nullable=False)
-    name = Column(String, index=True, nullable=False, unique=True)
-    alias = Column(String, index=True, nullable=True)
-    birthday = Column(Date, index=True, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    id = Column(BigInteger, primary_key = True, index = True, nullable = False)
+    name = Column(String, index = True, nullable = False, unique = True)
+    alias = Column(String, index = True, nullable = True)
+    birthday = Column(Date, index = True, nullable = True)
+    created_at = Column(DateTime(timezone = True), server_default = func.now(), nullable = False)
+    updated_at = Column(DateTime(timezone = True), onupdate = func.now())
 
     # Relationships
-    anime = relationship(
-        "Anime",
-        secondary=anime_author_association,
-        back_populates="authors"
-    )
+    anime = relationship("Anime",
+                         secondary = anime_author_association,
+                         back_populates = "authors")
 
-    episodes = relationship(
-        "Episode",
-        secondary=episode_author_association,
-        back_populates="authors"
-    )
+    episodes = relationship("Episode",
+                            secondary = episode_author_association,
+                            back_populates = "authors")

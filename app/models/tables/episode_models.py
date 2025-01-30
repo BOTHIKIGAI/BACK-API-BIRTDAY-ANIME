@@ -1,10 +1,7 @@
 """
 This module contains the modul of the Episode table.
 """
-
-from sqlalchemy import (
-    Column, BigInteger, String,
-    Integer, Date, ForeignKey, DateTime)
+from sqlalchemy import Column, BigInteger, String, Integer, Date, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.config.database import Base
@@ -27,22 +24,20 @@ class Episode(Base):
     __tablename__ = 'episode'
 
     # Columns
-    id = Column(BigInteger, primary_key=True, index=True, nullable=False)
-    anime_id = Column(BigInteger, ForeignKey('anime.id'), nullable=False)
-    arc = Column(String, index=True, nullable=True)
-    temp = Column(Integer, index=True, nullable=False)
-    name = Column(String, index=True, nullable=False)
-    episode = Column(Integer, index=True, nullable=False)
-    air_date = Column(Date, index=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    id = Column(BigInteger, primary_key = True, index = True, nullable = False)
+    anime_id = Column(BigInteger, ForeignKey('anime.id'), nullable = False)
+    arc = Column(String, index = True, nullable = True)
+    temp = Column(Integer, index = True, nullable = False)
+    name = Column(String, index = True, nullable = False)
+    episode = Column(Integer, index = True, nullable = False)
+    air_date = Column(Date, index = True, nullable = False)
+    created_at = Column(DateTime(timezone = True), server_default = func.now(), nullable = False)
+    updated_at = Column(DateTime(timezone = True), onupdate = func.now())
 
     # Relationships
-    authors = relationship(
-        "Author",
-        secondary=episode_author_association,
-        back_populates="episodes")
+    authors = relationship("Author",
+                           secondary = episode_author_association,
+                           back_populates = "episodes")
 
-    anime = relationship(
-        "Anime",
-        back_populates="episodes")
+    anime = relationship("Anime",
+                         back_populates = "episodes")
