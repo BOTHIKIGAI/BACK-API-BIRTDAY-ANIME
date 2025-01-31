@@ -9,9 +9,9 @@ from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
-from app.factory.anime_factory import AnimeFactory
+from app.factories.anime_factory import AnimeFactory
 from app.schemas.anime_schema import AnimeSchema
-from app.validation.anime_validator import AnimeValidator
+from app.validations.anime_validator import AnimeValidator
 
 class AnimeService:
     """
