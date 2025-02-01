@@ -27,7 +27,8 @@ class AnimeSchema(BaseModel):
     @field_validator('name', 'category', mode = 'before')
     def sanitize_string(cls, v):
         """
-        Sanitizes string fields by stripping whitespace and converting to lowercase.
+        Sanitizes string fields by stripping whitespace
+        and converting to lowercase.
 
         Args:
             v (str): The string value to sanitize.
