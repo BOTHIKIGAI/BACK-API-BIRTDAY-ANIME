@@ -57,7 +57,7 @@ def get(anime_id: int, anime_service: AnimeService = Depends()):
     return anime_service.get(anime_id)
 
 
-@AnimeRouter.post('/', response_model = AnimeSchema, status_code=status.HTTP_201_CREATED)
+@AnimeRouter.post('/', response_model = AnimeSchema, status_code = status.HTTP_201_CREATED)
 def create(anime: AnimeSchema, anime_service: AnimeService = Depends()):
     """
     Creates a new anime.
