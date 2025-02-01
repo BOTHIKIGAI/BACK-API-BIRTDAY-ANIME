@@ -28,7 +28,8 @@ class AuthorSchema(BaseModel):
     @field_validator('name', 'alias', mode = 'before')
     def sanitize_string(cls, v):
         """
-        Sanitizes string fields by stripping whitespace and converting to lowercase.
+        Sanitizes string fields by stripping whitespace
+        and converting to lowercase.
 
         Args:
             v (str): The string value to sanitize.
