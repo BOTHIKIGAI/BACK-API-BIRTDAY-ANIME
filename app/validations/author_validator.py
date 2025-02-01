@@ -48,8 +48,8 @@ class AuthorValidator:
             HTTPException: If the birthday date is in
             the future (status code 409).
         """
-        self.validate_name(author_body.name)
-        self.validate_birthday_date(author_body.birthday)
+        self.validate_unique_name(author_body.name)
+        self.validate_birthday_date_not_in_future(author_body.birthday)
 
 
     def validate_delete(self, author_id: int) -> None:
