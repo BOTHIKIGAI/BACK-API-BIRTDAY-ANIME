@@ -88,7 +88,7 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime.
         """
-        self.anime_validator.validate_exists_by_id(anime_id)
+        self.anime_validator.validate_data_for_get(anime_id)
         return self.anime_repository.get(anime_id)
 
 
@@ -104,7 +104,7 @@ class AnimeService:
             Author: The created anime with the assigned
             ID.
         """
-        self.anime_validator.validate_data(anime_body)
+        self.anime_validator.validate_data_for_create(anime_body)
         anime = AnimeFactory.create(anime_body)
         return self.anime_repository.create(anime)
 
@@ -121,8 +121,7 @@ class AnimeService:
         Returns:
             Anime: The updated anime with the data.
         """
-        self.anime_validator.validate_exists_by_id(anime_id)
-        self.anime_validator.validate_data(anime_body)
+        self.anime_validator.validate_data_for_update(anime_id = anime_id, anime_body = anime_body)
         anime = AnimeFactory.create(anime_body)
         return self.anime_repository.update(anime_id, anime)
 
@@ -135,8 +134,7 @@ class AnimeService:
         Args:
             anime_id (int): The ID of the anime to delete.
         """
-        self.anime_validator.validate_exists_by_id(anime_id)
-        self.anime_validator.validate_is_related_to_episode(anime_id)
+        self.anime_validator.validate_data_for_delete(anime_id)
         return self.anime_repository.delete(anime_id)
 
 
@@ -150,7 +148,7 @@ class AnimeService:
         Returns:
             List[Author]: A list of authors associated with the anime.
         """
-        self.anime_validator.validate_exists_by_id(anime_id)
+        self.anime_validator.validate_data_for_get(anime_id)
         return self.anime_repository.get(anime_id).authors
 
 
@@ -164,5 +162,5 @@ class AnimeService:
         Returns:
             List[Episode]: A list of episodes associated with the author.
         """
-        self.anime_validator.validate_exists_by_id(anime_id)
+        self.anime_validator.validate_data_for_get(anime_id)
         return self.anime_repository.get(anime_id).episodes
