@@ -4,7 +4,7 @@ Anime's data access logic.
 """
 from typing import List, Optional
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload
+from sqlalchemy.orm import Session, lazyload, Query
 from app.config.database import get_db_connection
 from app.models.tables.anime_models import Anime
 
@@ -76,6 +76,7 @@ class AnimeRepository:
         return query.offset(start).limit(limit).all()
 
 
+    # CRUD Methods
     def get(self, anime_id: int) -> Optional[Anime]:
         """
         Retrieves a specific anime by ID, include related author
@@ -142,6 +143,7 @@ class AnimeRepository:
         self.db.commit()
 
 
+    # Operations Methods
     def exists_by_id(self, anime_id: int) -> bool:
         """
         Checks if the anime exists by means of the anime ID.
@@ -170,16 +172,45 @@ class AnimeRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def is_name_taken(self, anime_name: str) -> bool:
+    def is_name_taken_for_create(self, anime_name: str) -> bool:
         """
-        Check if the given anime name already exists in
-        the database.
+        Checks if the given anime name already exists in the database.
 
         Args:
-            name (str): The name of the anime to check.
+            anime_name (str): The name of the anime to check.
 
         Returns:
-            bool: True if the name is unique, False otherwise.
+            bool: True if the name is taken, False otherwise.
         """
-        query = self.db.query(Anime).filter(Anime.name == anime_name)
+        query = self.is_name_taken(anime_name)
         return self.db.query(query.exists()).scalar()
+
+
+    def is_name_taken_for_update(self, exclude_id: int, anime_name: str) -> bool:
+        """
+        Checks if the given anime name already exists in the database,
+        excluding the current anime.
+
+        Args:
+            exclude_id (int): The ID of the current anime.
+            anime_name (str): The name of the anime to check.
+
+        Returns:
+            bool: True if the name is taken, False otherwise.
+        """
+        query = self.is_name_taken(anime_name).filter(Anime.id != exclude_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    # Base Query
+    def is_name_taken(self, anime_name: str) -> Query:
+        """
+        Base query to check if an anime name is taken.
+
+        Args:
+            anime_name (str): The name of the anime to check.
+
+        Returns:
+            Query: The query object to check if the name is taken.
+        """
+        return self.db.query(Anime).filter(Anime.name == anime_name)
