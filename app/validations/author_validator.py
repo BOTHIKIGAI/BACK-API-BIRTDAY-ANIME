@@ -34,48 +34,70 @@ class AuthorValidator:
 
 
     # High Level Functions
-    def validate_data(self, author_body: AuthorSchema):
+    def validate_data_for_get(self, author_id: int) -> None:
         """
-        Validates the given author data.
-
-        Args:
-            author_body (AuthorSchema): The author data
-            to validate.
-
-        Raises:
-            HTTPException: If the author name already
-            exists (status code 409).
-            HTTPException: If the birthday date is in
-            the future (status code 409).
-        """
-        self.validate_unique_name(author_body.name)
-        self.validate_birthday_date_not_in_future(author_body.birthday)
-
-
-    def validate_delete(self, author_id: int) -> None:
-        """
-        Validates if an author can be deleted.
-
-        This function checks if the author is related to
-        any anime or episode.
-        If the author is related to any anime or episode,
-        it raises an HTTPException.
+        Validates the given author ID for retrieval.
 
         Args:
             author_id (int): The ID of the author to validate.
 
         Raises:
-            HTTPException: If the author is related to
-            any anime (status code 409).
-            HTTPException: If the author is related to
-            any episode (status code 409).
+            HTTPException: If the author does not exist (status code 404).
         """
+        self.validate_exists_by_id(author_id)
+
+
+    def validate_data_for_create(self, author_body: AuthorSchema) -> None:
+        """
+        Validates the given author data for creation.
+
+        Args:
+            author_body (AuthorSchema): The author data to validate.
+
+        Raises:
+            HTTPException: If the author name already exists (status code 409).
+            HTTPException: If the birthday date is in the future (status code 409).
+        """
+        self.validate_unique_name_for_create(author_body.name)
+        self.validate_birthday_date_not_in_future(author_body.birthday)
+
+
+    def validate_data_for_update(self, exclude_id: int, author_body: AuthorSchema) -> None:
+        """
+        Validates the given author data for update.
+
+        Args:
+            author_id (int): The ID of the author to validate.
+            author_body (AuthorSchema): The author data to validate.
+
+        Raises:
+            HTTPException: If the author does not exist (status code 404).
+            HTTPException: If the author name already exists (status code 409).
+            HTTPException: If the birthday date is in the future (status code 409).
+        """
+        self.validate_aunique_name_for_update(exclude_id = exclude_id, author_name = author_body.name)
+        self.validate_birthday_date_not_in_future(author_body.birthday)
+
+
+    def validate_data_for_delete(self, author_id: int) -> None:
+        """
+        Validates the given author ID for deletion.
+
+        Args:
+            author_id (int): The ID of the author to validate.
+
+        Raises:
+            HTTPException: If the author does not exist (status code 404).
+            HTTPException: If the author is related to any anime (status code 409).
+            HTTPException: If the author is related to any episode (status code 409).
+        """
+        self.validate_exists_by_id(author_id)
         self.validate_is_related_to_anime(author_id)
         self.validate_is_related_to_episode(author_id)
 
 
     # Low Level Functions
-    def validate_exists_by_id(self, author_id: int) -> bool:
+    def validate_exists_by_id(self, author_id: int) -> None:
         """
         Checks if an author with the given ID exists in the repository.
         
@@ -84,34 +106,43 @@ class AuthorValidator:
 
         Raises:
             HTTPException: If the anime does not exist (status code 404).
-
-        Returns:
-            bool: True if the author exists, False otherwise.
         """
         if not self.author_repository.exists_by_id(author_id):
             raise HTTPException(status_code = 404,
                                 detail = 'The author does not exist.')
 
 
-    def validate_unique_name(self, author_name: str):
+    def validate_unique_name_for_create(self, author_name: str) -> None:
         """
-        Validates if the given author name already exists.
+        Validates if the given author name is unique for creation.
 
         Args:
             author_name (str): The name of the author to validate.
 
         Raises:
             HTTPException: If the author name already exists (status code 409).
-
-        Returns:
-            bool: True if the name is valid, False otherwise.
         """
-        if self.author_repository.is_name_taken(author_name):
-            raise HTTPException(status_code = 409,
-                                detail = "There is an auhor with that name")
+        if self.author_repository.is_name_taken_for_create(author_name):
+            self.raise_exception_if_unique_name()
 
 
-    def validate_birthday_date_not_in_future(self, birthday_date: str):
+    def validate_aunique_name_for_update(self, exclude_id: int, author_name: str) -> None:
+        """
+        Validates if the given author name is unique for update,
+        excluding the current author.
+
+        Args:
+            exclude_id (int): The ID of the current author.
+            author_name (str): The name of the author to validate.
+
+        Raises:
+            HTTPException: If the author name already exists (status code 409).
+        """
+        if self.author_repository.is_name_taken_for_update(exclude_id = exclude_id, author_name = author_name):
+            self.raise_exception_if_unique_name()
+
+
+    def validate_birthday_date_not_in_future(self, birthday_date: str) -> None:
         """
         Validates if the given birthday date is not in the future.
 
@@ -120,9 +151,6 @@ class AuthorValidator:
 
         Raises:
             HTTPException: If the birthday date is in the future (status code 409).
-
-        Returns:
-            bool: True if the  birthday date is valid, False otherwise.
         """
         current_date = datetime.now().date()
         if birthday_date > current_date:
@@ -160,7 +188,7 @@ class AuthorValidator:
                                 detail = "The author is releated to episode")
 
 
-    def validate_has_relationship_with_anime(self, author_id: int, anime_id: int):
+    def validate_has_relationship_with_anime(self, author_id: int, anime_id: int) -> None:
         """
         Validates if the relationship between the author and anime already exists.
 
@@ -175,3 +203,18 @@ class AuthorValidator:
                                                               anime_id = anime_id):
             raise HTTPException(status_code = 409,
                                 detail = "The relationship between the author and anime already exists.")
+
+
+    # Exceptions
+    def raise_exception_if_unique_name(self) -> None:
+        """
+        Raises an HTTPException if the given author name already exists.
+
+        Args:
+            author_name (str): The name of the author to check.
+
+        Raises:
+            HTTPException: If the author name already exists (status code 409).
+        """
+        raise HTTPException(status_code = 409,
+                            detail = "There is an auhor with that name")
