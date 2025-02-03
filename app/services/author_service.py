@@ -111,7 +111,7 @@ class AuthorService:
             Author: The author with the given ID, including
             related anime's and episodes.
         """
-        self.author_validator.validate_exists_by_id(author_id)
+        self.author_validator.validate_data_for_get(author_id)
         return self.author_repository.get(author_id)
 
 
@@ -126,7 +126,7 @@ class AuthorService:
         Returns:
             Author: The created author with the assigned ID.
         """
-        self.author_validator.validate_data(author_body)
+        self.author_validator.validate_data_for_create(author_body)
         author = AuthorFactory.create(author_body)
         return self.author_repository.create(author)
 
@@ -142,10 +142,9 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
-        self.author_validator.validate_exists_by_id(author_id)
-        self.author_validator.validate_data(author_body)
+        self.author_validator.validate_data_for_update(exclude_id = author_id, author_body = author_body)
         author = AuthorFactory.create(author_body)
-        return self.author_repository.update(author_id, author)
+        return self.author_repository.update(author_id = author_id, author = author)
 
 
     def delete(self, author_id: int) -> None:
@@ -156,8 +155,7 @@ class AuthorService:
         Args:
             author_id (int): The ID of the author to delete.
         """
-        self.author_validator.validate_exists_by_id(author_id)
-        self.author_validator.validate_delete(author_id)
+        self.author_validator.validate_data_for_delete(author_id)
         self.author_repository.delete(author_id)
 
 
@@ -173,7 +171,7 @@ class AuthorService:
             List[Anime]: A list of anime's associated with the
             author.
         """
-        self.author_validator.validate_exists_by_id(author_id)
+        self.author_validator.validate_data_for_get(author_id)
         return self.author_repository.get(author_id).anime
 
 
@@ -193,12 +191,10 @@ class AuthorService:
             HTTPException: If the anime does not exist (status code 404).
             HTTPException: If the relationship already exists (status code 409).
         """
-        self.author_validator.validate_exists_by_id(author_id)
-        self.anime_validator.validate_exists_by_id(anime_id)
-        self.author_validator.validate_has_relationship_with_anime(author_id = author_id,
-                                                                   anime_id = anime_id)
-        return self.author_repository.create_anime_relation(author_id = author_id,
-                                                            anime_id = anime_id)
+        self.author_validator.validate_data_for_get(author_id)
+        self.anime_validator.validate_data_for_get(anime_id)
+        self.author_validator.validate_has_relationship_with_anime(author_id = author_id, anime_id = anime_id)
+        return self.author_repository.create_anime_relation(author_id = author_id, anime_id = anime_id)
 
 
     def get_episodes(self, author_id: int) -> List[Episode]:
@@ -213,5 +209,5 @@ class AuthorService:
             List[Episode]: A list of episodes associated with the
             author.
         """
-        self.author_validator.validate_exists_by_id(author_id)
+        self.author_validator.validate_data_for_get(author_id)
         return self.author_repository.get(author_id).episodes
