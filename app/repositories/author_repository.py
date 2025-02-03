@@ -5,7 +5,7 @@ Author's data access logic.
 
 from typing import List, Optional
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload
+from sqlalchemy.orm import Session, lazyload, Query
 from app.config.database import get_db_connection
 from app.models.tables.author_models import Author
 from app.models.relationships.anime_author_association import anime_author_association
@@ -220,16 +220,45 @@ class AuthorRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def is_name_taken(self, author_name: str) -> bool:
+    def is_name_taken_for_create(self, author_name: str) -> bool:
         """
-        Check if the given author name already exists in
-        the database.
+        Checks if the given author name already exists in the database.
 
         Args:
-            name (str): The name of the author to check.
+            author_name (str): The name of the author to check.
 
         Returns:
-            bool: True if the author is unique, False otherwise.
+            bool: True if the name is taken, False otherwise.
         """
-        query = self.db.query(Author).filter(Author.name == author_name)
+        query = self.query_is_name_taken(author_name)
         return self.db.query(query.exists()).scalar()
+
+
+    def is_name_taken_for_update(self, exclude_id: int, author_name: str) -> bool:
+        """
+        Checks if the given author name already exists in the database,
+        excluding the current author.
+
+        Args:
+            exclude_id (int): The ID of the current author.
+            author_name (str): The name of the author to check.
+
+        Returns:
+            bool: True if the name is taken, False otherwise.
+        """
+        query = self.query_is_name_taken(author_name).filter(Author.id != exclude_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    # Query base
+    def query_is_name_taken(self, author_name: str) -> Query:
+        """
+        Base query to check if an author name is taken.
+
+        Args:
+            author_name (str): The name of the author to check.
+
+        Returns:
+            Query: The query object to check if the name is taken.
+        """
+        return self.db.query(Author).filter(Author.name == author_name)
