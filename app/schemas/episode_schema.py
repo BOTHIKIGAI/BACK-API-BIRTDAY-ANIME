@@ -22,7 +22,7 @@ class EpisodeSchema(BaseModel):
     # Attributes
     anime_id: int
     arc: Optional[str] = None
-    temp: int
+    season: int
     name: str
     episode: int
     air_date: date

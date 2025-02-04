@@ -14,7 +14,7 @@ def index(
     episode_service: EpisodeService = Depends(),
     anime_id: Optional[int] = None,
     arc: Optional[str] = None,
-    temp: Optional[int] = None,
+    season: Optional[int] = None,
     name: Optional[str] = None,
     episode: Optional[int] = None,
     air_date: Optional[str] = None,
@@ -27,7 +27,7 @@ def index(
     Args:
         episode_service (EpisodeService): The service to handle episode operations.
         arc (Optional[str]): Filter by episode arc.
-        temp (Optional[int]): Filter by episode temp.
+        season (Optional[int]): Filter by episode season.
         name (Optional[str]): Filter by name.
         episode (Optional[int]): Filter by episode number.
         air_date (Optional[str]): Filter by episode air_date.
@@ -40,7 +40,7 @@ def index(
     return episode_service.list(
         anime_id = anime_id,
         arc = arc,
-        temp = temp,
+        season = season,
         name = name,
         episode = episode,
         air_date = air_date,

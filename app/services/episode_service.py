@@ -67,7 +67,7 @@ class EpisodeService:
     def list(self,
              anime_id: Optional[int] = None,
              arc: Optional[str] = None,
-             temp: Optional[int] = None,
+             season: Optional[int] = None,
              name: Optional[str] = None,
              episode: Optional[int] = None,
              air_date: Optional[str] = None,
@@ -76,7 +76,7 @@ class EpisodeService:
         return self.episode_repository.list(
             anime_id = anime_id,
             arc = arc,
-            temp = temp,
+            season = season,
             name = name,
             episode = episode,
             air_date = air_date,

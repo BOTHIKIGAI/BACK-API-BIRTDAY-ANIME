@@ -27,7 +27,7 @@ class Episode(Base):
     id = Column(BigInteger, primary_key = True, index = True, nullable = False)
     anime_id = Column(BigInteger, ForeignKey('anime.id'), nullable = False)
     arc = Column(String, index = True, nullable = True)
-    temp = Column(Integer, index = True, nullable = False)
+    season = Column(Integer, index = True, nullable = False)
     name = Column(String, index = True, nullable = False)
     episode = Column(Integer, index = True, nullable = False)
     air_date = Column(Date, index = True, nullable = False)
