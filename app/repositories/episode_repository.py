@@ -213,7 +213,7 @@ class EpisodeRepository:
         Returns:
             bool: True if the episode number is taken, False otherwise.
         """
-        base_query = self.is_episode_number_taken_in_temp(data_episode)
+        base_query = self.is_episode_number_taken_in_season(data_episode)
         return self.db.query(base_query.exists()).scalar()
 
 
@@ -234,7 +234,7 @@ class EpisodeRepository:
         Returns:
             bool: True if the episode number is taken, False otherwise.
         """
-        base_query = self.is_episode_number_taken_in_temp(data_episode)
+        base_query = self.is_episode_number_taken_in_season(data_episode)
         query = base_query.filter(Episode.id!=exclude_id)
         return self.db.query(query.exists()).scalar()
 
@@ -274,7 +274,7 @@ class EpisodeRepository:
 
 
     # Query base
-    def is_episode_number_taken_in_temp(self,
+    def is_episode_number_taken_in_season(self,
                                         data_episode: dict["anime_id": int,
                                                            "episode": int,
                                                            "temp": str]) -> Query:
