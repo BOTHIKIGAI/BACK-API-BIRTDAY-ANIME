@@ -5,7 +5,7 @@ of the Episode's data access logic.
 
 from typing import List, Optional
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload
+from sqlalchemy.orm import Session, lazyload, Query
 from app.config.database import get_db_connection
 from app.models.tables.episode_models import Episode
 from app.models.relationships.episode_author_association import episode_author_association
@@ -198,33 +198,113 @@ class EpisodeRepository:
         return self.db.query(query.exists()).scalar()
 
 
-    def is_episode_number_taken_in_season(self, anime_id: int, episode: int, temp: str) -> bool:
+    # Functions
+    def is_episode_number_taken_in_temp_for_create(self, data_episode: dict["anime_id": int,
+                                                                            "episode": int,
+                                                                            "temp": str]) -> bool:
         """
-        Checks if a specific episode number is already registered for a given anime.
+        Checks if the given episode number already exists in the temporary table for the given
+        temp ID.
 
         Args:
-            anime_id (int): The ID of the anime.
-            episode_number (int): The episode number to check.
+            episode_number (int): The number of the episode to check.
+            temp_id (int): The ID of the temporary table to check.
 
         Returns:
-            bool: True if the episode number is already registered for the anime, False otherwise.
+            bool: True if the episode number is taken, False otherwise.
         """
-        query = self.db.query(Episode).filter(Episode.anime_id==anime_id,
-                                              Episode.temp==temp,
-                                              Episode.episode==episode)
+        base_query = self.is_episode_number_taken_in_temp(data_episode)
+        return self.db.query(base_query.exists()).scalar()
+
+
+    def is_episode_number_taken_in_temp_for_update(self,
+                                                   exclude_id: int,
+                                                   data_episode: dict["anime_id": int,
+                                                                      "episode": int,
+                                                                      "temp": str]) -> bool:
+        """
+        Checks if the given episode number already exists in the temporary table for the given temp
+        ID, excluding the current episode.
+
+        Args:
+            episode_id (int): The ID of the current episode.
+            episode_number (int): The number of the episode to check.
+            temp_id (int): The ID of the temporary table to check.
+
+        Returns:
+            bool: True if the episode number is taken, False otherwise.
+        """
+        base_query = self.is_episode_number_taken_in_temp(data_episode)
+        query = base_query.filter(Episode.id!=exclude_id)
         return self.db.query(query.exists()).scalar()
 
 
-    def is_episode_name_taken(self, anime_id: int, name: int) -> bool:
+    def is_episode_name_taken_for_create(self,
+                                         data_episode: dict["anime_id": int, "name": int]) -> bool:
         """
-        Checks if a specific episode name is already registered for a given anime.
+        Checks if the given episode name already exists in the database.
 
         Args:
-            anime_id (int): The ID of the anime.
             episode_name (str): The name of the episode to check.
 
         Returns:
-            bool: True if the episode name is already registered for the anime, False otherwise.
+            bool: True if the episode name is taken, False otherwise.
         """
-        query = self.db.query(Episode).filter(Episode.anime_id==anime_id, Episode.name==name)
+        base_query = self.is_episode_name_taken(data_episode)
+        return self.db.query(base_query.exists()).scalar()
+
+
+    def is_episode_name_taken_for_update(self,
+                                         exclude_id: int,
+                                         data_episode: dict["anime_id": int, "name": int]) -> bool:
+        """
+        Checks if the given episode name already exists in the database, excluding the current
+        episode.
+
+        Args:
+            episode_id (int): The ID of the current episode.
+            episode_name (str): The name of the episode to check.
+
+        Returns:
+            bool: True if the episode name is taken, False otherwise.
+        """
+        base_query = self.is_episode_name_taken(data_episode)
+        query = base_query.filter(Episode.id!=exclude_id)
         return self.db.query(query.exists()).scalar()
+
+
+    # Query base
+    def is_episode_number_taken_in_temp(self,
+                                        data_episode: dict["anime_id": int,
+                                                           "episode": int,
+                                                           "temp": str]) -> Query:
+        """
+        Checks if the given episode number already exists in the temporary table for the given
+        temp ID.
+
+        Args:
+            episode_number (int): The number of the episode to check.
+            temp_id (int): The ID of the temporary table to check.
+
+        Returns:
+            bool: True if the episode number is taken, False otherwise.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id==data_episode["anime_id"],
+                                              Episode.temp==data_episode["temp"],
+                                              Episode.episode==data_episode["episode"])
+        return query
+
+
+    def is_episode_name_taken(self, data_episode: dict["anime_id": int, "name": int]) -> Query:
+        """
+        Checks if the given episode name already exists in the database.
+
+        Args:
+            episode_name (str): The name of the episode to check.
+
+        Returns:
+            bool: True if the episode name is taken, False otherwise.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id==data_episode["anime_id"],
+                                              Episode.name==data_episode["name"])
+        return query
