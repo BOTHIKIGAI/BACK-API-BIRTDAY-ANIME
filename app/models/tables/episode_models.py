@@ -15,7 +15,7 @@ class Episode(Base):
         id (int): The primary key of the episode.
         anime_id (int): The anime ID of the episode.
         arc (str): The name of the arc.
-        temp (int): The number of the temp.
+        season (int): The number of the season.
         episode (int): The number of the episode.
         air_date (date): The air date of the episode.
         created_at (datetime): The date of creation of the registry.

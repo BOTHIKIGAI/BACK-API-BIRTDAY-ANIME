@@ -14,7 +14,7 @@ class EpisodeSchema(BaseModel):
 
     Attributes:
         arc (str): The name of the arc.
-        temp (int): The number of the temp.
+        season (int): The number of the season.
         episode (int): The number of the episode.
         air_date (date): The air date of the episode.
     """
