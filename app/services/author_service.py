@@ -142,9 +142,9 @@ class AuthorService:
         Returns:
             Author: The updated author with the new data.
         """
-        self.author_validator.validate_data_for_update(exclude_id = author_id, author_body = author_body)
+        self.author_validator.validate_data_for_update(author_id=author_id, author_body=author_body)
         author = AuthorFactory.create(author_body)
-        return self.author_repository.update(author_id = author_id, author = author)
+        return self.author_repository.update(author_id=author_id, author=author)
 
 
     def delete(self, author_id: int) -> None:
