@@ -62,7 +62,7 @@ class AuthorValidator:
         self.validate_birthday_date_not_in_future(author_body.birthday)
 
 
-    def validate_data_for_update(self, exclude_id: int, author_body: AuthorSchema) -> None:
+    def validate_data_for_update(self, author_id: int, author_body: AuthorSchema) -> None:
         """
         Validates the given author data for update.
 
@@ -75,7 +75,8 @@ class AuthorValidator:
             HTTPException: If the author name already exists (status code 409).
             HTTPException: If the birthday date is in the future (status code 409).
         """
-        self.validate_aunique_name_for_update(exclude_id = exclude_id, author_name = author_body.name)
+        self.validate_exists_by_id(author_id)
+        self.validate_aunique_name_for_update(exclude_id=author_id, author_name=author_body.name)
         self.validate_birthday_date_not_in_future(author_body.birthday)
 
 
