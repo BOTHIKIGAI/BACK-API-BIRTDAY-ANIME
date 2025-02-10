@@ -3,13 +3,13 @@ This module contains the schema to define and
 validate the Anime data structure.
 """
 from datetime import date
+
 from pydantic import BaseModel, field_validator
 
 
 class AnimeSchema(BaseModel):
     """
-    Represents the schema for the validation of
-    the Anime object data.
+    Represents the schema for the validation and sanatization of the Anime object data.
 
     Attributes:
         name (str): The name of the anime.
@@ -18,17 +18,16 @@ class AnimeSchema(BaseModel):
     """
 
     # Attributes
-    name: str
-    category: str
-    release_date: date
+    name: str = ""
+    category: str = ""
+    release_date: date = date.fromisoformat("1900-01-01")
 
 
     # Sanitize Functions
     @field_validator('name', 'category', mode = 'before')
     def sanitize_string(cls, v):
         """
-        Sanitizes string fields by stripping whitespace
-        and converting to lowercase.
+        Sanitizes string fields by stripping whitespace and converting to lowercase.
 
         Args:
             v (str): The string value to sanitize.
@@ -74,7 +73,7 @@ class AnimeSchema(BaseModel):
     class Config:
         """
         Configuration class for Pydantic model.
-        
+
         Attributes:
             from_attributes (bool): Indicates if the model should
             be populated from attributes.
