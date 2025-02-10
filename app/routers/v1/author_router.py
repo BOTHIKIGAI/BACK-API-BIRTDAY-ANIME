@@ -1,11 +1,13 @@
 """
 This module contains the routes for the management
-of the authors 
+of the authors
 """
 from typing import List, Optional
+
 from fastapi import APIRouter, Depends, status
-from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
+
 from app.schemas.anime_schema import AnimeSchema
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
 from app.schemas.episode_schema import EpisodeSchema
 from app.services.author_service import AuthorService
 
@@ -126,8 +128,7 @@ def get_anime(author_id: int, author_service: AuthorService = Depends()):
 @AuthorRouter.post('/{author_id}/anime/{anime_id}',
                    response_model = AuthorAnimeRelationSchema,
                    status_code = status.HTTP_201_CREATED)
-def create_anime_relation(author_id: int,
-                          anime_id: int,
+def create_anime_relation(data_relation: AuthorAnimeRelationSchema,
                           author_service: AuthorService = Depends()):
     """
     Creates a relationship between an author and an anime.
@@ -140,8 +141,7 @@ def create_anime_relation(author_id: int,
     Returns:
         AnimeAuthorRelationSchema: The created relationship data.
     """
-    return author_service.create_anime_relation(author_id = author_id,
-                                                anime_id = anime_id)
+    return author_service.create_anime_relation(data_relation)
 
 
 @AuthorRouter.get('/{author_id}/episodes', response_model = List[EpisodeSchema])
