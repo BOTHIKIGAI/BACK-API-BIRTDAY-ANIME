@@ -3,7 +3,9 @@ This module contains the routes for the management
 of the anime
 """
 from typing import List, Optional
+
 from fastapi import APIRouter, Depends, status
+
 from app.schemas.anime_schema import AnimeSchema
 from app.schemas.author_schema import AuthorSchema
 from app.schemas.episode_schema import EpisodeSchema
@@ -22,7 +24,7 @@ def index(anime_service: AnimeService = Depends(),
     Retrieves a list of anime based on the provided filters.
 
     Args:
-        anime_service (AnimeService): The service to 
+        anime_service (AnimeService): The service to
         handle anime operations.
         name (Optional[str]): Filter by author name.
         category (Optional[str]): Filter by author category.
