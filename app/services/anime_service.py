@@ -12,6 +12,7 @@ from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
+from app.repositories.episode_repository import EpisodeRepository
 from app.schemas.anime_schema import AnimeSchema
 from app.validations.anime_validator import AnimeValidator
 
@@ -27,28 +28,33 @@ class AnimeService:
     Attributes:
         anime_repository (AnimeRepository): The repository used for accessing Anime data.
         author_repository (AuthorRepository): The repository used for accessing Author data.
+        episode_repository (EpisodeRepository): The repository used for accessing Episode data.
     """
 
     # Attributes
     anime_repository: AnimeRepository
     author_repository: AuthorRepository
+    episode_repository: EpisodeRepository
 
 
     # Constructor
     def __init__(self,
                  anime_repository: AnimeRepository=Depends(),
                  anime_validator: AnimeValidator=Depends(),
-                 author_repository: AuthorRepository=Depends()) -> None:
+                 author_repository: AuthorRepository=Depends(),
+                 episode_repository: EpisodeRepository=Depends()) -> None:
         """
         Initialize the AnimeService with a repository for accessing Anime date.
 
         Args:
             anime_repository (AnimeRepository): The repository used for accessing Anime data.
             author_repository (AuthorRepository): The repository used for accessing Author data.
+            episode_repository (EpisodeRepository): The repository used for accessing Episode data.
         """
-        self.anime_repository=anime_repository
-        self.anime_validator=anime_validator
-        self.author_repository=author_repository
+        self.anime_repository = anime_repository
+        self.anime_validator = anime_validator
+        self.author_repository = author_repository
+        self.episode_repository = episode_repository
 
 
     # Methods
@@ -158,4 +164,4 @@ class AnimeService:
             List[Episode]: A list of episodes associated with the author.
         """
         self.anime_validator.validate_data_for_get(anime_id)
-        return self.anime_repository.get(anime_id).episodes
+        return self.episode_repository.get_by_anime(anime_id)
