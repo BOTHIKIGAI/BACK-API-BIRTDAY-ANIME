@@ -5,7 +5,7 @@ Anime's data access logic.
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy.orm import Query, Session, lazyload
+from sqlalchemy.orm import Query, Session
 
 from app.config.database import get_db_connection
 from app.models.relationships.anime_author_association import anime_author_association
@@ -94,9 +94,7 @@ class AnimeRepository:
             including related author and episodes, or
             None if no author is found.
         """
-        return self.db.query(Anime).options(
-            lazyload(Anime.authors),
-            lazyload(Anime.episodes)).filter_by(id=anime_id).first()
+        return self.db.query(Anime).filter_by(id=anime_id).first()
 
 
     def get_by_author(self, author_id: int) -> List[Anime]:
