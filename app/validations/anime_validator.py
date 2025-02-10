@@ -160,7 +160,7 @@ class AnimeValidator:
         Validates if the given release date is not in the future.
 
         Args:
-            release_date (str): The release date to validate in format '%Y-%m-%d'.
+            release_date (date): The release date to validate in format '%Y-%m-%d'.
 
         Raises:
             HTTPException: If the release date is in the future (status code 409).
