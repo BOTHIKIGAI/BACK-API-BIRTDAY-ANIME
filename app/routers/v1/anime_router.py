@@ -24,8 +24,7 @@ def index(anime_service: AnimeService = Depends(),
     Retrieves a list of anime based on the provided filters.
 
     Args:
-        anime_service (AnimeService): The service to
-        handle anime operations.
+        anime_service (AnimeService): The service to handle anime operations.
         name (Optional[str]): Filter by author name.
         category (Optional[str]): Filter by author category.
         release_date (Optional[str]): Filter by author release_date.
@@ -50,8 +49,7 @@ def get(anime_id: int, anime_service: AnimeService = Depends()):
 
     Args:
         anime_id (int): The ID of the anime to retrieve.
-        anime_service (AnimeService): The service to handle
-        anime operations.
+        anime_service (AnimeService): The service to handle anime operations.
 
     Returns:
         AnimeSchema: The author with the specified ID.
