@@ -1,7 +1,7 @@
 """
 This module contains the validation for the anime.
 """
-from datetime import datetime
+from datetime import date, datetime
 
 from fastapi import Depends, HTTPException
 
@@ -154,7 +154,7 @@ class AnimeValidator:
             self.exception_unique_name()
 
 
-    def validate_release_date_not_in_future(self, release_date: str) -> None:
+    def validate_release_date_not_in_future(self, release_date: date) -> None:
         """
         Validates if the given release date is not in the future.
 
