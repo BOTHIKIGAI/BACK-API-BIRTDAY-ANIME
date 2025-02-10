@@ -3,27 +3,28 @@ This module the service layer or business logic for anime
 """
 
 from typing import List, Optional
+
 from fastapi import Depends
+
+from app.factories.anime_factory import AnimeFactory
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
-from app.factories.anime_factory import AnimeFactory
 from app.schemas.anime_schema import AnimeSchema
 from app.validations.anime_validator import AnimeValidator
+
 
 class AnimeService:
     """
     Service class for managing Anime class
 
-    This class provides methods to interact with the AnimeService,
-    including listing authors with optional filters, retrieving
-    a specific anime by ID, creating a new author by ID, creating
+    This class provides methods to interact with the AnimeService, including listing authors with
+    optional filters, retrieving a specific anime by ID, creating a new author by ID, creating
     a new author, updating an existing anime, and deleting an anime.
 
     Attributes:
-        anime_repository (AnimeRepository): The repository used for
-        accessing Anime data.
+        anime_repository (AnimeRepository): The repository used for accessing Anime data.
     """
 
     # Attributes
@@ -54,22 +55,18 @@ class AnimeService:
              page_size: Optional[int] = 100,
              start_index: Optional[int] = 0) -> Optional[List[Anime]]:
         """
-        Retrieves a list of anime with optional filters for name,
-        category, release_date, limit, start, and supports pagination.
+        Retrieves a list of anime with optional filters for name, category, release_date, limit,
+        start, and supports pagination.
 
         Args:
             name (Optional[str]): The name of the anime to filter by.
             category (Optional[str]): The alias of the anime to filter by.
-            release_date (Optional[str]): The release date of the anime to
-                filter by.
-            page_size (Optional[int]): The maximum number of results to returns.
-                Defaults to 100.
-            start_index (Optional[int]): The index of the first result to return.
-                Default to 0.
+            release_date (Optional[str]): The release date of the anime to filter by.
+            page_size (Optional[int]): The maximum number of results to returns. Defaults to 100.
+            start_index (Optional[int]): The index of the first result to return. Default to 0.
 
         Returns:
-            List[Anime]: A list of anime that match the given
-            filters and pagination settings.
+            List[Anime]: A list of anime that match the given filters and pagination settings.
         """
         return self.anime_repository.list(
             name = name,
@@ -81,8 +78,7 @@ class AnimeService:
 
     def get(self, anime_id: int) -> Optional[Anime]:
         """
-        Retrieves a specific anime by ID, including related anime
-        and episodes.
+        Retrieves a specific anime by ID, including related anime and episodes.
 
         Args:
             anime_id (int): The ID of the anime.
@@ -96,12 +92,10 @@ class AnimeService:
         Creates a new anime in the database.
 
         Args:
-            anime_body (AnimeSchema): The data of the
-            anime to create.
+            anime_body (AnimeSchema): The data of the anime to create.
 
         Returns:
-            Author: The created anime with the assigned
-            ID.
+            Author: The created anime with the assigned ID.
         """
         self.anime_validator.validate_data_for_create(anime_body)
         anime = AnimeFactory.create(anime_body)
@@ -110,8 +104,7 @@ class AnimeService:
 
     def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
         """
-        Updates an existing anime in the database with the
-        provide data.
+        Updates an existing anime in the database with the provide data.
 
         Args:
             anime_id (int): The ID of the anime to update.
@@ -127,8 +120,7 @@ class AnimeService:
 
     def delete(self, anime_id: int) -> None:
         """
-        Delete an existing anime in the database
-        with the given ID.
+        Delete an existing anime in the database with the given ID.
 
         Args:
             anime_id (int): The ID of the anime to delete.
