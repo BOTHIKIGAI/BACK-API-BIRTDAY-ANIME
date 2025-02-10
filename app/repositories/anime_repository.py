@@ -3,10 +3,14 @@ This module represents the abstraction of the
 Anime's data access logic.
 """
 from typing import List, Optional
+
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload, Query
+from sqlalchemy.orm import Query, Session, lazyload
+
 from app.config.database import get_db_connection
+from app.models.relationships.anime_author_association import anime_author_association
 from app.models.tables.anime_models import Anime
+
 
 class AnimeRepository:
     """
@@ -65,13 +69,13 @@ class AnimeRepository:
         query = self.db.query(Anime)
 
         if name:
-            query = query.filter_by(name = name)
+            query = query.filter_by(name=name)
 
         if category:
-            query = query.filter_by(category = category)
+            query = query.filter_by(category=category)
 
         if release_date:
-            query = query.filter_by(release_date = release_date)
+            query = query.filter_by(release_date=release_date)
 
         return query.offset(start).limit(limit).all()
 
@@ -92,7 +96,29 @@ class AnimeRepository:
         """
         return self.db.query(Anime).options(
             lazyload(Anime.authors),
-            lazyload(Anime.episodes)).filter_by(id = anime_id).first()
+            lazyload(Anime.episodes)).filter_by(id=anime_id).first()
+
+
+    def get_by_author(self, author_id: int) -> List[Anime]:
+        """
+        Retrieves a list of Anime associated with a given author.
+
+        This function performs a join between the Anime table and the anime_author_association
+        table, filtering the results by the specified author_id. It returns all Anime records
+        that are related to the provided author identifier.
+
+        Args:
+            author_id (int): The unique identifier of the author whose animes are to be retrieved.
+
+        Returns:
+            List[Anime]: A list of Anime objects associated with the author. Returns an empty list
+                         if no associations exist.
+        """
+        query = self.db.query(Anime).join(
+            anime_author_association,
+            Anime.id == anime_author_association.c.anime_id
+        ).filter(anime_author_association.c.author_id == author_id)
+        return query.all()
 
 
     def create(self, anime: Anime) -> Anime:
@@ -101,7 +127,7 @@ class AnimeRepository:
 
         Args:
             anime (Anime): The Anime data to create.
-        
+
         Returns:
             Anime: The created anime with the assigned ID.
         """
@@ -154,7 +180,7 @@ class AnimeRepository:
         Returns:
             bool: True if the anime exists, False otherwise.
         """
-        query = self.db.query(Anime).filter(Anime.id == anime_id)
+        query = self.db.query(Anime).filter(Anime.id==anime_id)
         return self.db.query(query.exists()).scalar()
 
 
