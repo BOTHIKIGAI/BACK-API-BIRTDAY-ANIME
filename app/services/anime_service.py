@@ -2,9 +2,8 @@
 This module the service layer or business logic for anime
 """
 
-from datetime import datetime
 from typing import List, Optional
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
@@ -155,7 +154,7 @@ class AnimeService:
     def get_episodes(self, anime_id: int) -> List[Episode]:
         """
         Retrieves the list of episodes associated with a specific anime.
-        
+
         Args:
             anime_id (int): The ID of the anime.
 
