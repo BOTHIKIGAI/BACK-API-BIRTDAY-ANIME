@@ -137,20 +137,17 @@ class AnimeRepository:
         return anime
 
 
-    def update(self, anime_id: int, anime: Anime) -> Anime:
+    def update(self, anime: Anime) -> Anime:
         """
-        Updates an existing anime in the database with the
-        provided data and returns the update anime.
+        Updates an existing anime in the database with the provided data and returns
+        the update anime.
 
         Args:
-            anime_id (int): The ID of the anime to update.
             anime (Anime): The updated anime data
 
         Returns:
-            Anime: The update anime, or None if no anime is
-            found with the given ID.
+            Anime: The update anime, or None if no anime is found with the given ID.
         """
-        anime.id = anime_id
         self.db.merge(anime)
         self.db.commit()
         return anime
