@@ -3,8 +3,8 @@ This module contains the schema to define and
 validate the Author data structure.
 """
 from datetime import date
+
 from pydantic import BaseModel, field_validator
-from typing import Optional
 
 
 class AuthorSchema(BaseModel):
@@ -19,9 +19,9 @@ class AuthorSchema(BaseModel):
     """
 
     # Attributes
-    name: Optional[str] = None
-    alias: Optional[str] = None
-    birthday: Optional[date] = None
+    name: str = ""
+    alias: str = ""
+    birthday: date = date.fromisoformat("1900-01-01")
 
 
     # Sanitize Functions
@@ -78,7 +78,7 @@ class AuthorSchema(BaseModel):
     class Config:
         """
         Configuration class for Pydantic model.
-        
+
         Attributes:
             from_attributes (bool): Indicates if the model
             should be populated from attributes.
