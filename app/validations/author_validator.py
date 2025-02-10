@@ -1,10 +1,13 @@
 """
 This module contains the validation for the author.
 """
-from datetime import datetime
+from datetime import date, datetime
+
 from fastapi import Depends, HTTPException
-from app.schemas.author_schema import AuthorSchema
+
 from app.repositories.author_repository import AuthorRepository
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
+
 
 class AuthorValidator:
     """
@@ -101,7 +104,7 @@ class AuthorValidator:
     def validate_exists_by_id(self, author_id: int) -> None:
         """
         Checks if an author with the given ID exists in the repository.
-        
+
         Args:
             author_id (int): The ID of the author to check.
 
@@ -109,8 +112,8 @@ class AuthorValidator:
             HTTPException: If the anime does not exist (status code 404).
         """
         if not self.author_repository.exists_by_id(author_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The author does not exist.')
+            raise HTTPException(detail = 'The author does not exist.',
+                                status_code = 404)
 
 
     def validate_unique_name_for_create(self, author_name: str) -> None:
@@ -143,7 +146,7 @@ class AuthorValidator:
             self.raise_exception_if_unique_name()
 
 
-    def validate_birthday_date_not_in_future(self, birthday_date: str) -> None:
+    def validate_birthday_date_not_in_future(self, birthday_date: date) -> None:
         """
         Validates if the given birthday date is not in the future.
 
@@ -155,8 +158,8 @@ class AuthorValidator:
         """
         current_date = datetime.now().date()
         if birthday_date > current_date:
-            raise HTTPException(status_code = 409,
-                                detail = "The birthday date should not be in the future.")
+            raise HTTPException(detail = "The birthday date should not be in the future.",
+                                status_code = 409)
 
 
     def validate_is_related_to_anime(self, author_id: int) -> None:
@@ -170,8 +173,8 @@ class AuthorValidator:
             HTTPException: If the author is related to any anime (status code 409).
         """
         if self.author_repository.is_related_to_animes(author_id):
-            raise HTTPException(status_code = 409,
-                                detail = "The author is releated to anime")
+            raise HTTPException(detail = "The author is releated to anime",
+                                status_code = 409)
 
 
     def validate_is_related_to_episode(self, author_id: int) -> None:
@@ -185,11 +188,11 @@ class AuthorValidator:
             HTTPException: If the author is related to any episode (status code 409).
         """
         if self.author_repository.is_related_to_episodes(author_id):
-            raise HTTPException(status_code = 409,
-                                detail = "The author is releated to episode")
+            raise HTTPException(detail = "The author is releated to episode",
+                                status_code = 409)
 
 
-    def validate_has_relationship_with_anime(self, author_id: int, anime_id: int) -> None:
+    def validate_has_relationship_with_anime(self, data_relation: AuthorAnimeRelationSchema) -> None:
         """
         Validates if the relationship between the author and anime already exists.
 
@@ -200,10 +203,9 @@ class AuthorValidator:
         Raises:
             HTTPException: If the relationship already exists (status code 409).
         """
-        if self.author_repository.has_relationship_with_anime(author_id = author_id,
-                                                              anime_id = anime_id):
-            raise HTTPException(status_code = 409,
-                                detail = "The relationship between the author and anime already exists.")
+        if self.author_repository.has_relationship_with_anime(data_relation):
+            raise HTTPException(detail = "The relationship between the author and anime already exists.",
+                                status_code = 409)
 
 
     # Exceptions
@@ -217,5 +219,5 @@ class AuthorValidator:
         Raises:
             HTTPException: If the author name already exists (status code 409).
         """
-        raise HTTPException(status_code = 409,
-                            detail = "There is an auhor with that name")
+        raise HTTPException(detail = "There is an auhor with that name",
+                            status_code = 409)
