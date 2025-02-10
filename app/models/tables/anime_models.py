@@ -1,11 +1,13 @@
 """
 This module contains the model of the Anime table.
 """
-from sqlalchemy import Column, BigInteger, String, Date, DateTime
-from sqlalchemy.sql import func
+from sqlalchemy import BigInteger, Column, Date, DateTime, String
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
 from app.config.database import Base
 from app.models.relationships.anime_author_association import anime_author_association
+
 
 class Anime(Base):
     """
