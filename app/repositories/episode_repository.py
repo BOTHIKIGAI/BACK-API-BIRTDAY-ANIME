@@ -14,11 +14,11 @@ from app.models.relationships.episode_author_association import episode_author_a
 class EpisodeRepository:
     """
     Repository class for accessing Episode data.
-    
+
     This class provides methods to interact with the Episode table in the database, including
     listing episode with optional filters, and retrieving a specific anime by ID with related
     author and episodes.
-    
+
     Attributes:
         db (Session): The database session used for querying the database.
     """
@@ -32,7 +32,7 @@ class EpisodeRepository:
     def __init__(self, db: Session=Depends(get_db_connection)) -> None:
         """
         Initializes the EpisodeRepository with a database session.
-        
+
         Args:
             db (Session): The database session used for querying the database.
         """
@@ -52,7 +52,7 @@ class EpisodeRepository:
         """
         Retrieves a list of episodes with optional filters for name, category, release, etc.
         Supports pagination.
-        
+
         Args:
             anime_id (Optional[int]): The anime id to filter by.
             arc (Optional[str]): The name of the arc to filter by.
@@ -62,7 +62,7 @@ class EpisodeRepository:
             air_date (Optional[str]): The air date of the episode to filter by.
             limit (Optional[int]): The maximum number of results to return.
             start (Optional[int]): The index of the first result to return.
-        
+
         Returns:
             List[Episode]: A list of episode that match the given filters and
             pagination settings.
@@ -107,13 +107,34 @@ class EpisodeRepository:
             lazyload(Episode.authors)).filter_by(id=episode_id).first()
 
 
+    def get_by_author(self, author_id: int) -> List[Episode]:
+        """
+        Retrieves a list of Episodes associated with a given author.
+
+        This function performs a join between the Episode table and the episode_author_association table,
+        filtering the results by the specified author_id. It returns all Episode records that are related
+        to the provided author identifier.
+
+        Args:
+            author_id (int): The unique identifier of the author whose episodes are to be retrieved.
+
+        Returns:
+            List[Episode]: A list of Episode objects associated with the given author. If no associations
+                exist, an empty list is returned.
+        """
+        query = self.db.query(Episode).join(
+            episode_author_association,
+            Episode.id == episode_author_association.c.episode_id,
+        ).filter(episode_author_association.c.author_id == author_id)
+        return query.all()
+
     def create(self, episode: Episode) -> Episode:
         """
         Creates a new episode in the database and return the created Episode.
 
         Args:
             episode (Episode): The Episode data to create.
-        
+
         Returns:
             Episode: The created episode with the assigned ID.
         """
