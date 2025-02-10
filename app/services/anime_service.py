@@ -11,6 +11,7 @@ from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
+from app.repositories.author_repository import AuthorRepository
 from app.schemas.anime_schema import AnimeSchema
 from app.validations.anime_validator import AnimeValidator
 
@@ -25,26 +26,29 @@ class AnimeService:
 
     Attributes:
         anime_repository (AnimeRepository): The repository used for accessing Anime data.
+        author_repository (AuthorRepository): The repository used for accessing Author data.
     """
 
     # Attributes
     anime_repository: AnimeRepository
+    author_repository: AuthorRepository
 
 
     # Constructor
     def __init__(self,
                  anime_repository: AnimeRepository=Depends(),
-                 anime_validator: AnimeValidator=Depends()) -> None:
+                 anime_validator: AnimeValidator=Depends(),
+                 author_repository: AuthorRepository=Depends()) -> None:
         """
-        Initialize the AnimeService with a repository for accessing
-        Anime date.
+        Initialize the AnimeService with a repository for accessing Anime date.
 
         Args:
-            anime_repository (AnimeRepository): The repository used
-            for accessing Anime data.
+            anime_repository (AnimeRepository): The repository used for accessing Anime data.
+            author_repository (AuthorRepository): The repository used for accessing Author data.
         """
         self.anime_repository=anime_repository
         self.anime_validator=anime_validator
+        self.author_repository=author_repository
 
 
     # Methods
@@ -140,7 +144,7 @@ class AnimeService:
             List[Author]: A list of authors associated with the anime.
         """
         self.anime_validator.validate_data_for_get(anime_id)
-        return self.anime_repository.get(anime_id).authors
+        return self.author_repository.get_by_anime(anime_id)
 
 
     def get_episodes(self, anime_id: int) -> List[Episode]:
