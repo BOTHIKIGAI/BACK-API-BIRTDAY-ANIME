@@ -33,8 +33,8 @@ class AnimeService:
 
     # Constructor
     def __init__(self,
-                 anime_repository: AnimeRepository = Depends(),
-                 anime_validator: AnimeValidator = Depends()) -> None:
+                 anime_repository: AnimeRepository=Depends(),
+                 anime_validator: AnimeValidator=Depends()) -> None:
         """
         Initialize the AnimeService with a repository for accessing
         Anime date.
@@ -43,17 +43,17 @@ class AnimeService:
             anime_repository (AnimeRepository): The repository used
             for accessing Anime data.
         """
-        self.anime_repository = anime_repository
-        self.anime_validator = anime_validator
+        self.anime_repository=anime_repository
+        self.anime_validator=anime_validator
 
 
     # Methods
     def list(self,
-             name: Optional[str] = None,
-             category: Optional[str] = None,
-             release_date: Optional[str] = None,
-             page_size: Optional[int] = 100,
-             start_index: Optional[int] = 0) -> Optional[List[Anime]]:
+             name: Optional[str]=None,
+             category: Optional[str]=None,
+             release_date: Optional[str]=None,
+             page_size: Optional[int]=100,
+             start_index: Optional[int]=0) -> Optional[List[Anime]]:
         """
         Retrieves a list of anime with optional filters for name, category, release_date, limit,
         start, and supports pagination.
@@ -69,11 +69,11 @@ class AnimeService:
             List[Anime]: A list of anime that match the given filters and pagination settings.
         """
         return self.anime_repository.list(
-            name = name,
-            category = category,
-            release_date = release_date,
-            limit = page_size,
-            start = start_index)
+            name=name,
+            category=category,
+            release_date=release_date,
+            limit=page_size,
+            start=start_index)
 
 
     def get(self, anime_id: int) -> Optional[Anime]:
@@ -113,7 +113,7 @@ class AnimeService:
         Returns:
             Anime: The updated anime with the data.
         """
-        self.anime_validator.validate_data_for_update(anime_id = anime_id, anime_body = anime_body)
+        self.anime_validator.validate_data_for_update(anime_id=anime_id, anime_body=anime_body)
         anime = AnimeFactory.create(anime_body)
         return self.anime_repository.update(anime_id, anime)
 
