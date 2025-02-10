@@ -22,7 +22,7 @@ class AnimeValidator:
 
 
     # Constructor
-    def __init__(self, anime_repository: AnimeRepository = Depends()) -> None:
+    def __init__(self, anime_repository: AnimeRepository=Depends()) -> None:
         """
         Initializes the AnimeValidator with a repository for accessing anime data.
 
@@ -75,7 +75,7 @@ class AnimeValidator:
             HTTPException: If the release date is in the future (status code 409).
         """
         self.validate_exists_by_id(anime_id)
-        self.validate_unique_name_for_update(exclude_id = anime_id, anime_name = anime_body.name)
+        self.validate_unique_name_for_update(exclude_id=anime_id, anime_name=anime_body.name)
         self.validate_release_date_not_in_future(anime_body.release_date)
 
 
@@ -106,8 +106,8 @@ class AnimeValidator:
             HTTPException: If the anime does not exist (status code 404).
         """
         if not self.anime_repository.exists_by_id(anime_id):
-            raise HTTPException(status_code = 404,
-                                detail = 'The anime does not exist.')
+            raise HTTPException(detail='The anime does not exist.',
+                                status_code=404)
 
 
     def validate_is_related_to_episode(self, anime_id: int) -> None:
@@ -121,8 +121,8 @@ class AnimeValidator:
             HTTPException: If the anime is related to any episode (status code 409).
         """
         if self.anime_repository.is_related_to_episode(anime_id):
-            raise HTTPException(status_code = 409,
-                                detail = "The anime is related to episode")
+            raise HTTPException(detail="The anime is related to episode",
+                                status_code=409)
 
 
     def validate_unique_name_for_create(self, anime_name: str) -> None:
@@ -150,8 +150,9 @@ class AnimeValidator:
         Raises:
             HTTPException: If the anime name already exists (status code 409).
         """
-        if self.anime_repository.is_name_taken_for_update(exclude_id = exclude_id, anime_name = anime_name):
-            self.exception_unique_name()
+        if self.anime_repository.is_name_taken_for_update(exclude_id=exclude_id,
+                                                          anime_name=anime_name):
+                self.exception_unique_name()
 
 
     def validate_release_date_not_in_future(self, release_date: date) -> None:
@@ -166,8 +167,8 @@ class AnimeValidator:
         """
         current_date = datetime.now().date()
         if release_date > current_date:
-            raise HTTPException(status_code = 409,
-                                detail = "The date of publication should not be in the future.")
+            raise HTTPException(detail="The date of publication should not be in the future.",
+                                status_code=409)
 
 
     # Exceptions
@@ -178,5 +179,5 @@ class AnimeValidator:
         Raises:
             HTTPException: If the anime name already exists (status code 409).
         """
-        raise HTTPException(status_code = 409,
-                            detail = "There is an anime with that name")
+        raise HTTPException(detail="There is an anime with that name",
+                            status_code=409)
