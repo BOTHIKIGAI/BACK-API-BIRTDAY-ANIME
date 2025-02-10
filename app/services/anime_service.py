@@ -114,8 +114,8 @@ class AnimeService:
             Anime: The updated anime with the data.
         """
         self.anime_validator.validate_data_for_update(anime_id=anime_id, anime_body=anime_body)
-        anime = AnimeFactory.create(anime_body)
-        return self.anime_repository.update(anime_id, anime)
+        anime = AnimeFactory.create_for_update(anime_id=anime_id, anime_body=anime_body)
+        return self.anime_repository.update(anime)
 
 
     def delete(self, anime_id: int) -> None:
