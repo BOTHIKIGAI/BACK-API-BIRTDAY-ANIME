@@ -96,6 +96,26 @@ class AuthorRepository:
         return self.db.query(Author).filter_by(id=author_id).first()
 
 
+    def get_by_anime(self, anime_id: int) -> List[Author]:
+        """
+        Retrieve a list of authors associated with a specific anime.
+
+        This method queries the database to join the Author table with the anime-author
+        association table and filters the results based on the provided anime ID.
+
+        Args:
+            anime_id (int): The ID of the anime for which to retrieve associated authors.
+
+        Returns:
+            List[Author]: A list of Author instances linked to the specified anime.
+        """
+        query = self.db.query(Author).join(
+            anime_author_association,
+            Author.id == anime_author_association.c.author_id,
+        ).filter(anime_author_association.c.anime_id == anime_id)
+        return query.all()
+
+
     def create(self, author: Author) -> Author:
         """
         Creates a new author in the database and returns the
