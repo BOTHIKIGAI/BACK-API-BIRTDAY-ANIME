@@ -128,6 +128,24 @@ class EpisodeRepository:
         ).filter(episode_author_association.c.author_id == author_id)
         return query.all()
 
+
+    def get_by_anime(self, anime_id: int) -> List[Episode]:
+        """
+        Retrieve a list of episodes associated with a specific anime.
+
+        This method queries the database for episodes that belong to the anime
+        identified by the provided anime_id.
+
+        Args:
+            anime_id (int): The unique identifier of the anime.
+
+        Returns:
+            List[Episode]: A list of Episode instances corresponding to the specified anime.
+        """
+        query = self.db.query(Episode).filter(Episode.anime_id == anime_id)
+        return query.all()
+
+
     def create(self, episode: Episode) -> Episode:
         """
         Creates a new episode in the database and return the created Episode.
