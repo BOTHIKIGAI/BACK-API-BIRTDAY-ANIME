@@ -3,8 +3,9 @@ This module contains the intermediate table for the
 many-to-many relationship between anime and author.
 """
 
-from sqlalchemy import Table, Column, BigInteger, ForeignKey, DateTime
+from sqlalchemy import BigInteger, Column, DateTime, ForeignKey, Table
 from sqlalchemy.sql import func
+
 from app.config.database import Base
 
 anime_author_association = Table(
