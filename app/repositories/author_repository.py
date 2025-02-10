@@ -1,14 +1,18 @@
 """
-This module represents the abstraction of the 
+This module represents the abstraction of the
 Author's data access logic.
 """
 
 from typing import List, Optional
+
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload, Query
+from sqlalchemy.orm import Query, Session
+
 from app.config.database import get_db_connection
-from app.models.tables.author_models import Author
 from app.models.relationships.anime_author_association import anime_author_association
+from app.models.tables.author_models import Author
+from app.schemas.author_schema import AuthorAnimeRelationSchema
+
 
 class AuthorRepository:
     """
@@ -89,9 +93,7 @@ class AuthorRepository:
             including related anime and episodes, or None
             if no author is found.
         """
-        return self.db.query(Author).options(
-            lazyload(Author.anime),
-            lazyload(Author.episodes)).filter_by(id = author_id).first()
+        return self.db.query(Author).filter_by(id=author_id).first()
 
 
     def create(self, author: Author) -> Author:
@@ -111,7 +113,7 @@ class AuthorRepository:
         return author
 
 
-    def update(self, author_id: int, author: Author) -> Author:
+    def update(self, author: Author) -> Author:
         """
         Updates an existing author in the database with
         the provided data and returns the updated author.
@@ -124,13 +126,12 @@ class AuthorRepository:
             Optional[Author]: The updated author, or None
             if no author is found with the given ID.
         """
-        author.id = author_id
         self.db.merge(author)
         self.db.commit()
         return author
 
 
-    def delete(self, author_id: Author) -> None:
+    def delete(self, author_id: int) -> None:
         """
         Deletes an existing author in the database with
         the given ID.
@@ -143,7 +144,7 @@ class AuthorRepository:
         self.db.commit()
 
 
-    def create_anime_relation(self, author_id: int, anime_id: int):
+    def create_anime_relation(self, data_relation):
         """
         Creates a relationship between an author and an anime.
 
@@ -154,15 +155,15 @@ class AuthorRepository:
         Returns:
             dict: A dictionary containing the author_id and anime_id.
         """
-        insert_statement  = anime_author_association.insert().values(author_id = author_id,
-                                                                     anime_id = anime_id)
+
+        insert_statement  = anime_author_association.insert().values(author_id = data_relation["author_id"],
+                                                                     anime_id = data_relation["anime_id"])
         self.db.execute(insert_statement)
         self.db.commit()
+        return data_relation
 
-        return {"author_id": author_id, "anime_id": anime_id}
 
-
-    def has_relationship_with_anime(self, author_id: int, anime_id: int) -> bool:
+    def has_relationship_with_anime(self, data_relation: AuthorAnimeRelationSchema) -> bool:
         """
         Checks if the relationship between the author and anime exists.
 
@@ -173,8 +174,8 @@ class AuthorRepository:
         Returns:
             bool: True if the relationship exists, False otherwise.
         """
-        query = self.db.query(anime_author_association).filter(anime_author_association.c.author_id == author_id,
-                                                               anime_author_association.c.anime_id == anime_id)
+        query = self.db.query(anime_author_association).filter(anime_author_association.c.author_id == data_relation.author_id,
+                                                               anime_author_association.c.anime_id == data_relation.anime_id)
         return self.db.query(query.exists()).scalar()
 
 
