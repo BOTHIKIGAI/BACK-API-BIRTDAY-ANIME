@@ -3,16 +3,21 @@ This module represents the service layer or business logic
 for author.
 """
 from typing import List, Optional
+
 from fastapi import Depends
-from app.models.tables.author_models import Author
+
+from app.factories.author_factory import AuthorAnimeFactory, AuthorFactory
 from app.models.tables.anime_models import Anime
+from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
+from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
-from app.schemas.author_schema import AuthorSchema, AuthorAnimeRelationSchema
-from app.factories.author_factory import AuthorFactory
-from app.validations.author_validator import AuthorValidator
-from app.validations.anime_validator import AnimeValidator
+from app.repositories.episode_repository import EpisodeRepository
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
 from app.services.anime_service import AnimeService
+from app.validations.anime_validator import AnimeValidator
+from app.validations.author_validator import AuthorValidator
+
 
 class AuthorService:
     """
@@ -39,14 +44,18 @@ class AuthorService:
     author_validator: AuthorValidator
     anime_service: AnimeService
     anime_validator: AnimeValidator
-    
+    anime_repository: AnimeRepository
+    episode_repository: EpisodeRepository
+
 
     # Constructor
     def __init__(self,
                  author_repository: AuthorRepository = Depends(),
                  author_validator: AuthorValidator = Depends(),
                  anime_service: AnimeService = Depends(),
-                 anime_validator: AnimeValidator = Depends()) -> None:
+                 anime_validator: AnimeValidator = Depends(),
+                 anime_repositoy: AnimeRepository = Depends(),
+                 episode_repository: EpisodeRepository = Depends()) -> None:
         """
         Initializes the AuthorService with repositories and validators
         for accessing and validating Author and Anime data.
@@ -65,6 +74,8 @@ class AuthorService:
         self.author_validator = author_validator
         self.anime_service = anime_service
         self.anime_validator = anime_validator
+        self.anime_repository = anime_repositoy
+        self.episode_repository = episode_repository
 
 
     # Methods
@@ -143,8 +154,8 @@ class AuthorService:
             Author: The updated author with the new data.
         """
         self.author_validator.validate_data_for_update(author_id=author_id, author_body=author_body)
-        author = AuthorFactory.create(author_body)
-        return self.author_repository.update(author_id=author_id, author=author)
+        author = AuthorFactory.create_for_update(author_id=author_id, author_body=author_body)
+        return self.author_repository.update(author)
 
 
     def delete(self, author_id: int) -> None:
@@ -172,10 +183,10 @@ class AuthorService:
             author.
         """
         self.author_validator.validate_data_for_get(author_id)
-        return self.author_repository.get(author_id).anime
+        return self.anime_repository.get_by_author(author_id)
 
 
-    def create_anime_relation(self, author_id: int, anime_id: int) -> AuthorAnimeRelationSchema:
+    def create_anime_relation(self, data_relation: AuthorAnimeRelationSchema):
         """
         Creates a relationship between an author and an anime.
 
@@ -191,10 +202,11 @@ class AuthorService:
             HTTPException: If the anime does not exist (status code 404).
             HTTPException: If the relationship already exists (status code 409).
         """
-        self.author_validator.validate_data_for_get(author_id)
-        self.anime_validator.validate_data_for_get(anime_id)
-        self.author_validator.validate_has_relationship_with_anime(author_id = author_id, anime_id = anime_id)
-        return self.author_repository.create_anime_relation(author_id = author_id, anime_id = anime_id)
+        self.author_validator.validate_data_for_get(data_relation.author_id)
+        self.anime_validator.validate_data_for_get(data_relation.anime_id)
+        self.author_validator.validate_has_relationship_with_anime(data_relation)
+        author_anime_relation = AuthorAnimeFactory.create(data_relation)
+        return self.author_repository.create_anime_relation(author_anime_relation)
 
 
     def get_episodes(self, author_id: int) -> List[Episode]:
@@ -210,4 +222,4 @@ class AuthorService:
             author.
         """
         self.author_validator.validate_data_for_get(author_id)
-        return self.author_repository.get(author_id).episodes
+        return self.episode_repository.get_by_author(author_id)
