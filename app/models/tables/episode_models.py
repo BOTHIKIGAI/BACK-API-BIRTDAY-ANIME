@@ -1,11 +1,15 @@
 """
 This module contains the modul of the Episode table.
 """
-from sqlalchemy import Column, BigInteger, String, Integer, Date, ForeignKey, DateTime
+from sqlalchemy import BigInteger, Column, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+
 from app.config.database import Base
-from app.models.relationships.episode_author_association import episode_author_association
+from app.models.relationships.episode_author_association import (
+    episode_author_association,
+)
+
 
 class Episode(Base):
     """
