@@ -4,7 +4,7 @@ logic for episode.
 """
 
 from typing import List, Optional
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from app.models.tables.episode_models import Episode
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
@@ -38,7 +38,7 @@ class EpisodeService:
     episode_factory: EpisodeFactory
     episode_validator: EpisodeValidator
     author_validator: AuthorValidator
-    
+
     # Constructor
     def __init__(self,
                  episode_repository: EpisodeRepository = Depends(),
@@ -138,8 +138,8 @@ class EpisodeService:
             episode data is invalid.
         """
         self.episode_validator.validate_data_for_update(episode_id, episode_body)
-        episode = self.episode_factory.create(episode_body)
-        return self.episode_repository.update(episode_id, episode)
+        episode = self.episode_factory.create_for_update(episode_id=episode_id, episode_body=episode_body)
+        return self.episode_repository.update(episode)
 
 
     def delete(self, episode_id: int) -> None:
