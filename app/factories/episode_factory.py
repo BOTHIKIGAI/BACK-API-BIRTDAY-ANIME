@@ -28,3 +28,16 @@ class EpisodeFactory:
             episode=episode_body.episode,
             air_date=episode_body.air_date,
         )
+
+
+    @staticmethod
+    def create_for_update(episode_id: int, episode_body: EpisodeSchema) -> Episode:
+        return Episode(
+            id=episode_id,
+            anime_id=episode_body.anime_id,
+            arc=episode_body.arc,
+            season=episode_body.season,
+            name=episode_body.name,
+            episode=episode_body.episode,
+            air_date=episode_body.air_date,
+        )
