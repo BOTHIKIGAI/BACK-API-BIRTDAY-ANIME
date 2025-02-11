@@ -162,7 +162,7 @@ class EpisodeRepository:
         return episode
 
 
-    def update(self, episode_id: int, episode: Episode) -> Episode:
+    def update(self, episode: Episode) -> Episode:
         """
         Updates an existing episode in the database with the provided data and returns the update
         episode.
@@ -174,7 +174,6 @@ class EpisodeRepository:
         Returns:
             Episode: The update episode, or None if no episode is found with the given ID.
         """
-        episode.id = episode_id
         self.db.merge(episode)
         self.db.commit()
         return episode
