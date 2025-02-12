@@ -180,20 +180,24 @@ class EpisodeService:
         return self.episode_repository.get(episode_id).authors
 
 
-    def create_author_relation(self, episode_id: int, author_id: int) -> EpisodeAuthorRelationSchema:
-        """
-        Creates a relationship between an episode and an author.
+    def create_author_relation(
+            self,
+            data_relation: EpisodeAuthorRelationSchema
+        ) -> EpisodeAuthorRelationSchema:
+            """
+            Creates a relationship between an episode and an author.
 
-        Args:
-            episode_id (int): The ID of the episode.
-            author_id (int): The ID of the author.
+            Args:
+                episode_id (int): The ID of the episode.
+                author_id (int): The ID of the author.
 
-        Returns:
-            EpisodeAuthorRelationSchema: The created relationship data.
+            Returns:
+                EpisodeAuthorRelationSchema: The created relationship data.
 
-        Raises:
-            HTTPException: If the episode or author does not exist (status code 404).
-        """
-        self.episode_validator.validate_data_for_get(episode_id)
-        self.author_validator.validate_data_for_get(author_id)
-        return self.episode_repository.create_author_relation(episode_id, author_id)
+            Raises:
+                HTTPException: If the episode or author does not exist (status code 404).
+            """
+            self.episode_validator.validate_data_for_get(data_relation.episode_id)
+            self.author_validator.validate_data_for_get(data_relation.author_id)
+            self.episode_validator.validate_unique_episode_author_relation(data_relation)
+            return self.episode_repository.create_author_relation(data_relation)
