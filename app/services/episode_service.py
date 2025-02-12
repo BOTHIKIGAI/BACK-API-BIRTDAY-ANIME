@@ -1,36 +1,33 @@
 """
-This module represents the service layer or business
-logic for episode.
+This module represents the service layer or business logic for episode.
 """
 
 from typing import List, Optional
+
 from fastapi import Depends
-from app.models.tables.episode_models import Episode
+
+from app.factories.episode_factory import EpisodeFactory
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
+from app.models.tables.episode_models import Episode
 from app.repositories.episode_repository import EpisodeRepository
-from app.schemas.episode_schema import EpisodeSchema, EpisodeAuthorRelationSchema
-from app.factories.episode_factory import EpisodeFactory
-from app.validations.episode_validator import EpisodeValidator
+from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 from app.validations.author_validator import AuthorValidator
+from app.validations.episode_validator import EpisodeValidator
+
 
 class EpisodeService:
     """
     Service class for managing Episode data.
 
-    This class provides methods to interact with the EpisodeRepository,
-    including listing episodes with optional filters, retrieving a
-    specific episode by ID, creating a new episode, updating an
-    existing episode, deleting an episode, and creating relationships
-    between episodes and authors.
+    This class provides methods to interact with the EpisodeRepository, including listing episodes
+    with optional filters, retrieving a specific episode by ID, creating a new episode, updating an
+    existing episode, deleting an episode, and creating relationships between episodes and authors.
 
     Attributes:
-        episode_repository (EpisodeRepository): The repository used for
-        accessing Episode data.
-        episode_factory (EpisodeFactory): The factory used for creating
-        Episode instances.
-        author_validator (AuthorValidator): The service used for accessing
-        Author data.
+        episode_repository (EpisodeRepository): The repository used for accessing Episode data.
+        episode_factory (EpisodeFactory): The factory used for creating Episode instances.
+        author_validator (AuthorValidator): The service used for accessing Author data.
     """
 
     # Attributes
@@ -46,16 +43,13 @@ class EpisodeService:
                  episode_validator: EpisodeValidator = Depends(),
                  author_validator: AuthorValidator = Depends()) -> None:
         """
-        Initializes the EpisodeService with repositories and services
-        for accessing Episode data and author logic.
+        Initializes the EpisodeService with repositories and services for accessing Episode data
+        and author logic.
 
         Args:
-            episode_repository (EpisodeRepository): The repository
-            used for accessing Episode data.
-            episode_factory (EpisodeFactory): The factory used for
-            creating Episode instances.
-            author_validator (AuthorValidator): The service used for
-            accessing author logic.
+            episode_repository (EpisodeRepository): The repository used for accessing Episode data.
+            episode_factory (EpisodeFactory): The factory used for creating Episode instances.
+            author_validator (AuthorValidator): The service used for accessing author logic.
         """
         self.episode_repository = episode_repository
         self.episode_factory = episode_factory
@@ -106,8 +100,7 @@ class EpisodeService:
         Creates a new episode in the database.
 
         Args:
-            episode_body (EpisodeSchema): The data of the
-            episode to create.
+            episode_body (EpisodeSchema): The data of the episode to create.
 
         Returns:
             Episode: The created episode with the assigned ID.
@@ -122,20 +115,17 @@ class EpisodeService:
 
     def update(self, episode_id: int, episode_body: EpisodeSchema) -> Episode:
         """
-        Updates an existing episode in the database with the
-        provided data.
+        Updates an existing episode in the database with the provided data.
 
         Args:
             episode_id (int): The ID of the episode to update.
-            episode_body (EpisodeSchema): The data of the episode
-            to update.
+            episode_body (EpisodeSchema): The data of the episode to update.
 
         Returns:
             Episode: The updated episode with the new data.
 
         Raises:
-            HTTPException: If the episode does not exist or the
-            episode data is invalid.
+            HTTPException: If the episode does not exist or the episode data is invalid.
         """
         self.episode_validator.validate_data_for_update(episode_id, episode_body)
         episode = self.episode_factory.create_for_update(episode_id=episode_id, episode_body=episode_body)
@@ -158,8 +148,7 @@ class EpisodeService:
 
     def get_anime(self, episode_id: int) -> Anime:
         """
-        Retrieves the anime associated with a specific episode
-        by episode ID.
+        Retrieves the anime associated with a specific episode by episode ID.
 
         Args:
             episode_id (int): The ID of the episode.
@@ -182,8 +171,7 @@ class EpisodeService:
             episode_id (int): The ID of the episode.
 
         Returns:
-            List[Author]: A list of authors associated with
-            the episode.
+            List[Author]: A list of authors associated with the episode.
 
         Raises:
             HTTPException: If the episode does not exist (status code 404).
