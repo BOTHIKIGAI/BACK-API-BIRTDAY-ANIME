@@ -78,7 +78,7 @@ class EpisodeService:
             start = start_index)
 
 
-    def get(self, episode_id: int) -> Optional[Episode]:
+    def get(self, episode_id: int) -> Episode:
         """
         Retrieves a specific episode by ID.
 
