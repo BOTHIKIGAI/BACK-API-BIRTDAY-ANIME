@@ -11,8 +11,7 @@ class EpisodeFactory:
     Creates an Episode instance from an EpisodeSchema.
 
     Args:
-        episode_body (EpisodeSchema): The schema
-        containing the episode data.
+        episode_body (EpisodeSchema): The schema containing the episode data.
 
     Returns:
         Episode: The created Episode instance.
