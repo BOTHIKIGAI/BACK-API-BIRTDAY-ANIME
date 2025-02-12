@@ -5,7 +5,7 @@ This module represents the abstraction of the Episode's data access logic.
 from typing import List, Optional
 
 from fastapi import Depends
-from sqlalchemy.orm import Query, Session, lazyload
+from sqlalchemy.orm import Query, Session
 
 from app.config.database import get_db_connection
 from app.models.relationships.episode_author_association import (
@@ -94,7 +94,7 @@ class EpisodeRepository:
         return query.offset(start).limit(limit).all()
 
 
-    def get(self, episode_id: int) -> Optional[Episode]:
+    def get(self, episode_id: int) -> Episode:
         """
         Retrieves a specific episode by ID, include related author and anime.
 
@@ -105,9 +105,7 @@ class EpisodeRepository:
             Optional[Episode]: The episode with the  given ID, including related author and
             anime, or None if no author is found.
         """
-        return self.db.query(Episode).options(
-            lazyload(Episode.anime),
-            lazyload(Episode.authors)).filter_by(id=episode_id).first()
+        return self.db.query(Episode).filter_by(id=episode_id).first()
 
 
     def get_by_author(self, author_id: int) -> List[Episode]:
