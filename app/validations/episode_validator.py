@@ -5,9 +5,9 @@ from datetime import date, datetime
 
 from fastapi import Depends, HTTPException
 
-from app.repositories.anime_repository import AnimeRepository
 from app.repositories.episode_repository import EpisodeRepository
 from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
+from app.validations.anime_validator import AnimeValidator
 
 
 class EpisodeValidator:
@@ -19,22 +19,22 @@ class EpisodeValidator:
 
     Attributes:
         episode_repository (EpisodeRepository): The repository used for accessing Episode data.
-        anime_repository (AnimeRepository): The repository used for accessing Anime data.
+        anime_validator (AnimeValidator): The validator used for validate Anime operations.
     """
 
     # Constructor
     def __init__(self,
                  episode_repository: EpisodeRepository = Depends(),
-                 anime_repository: AnimeRepository = Depends()) -> None:
+                 anime_validator: AnimeValidator = Depends()) -> None:
         """
         Initializes the EpisodeValidator with a repository for accessing episode data.
 
         Args:
             episode_repository (EpisodeRepository): The repository used for accessing episode data.
-            anime_repository (AnimeRepository): The repository used for accessing anime data.
+            anime_validator (AnimeValidator): The validator used for validate Anime operations.
         """
         self.episode_repository = episode_repository
-        self.anime_repository = anime_repository
+        self.anime_validator = anime_validator
 
 
     # High Level Function
@@ -56,6 +56,7 @@ class EpisodeValidator:
         """
 
         self.validate_air_date_not_in_future(episode.air_date)
+        self.anime_validator.validate_exists_by_id(episode.anime_id)
 
         if self.validate_anime_has_episodes(episode.anime_id):
             self.validate_unique_episode_name_for_create(episode)
