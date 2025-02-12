@@ -1,15 +1,19 @@
 """
-This module represents the abstraction
-of the Episode's data access logic.
+This module represents the abstraction of the Episode's data access logic.
 """
 
 from typing import List, Optional
+
 from fastapi import Depends
-from sqlalchemy.orm import Session, lazyload, Query
+from sqlalchemy.orm import Query, Session, lazyload
+
 from app.config.database import get_db_connection
+from app.models.relationships.episode_author_association import (
+    episode_author_association,
+)
 from app.models.tables.episode_models import Episode
 from app.schemas.episode_schema import EpisodeSchema
-from app.models.relationships.episode_author_association import episode_author_association
+
 
 class EpisodeRepository:
     """
@@ -64,8 +68,7 @@ class EpisodeRepository:
             start (Optional[int]): The index of the first result to return.
 
         Returns:
-            List[Episode]: A list of episode that match the given filters and
-            pagination settings.
+            List[Episode]: A list of episode that match the given filters and pagination settings.
         """
 
         query = self.db.query(Episode)
@@ -99,8 +102,8 @@ class EpisodeRepository:
             episode_id (int): The ID of the episode to retrieve.
 
         Returns:
-            Optional[Episode]: The episode with the  given ID, including related author and anime,
-            or None if no author is found.
+            Optional[Episode]: The episode with the  given ID, including related author and
+            anime, or None if no author is found.
         """
         return self.db.query(Episode).options(
             lazyload(Episode.anime),
@@ -111,16 +114,16 @@ class EpisodeRepository:
         """
         Retrieves a list of Episodes associated with a given author.
 
-        This function performs a join between the Episode table and the episode_author_association table,
-        filtering the results by the specified author_id. It returns all Episode records that are related
-        to the provided author identifier.
+        This function performs a join between the Episode table and the episode_author_association
+        table, filtering the results by the specified author_id. It returns all Episode records
+        that are related to the provided author identifier.
 
         Args:
             author_id (int): The unique identifier of the author whose episodes are to be retrieved.
 
         Returns:
-            List[Episode]: A list of Episode objects associated with the given author. If no associations
-                exist, an empty list is returned.
+            List[Episode]: A list of Episode objects associated with the given author.
+            If no associations exist, an empty list is returned.
         """
         query = self.db.query(Episode).join(
             episode_author_association,
@@ -133,8 +136,8 @@ class EpisodeRepository:
         """
         Retrieve a list of episodes associated with a specific anime.
 
-        This method queries the database for episodes that belong to the anime
-        identified by the provided anime_id.
+        This method queries the database for episodes that belong to the anime identified by the
+        provided anime_id.
 
         Args:
             anime_id (int): The unique identifier of the anime.
