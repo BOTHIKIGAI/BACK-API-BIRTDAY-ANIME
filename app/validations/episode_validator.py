@@ -8,6 +8,7 @@ from fastapi import Depends, HTTPException
 from app.repositories.episode_repository import EpisodeRepository
 from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 from app.validations.anime_validator import AnimeValidator
+from app.validations.author_validator import AuthorValidator
 
 
 class EpisodeValidator:
@@ -20,21 +21,25 @@ class EpisodeValidator:
     Attributes:
         episode_repository (EpisodeRepository): The repository used for accessing Episode data.
         anime_validator (AnimeValidator): The validator used for validate Anime operations.
+        author_validator (AuthorValidator): The validator used for validate Author operations.
     """
 
     # Constructor
     def __init__(self,
-                 episode_repository: EpisodeRepository = Depends(),
-                 anime_validator: AnimeValidator = Depends()) -> None:
+                 episode_repository: EpisodeRepository=Depends(),
+                 anime_validator: AnimeValidator=Depends(),
+                 author_validator: AuthorValidator=Depends()) -> None:
         """
         Initializes the EpisodeValidator with a repository for accessing episode data.
 
         Args:
             episode_repository (EpisodeRepository): The repository used for accessing episode data.
             anime_validator (AnimeValidator): The validator used for validate Anime operations.
+            author_validator (AuthorValidator): The validator used for validate Author operations.
         """
         self.episode_repository = episode_repository
         self.anime_validator = anime_validator
+        self.author_validator = author_validator
 
 
     # High Level Function
@@ -74,6 +79,15 @@ class EpisodeValidator:
 
     def validate_data_for_delete(self, episode_id: int) -> None:
         self.validate_exists_by_id(episode_id)
+
+
+    def validate_data_for_create_relation_author(
+        self,
+        data_relation: EpisodeAuthorRelationSchema
+    ) -> None:
+        self.validate_data_for_get(data_relation.episode_id)
+        self.author_validator.validate_data_for_get(data_relation.author_id)
+        self.validate_unique_episode_author_relation(data_relation)
 
 
     # Low Level Function
