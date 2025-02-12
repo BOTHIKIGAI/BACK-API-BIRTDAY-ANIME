@@ -1,13 +1,13 @@
 """
 This module contains the validation for the episode.
 """
-from datetime import datetime
+from datetime import date, datetime
 
 from fastapi import Depends, HTTPException
 
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.episode_repository import EpisodeRepository
-from app.schemas.episode_schema import EpisodeSchema
+from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 
 
 class EpisodeValidator:
@@ -104,7 +104,7 @@ class EpisodeValidator:
                                 status_code=404)
 
 
-    def validate_air_date_not_in_future(self, air_date: str) -> None:
+    def validate_air_date_not_in_future(self, air_date: date) -> None:
         """
         Validates that the air date of an episode is not in
         the future.
@@ -127,7 +127,8 @@ class EpisodeValidator:
             self.exception_unique_episode_name()
 
 
-    def validate_unique_episode_name_for_update(self, exclude_anime_id: int, data_episode: EpisodeSchema) -> None:
+    def validate_unique_episode_name_for_update(
+        self, exclude_anime_id: int, data_episode: EpisodeSchema) -> None:
         if self.episode_repository.is_episode_name_taken_for_update(exclude_anime_id, data_episode):
             self.exception_unique_episode_name()
 
@@ -140,6 +141,20 @@ class EpisodeValidator:
     def validate_if_episode_num_taken_in_season_for_update(self, exclude_anime_id: int, data_episode: EpisodeSchema) -> None:
         if self.episode_repository.is_episode_number_taken_in_temp_for_update(exclude_anime_id, data_episode):
             self.exception_episode_num_taken_in_season()
+
+
+    def validate_unique_episode_author_relation(
+            self,
+            data_relation: EpisodeAuthorRelationSchema
+        ) -> None:
+            if self.episode_repository.exists_relation_between_episode_and_author(
+                episode_id=data_relation.episode_id,
+                author_id=data_relation.author_id
+            ):
+                raise HTTPException(
+                    detail="The relationship between the episode and author already exists.",
+                    status_code=409
+                )
 
 
     # Exception
