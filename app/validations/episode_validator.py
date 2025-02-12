@@ -2,24 +2,24 @@
 This module contains the validation for the episode.
 """
 from datetime import datetime
+
 from fastapi import Depends, HTTPException
-from app.schemas.episode_schema import EpisodeSchema
-from app.repositories.episode_repository import EpisodeRepository
+
 from app.repositories.anime_repository import AnimeRepository
+from app.repositories.episode_repository import EpisodeRepository
+from app.schemas.episode_schema import EpisodeSchema
+
 
 class EpisodeValidator:
     """
     Validator class for validating Episode data.
 
-    This class provides methods to validate the Episode data,
-    including checking if an episode exists by ID, validating
-    the episode, and validating the air_date.
+    This class provides methods to validate the Episode data, including checking if an episode
+    exists by ID, validating the episode, and validating the air_date.
 
     Attributes:
-        episode_repository (EpisodeRepository): The repository used for
-        accessing Episode data.
-        anime_repository (AnimeRepository): The repository used for
-        accessing Anime data.
+        episode_repository (EpisodeRepository): The repository used for accessing Episode data.
+        anime_repository (AnimeRepository): The repository used for accessing Anime data.
     """
 
     # Constructor
@@ -27,14 +27,11 @@ class EpisodeValidator:
                  episode_repository: EpisodeRepository = Depends(),
                  anime_repository: AnimeRepository = Depends()) -> None:
         """
-        Initializes the EpisodeValidator with a repository
-        for accessing episode data.
+        Initializes the EpisodeValidator with a repository for accessing episode data.
 
         Args:
-            episode_repository (EpisodeRepository): The repository
-            used for accessing episode data.
-            anime_repository (AnimeRepository): The repository
-            used for accessing anime data.
+            episode_repository (EpisodeRepository): The repository used for accessing episode data.
+            anime_repository (AnimeRepository): The repository used for accessing anime data.
         """
         self.episode_repository = episode_repository
         self.anime_repository = anime_repository
@@ -59,7 +56,7 @@ class EpisodeValidator:
         """
 
         self.validate_air_date_not_in_future(episode.air_date)
-        
+
         if self.validate_anime_has_episodes(episode.anime_id):
             self.validate_unique_episode_name_for_create(episode)
             self.validate_if_episode_num_taken_in_season_for_create(episode)
@@ -138,7 +135,7 @@ class EpisodeValidator:
     def validate_if_episode_num_taken_in_season_for_create(self, episode: EpisodeSchema) -> None:
         if self.episode_repository.is_episode_number_taken_in_season_for_create(episode):
             self.exception_episode_num_taken_in_season()
-        
+
 
     def validate_if_episode_num_taken_in_season_for_update(self, exclude_anime_id: int, data_episode: EpisodeSchema) -> None:
         if self.episode_repository.is_episode_number_taken_in_temp_for_update(exclude_anime_id, data_episode):
