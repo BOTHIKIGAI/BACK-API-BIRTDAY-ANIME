@@ -12,7 +12,7 @@ from app.models.relationships.episode_author_association import (
     episode_author_association,
 )
 from app.models.tables.episode_models import Episode
-from app.schemas.episode_schema import EpisodeSchema
+from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 
 
 class EpisodeRepository:
@@ -194,22 +194,26 @@ class EpisodeRepository:
         self.db.commit()
 
 
-    def create_author_relation(self, episode_id: int, author_id: int):
-        """
-        Creates a relationship between an episode and an author.
+    def create_author_relation(
+            self,
+            data_relation: EpisodeAuthorRelationSchema
+        ) -> EpisodeAuthorRelationSchema:
+            """
+            Creates a relationship between an episode and an author.
 
-        Args:
-            episode_id (int): The ID of the episode.
-            author_id (int): The ID of the author.
+            Args:
+                episode_id (int): The ID of the episode.
+                author_id (int): The ID of the author.
 
-        Returns:
-            dict: A dictionary containing the episode_id and author_id.
-        """
-        insert_statement = episode_author_association.insert().\
-                           values(author_id=author_id, episode_id=episode_id)
-        self.db.execute(insert_statement)
-        self.db.commit()
-        return {"episode_id": episode_id, "author_id": author_id}
+            Returns:
+                dict: A dictionary containing the episode_id and author_id.
+            """
+            insert_statement = episode_author_association.insert().\
+                            values(author_id=data_relation.author_id,
+                                    episode_id=data_relation.episode_id)
+            self.db.execute(insert_statement)
+            self.db.commit()
+            return data_relation
 
 
     def exists_by_id(self, episode_id: int) -> bool:
@@ -303,6 +307,14 @@ class EpisodeRepository:
         """
         base_query = self.is_episode_name_taken(data_episode)
         query = base_query.filter(Episode.id!=exclude_id)
+        return self.db.query(query.exists()).scalar()
+
+
+    def exists_relation_between_episode_and_author(self, episode_id: int, author_id: int) -> bool:
+        query = self.db.query(episode_author_association).filter(
+            episode_author_association.c.episode_id == episode_id,
+            episode_author_association.c.author_id == author_id
+        )
         return self.db.query(query.exists()).scalar()
 
 
