@@ -1,3 +1,4 @@
+
 """
 This module contains the routes for the management of the anime
 """
@@ -144,21 +145,24 @@ def get_author(episode_id: int, episode_service: EpisodeService=Depends()):
     return episode_service.get_author(episode_id)
 
 
-@EpisodeRouter.post('/{episode_id}/author/{author_id}',
-                    response_model=EpisodeAuthorRelationSchema,
-                    status_code=status.HTTP_201_CREATED)
-def create_author_relation(episode_id: int,
-                           author_id: int,
-                           episode_service: EpisodeService=Depends()):
-    """
-    Creates a relationship between an episode and an author.
+@EpisodeRouter.post(
+        '/{episode_id}/author/{author_id}',
+        response_model=EpisodeAuthorRelationSchema,
+        status_code=status.HTTP_201_CREATED
+    )
+def create_author_relation(
+        data_relation: EpisodeAuthorRelationSchema,
+        episode_service: EpisodeService=Depends()
+    ):
+        """
+        Creates a relationship between an episode and an author.
 
-    Args:
-        episode_id (int): The ID of the episode.
-        author_id (int): The ID of the author.
-        episode_service (EpisodeService): The service to handle episode operations.
+        Args:
+            episode_id (int): The ID of the episode.
+            author_id (int): The ID of the author.
+            episode_service (EpisodeService): The service to handle episode operations.
 
-    Returns:
-        EpisodeAuthorRelationSchema: The created relationship data.
-    """
-    return episode_service.create_author_relation(episode_id=episode_id, author_id=author_id)
+        Returns:
+            EpisodeAuthorRelationSchema: The created relationship data.
+        """
+        return episode_service.create_author_relation(data_relation)
