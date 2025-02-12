@@ -1,6 +1,5 @@
 """
-This module contains the routes for the
-management of the anime
+This module contains the routes for the management of the anime
 """
 from typing import List, Optional
 from fastapi import APIRouter, Depends, status
@@ -9,20 +8,19 @@ from app.services.episode_service import EpisodeService
 
 EpisodeRouter = APIRouter()
 
-@EpisodeRouter.get('/', response_model = List[EpisodeSchema])
+@EpisodeRouter.get('/', response_model=List[EpisodeSchema])
 def index(
-    episode_service: EpisodeService = Depends(),
-    anime_id: Optional[int] = None,
-    arc: Optional[str] = None,
-    season: Optional[int] = None,
-    name: Optional[str] = None,
-    episode: Optional[int] = None,
-    air_date: Optional[str] = None,
-    page_size: Optional[int] = 100,
-    start_index: Optional[int] = None):
+    episode_service: EpisodeService=Depends(),
+    anime_id: Optional[int]=None,
+    arc: Optional[str]=None,
+    season: Optional[int]=None,
+    name: Optional[str]=None,
+    episode: Optional[int]=None,
+    air_date: Optional[str]=None,
+    page_size: Optional[int]=100,
+    start_index: Optional[int]=None):
     """
-    Retrieves a list of episodes based
-    on the provided filters.
+    Retrieves a list of episodes based on the provided filters.
 
     Args:
         episode_service (EpisodeService): The service to handle episode operations.
@@ -38,19 +36,19 @@ def index(
         List[EpisodeSchema]: A list of episode matching the filters.
     """
     return episode_service.list(
-        anime_id = anime_id,
-        arc = arc,
-        season = season,
-        name = name,
-        episode = episode,
-        air_date = air_date,
-        page_size = page_size,
-        start_index = start_index
+        anime_id=anime_id,
+        arc=arc,
+        season=season,
+        name=name,
+        episode=episode,
+        air_date=air_date,
+        page_size=page_size,
+        start_index=start_index
     )
 
 
-@EpisodeRouter.get('/{episode_id}', response_model = EpisodeSchema)
-def get(episode_id: int, episode_service: EpisodeService = Depends()):
+@EpisodeRouter.get('/{episode_id}', response_model=EpisodeSchema)
+def get(episode_id: int, episode_service: EpisodeService=Depends()):
     """
     Retrieves an episode by their ID.
 
@@ -64,8 +62,8 @@ def get(episode_id: int, episode_service: EpisodeService = Depends()):
     return episode_service.get(episode_id)
 
 
-@EpisodeRouter.post('/', response_model = EpisodeSchema, status_code = status.HTTP_201_CREATED)
-def create(episode: EpisodeSchema, episode_service: EpisodeService = Depends()):
+@EpisodeRouter.post('/', response_model=EpisodeSchema, status_code=status.HTTP_201_CREATED)
+def create(episode: EpisodeSchema, episode_service: EpisodeService=Depends()):
     """
     Creates a new episode.
 
@@ -79,8 +77,8 @@ def create(episode: EpisodeSchema, episode_service: EpisodeService = Depends()):
     return episode_service.create(episode)
 
 
-@EpisodeRouter.put('/{episode_id}', response_model = EpisodeSchema)
-def update(episode_id: int, episode: EpisodeSchema, episode_service: EpisodeService = Depends()):
+@EpisodeRouter.put('/{episode_id}', response_model=EpisodeSchema)
+def update(episode_id: int, episode: EpisodeSchema, episode_service: EpisodeService=Depends()):
     """
     Updates an existing episode.
 
@@ -95,11 +93,11 @@ def update(episode_id: int, episode: EpisodeSchema, episode_service: EpisodeServ
     Raises:
         HTTPException: If the episode is not found.
     """
-    return episode_service.update(episode_id = episode_id, episode_body = episode)
+    return episode_service.update(episode_id=episode_id, episode_body=episode)
 
 
-@EpisodeRouter.delete('/{episode_id}', status_code = status.HTTP_204_NO_CONTENT)
-def delete(episode_id: int, episode_service: EpisodeService = Depends()):
+@EpisodeRouter.delete('/{episode_id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete(episode_id: int, episode_service: EpisodeService=Depends()):
     """
     Deletes an episode by their ID.
 
@@ -117,7 +115,7 @@ def delete(episode_id: int, episode_service: EpisodeService = Depends()):
 
 
 @EpisodeRouter.get('/{episode_id}/anime')
-def get_anime(episode_id: int, episode_service: EpisodeService = Depends()):
+def get_anime(episode_id: int, episode_service: EpisodeService=Depends()):
     """
     Get anime by their episode ID.
 
@@ -132,7 +130,7 @@ def get_anime(episode_id: int, episode_service: EpisodeService = Depends()):
 
 
 @EpisodeRouter.get('/{episode_id}/authors')
-def get_author(episode_id: int, episode_service: EpisodeService = Depends()):
+def get_author(episode_id: int, episode_service: EpisodeService=Depends()):
     """
     Get author/s episode by their ID.
 
@@ -147,23 +145,20 @@ def get_author(episode_id: int, episode_service: EpisodeService = Depends()):
 
 
 @EpisodeRouter.post('/{episode_id}/author/{author_id}',
-                    response_model = EpisodeAuthorRelationSchema,
-                    status_code = status.HTTP_201_CREATED)
+                    response_model=EpisodeAuthorRelationSchema,
+                    status_code=status.HTTP_201_CREATED)
 def create_author_relation(episode_id: int,
                            author_id: int,
-                           episode_service: EpisodeService = Depends()):
+                           episode_service: EpisodeService=Depends()):
     """
     Creates a relationship between an episode and an author.
 
     Args:
         episode_id (int): The ID of the episode.
         author_id (int): The ID of the author.
-        episode_service (EpisodeService): The service to
-        handle episode operations.
+        episode_service (EpisodeService): The service to handle episode operations.
 
     Returns:
-        EpisodeAuthorRelationSchema: The created relationship
-        data.
+        EpisodeAuthorRelationSchema: The created relationship data.
     """
-    return episode_service.create_author_relation(episode_id = episode_id,
-                                                  author_id = author_id)
+    return episode_service.create_author_relation(episode_id=episode_id, author_id=author_id)
