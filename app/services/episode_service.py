@@ -197,7 +197,5 @@ class EpisodeService:
             Raises:
                 HTTPException: If the episode or author does not exist (status code 404).
             """
-            self.episode_validator.validate_data_for_get(data_relation.episode_id)
-            self.author_validator.validate_data_for_get(data_relation.author_id)
-            self.episode_validator.validate_unique_episode_author_relation(data_relation)
+            self.episode_validator.validate_data_for_create_relation_author(data_relation)
             return self.episode_repository.create_author_relation(data_relation)
