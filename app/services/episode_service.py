@@ -11,6 +11,7 @@ from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.repositories.episode_repository import EpisodeRepository
+from app.repositories.anime_repository import AnimeRepository
 from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 from app.validations.author_validator import AuthorValidator
 from app.validations.episode_validator import EpisodeValidator
@@ -28,6 +29,7 @@ class EpisodeService:
         episode_repository (EpisodeRepository): The repository used for accessing Episode data.
         episode_factory (EpisodeFactory): The factory used for creating Episode instances.
         author_validator (AuthorValidator): The service used for accessing Author data.
+        anime_repository (AnimeRepository): The service used for accessing Anime data.
     """
 
     # Attributes
@@ -35,13 +37,15 @@ class EpisodeService:
     episode_factory: EpisodeFactory
     episode_validator: EpisodeValidator
     author_validator: AuthorValidator
+    anime_repository: AnimeRepository
 
     # Constructor
     def __init__(self,
                  episode_repository: EpisodeRepository = Depends(),
                  episode_factory: EpisodeFactory = Depends(),
                  episode_validator: EpisodeValidator = Depends(),
-                 author_validator: AuthorValidator = Depends()) -> None:
+                 author_validator: AuthorValidator = Depends(),
+                 anime_repository: AnimeRepository = Depends()) -> None:
         """
         Initializes the EpisodeService with repositories and services for accessing Episode data
         and author logic.
@@ -55,6 +59,7 @@ class EpisodeService:
         self.episode_factory = episode_factory
         self.episode_validator = episode_validator
         self.author_validator = author_validator
+        self.anime_repository = anime_repository
 
 
     # Methods
@@ -160,7 +165,7 @@ class EpisodeService:
             HTTPException: If the episode does not exist (status code 404).
         """
         self.episode_validator.validate_exists_by_id(episode_id)
-        return self.episode_repository.get(episode_id).anime
+        return self.anime_repository.get_by_episode(episode_id)
 
 
     def get_author(self, episode_id: int) -> List[Author]:
