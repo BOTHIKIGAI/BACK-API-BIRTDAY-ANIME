@@ -3,6 +3,7 @@ This module represents the abstraction of the
 Author's data access logic.
 """
 
+from datetime import date
 from typing import List, Optional
 
 from fastapi import Depends
@@ -298,6 +299,24 @@ class AuthorRepository:
         """
         query = self.query_is_name_taken(author_name).filter(Author.id != exclude_id)
         return self.db.query(query.exists()).scalar()
+
+
+    def get_by_birthday(self, target_date: date) -> List[Author]:
+        """
+        Retrieves all authors whose birthday matches the specified date.
+
+        This method queries the database to find authors with a birthday
+        that exactly matches the provided date.
+
+        Args:
+            target_date (date): The date to match against authors' birthdays.
+
+        Returns:
+            List[Author]: A list of Author instances whose birthday matches
+            the specified date.
+        """
+        query = self.db.query(Author).filter(Author.birthday == target_date)
+        return query.all()
 
 
     # Query base
