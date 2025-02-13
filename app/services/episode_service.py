@@ -135,7 +135,8 @@ class EpisodeService:
             HTTPException: If the episode does not exist or the episode data is invalid.
         """
         self.episode_validator.validate_data_for_update(episode_id, episode_body)
-        episode = self.episode_factory.create_for_update(episode_id=episode_id, episode_body=episode_body)
+        episode = self.episode_factory.create_for_update(episode_id=episode_id,
+                                                         episode_body=episode_body)
         return self.episode_repository.update(episode)
 
 
