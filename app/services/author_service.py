@@ -6,7 +6,7 @@ from typing import List, Optional
 
 from fastapi import Depends
 
-from app.factories.author_factory import AuthorAnimeFactory, AuthorFactory
+from app.factories.author_factory import AuthorFactory
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
@@ -205,8 +205,7 @@ class AuthorService:
         self.author_validator.validate_data_for_get(data_relation.author_id)
         self.anime_validator.validate_data_for_get(data_relation.anime_id)
         self.author_validator.validate_has_relationship_with_anime(data_relation)
-        author_anime_relation = AuthorAnimeFactory.create(data_relation)
-        return self.author_repository.create_anime_relation(author_anime_relation)
+        return self.author_repository.create_anime_relation(data_relation)
 
 
     def get_episodes(self, author_id: int) -> List[Episode]:
