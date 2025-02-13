@@ -10,9 +10,9 @@ from app.factories.episode_factory import EpisodeFactory
 from app.models.tables.anime_models import Anime
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
-from app.repositories.episode_repository import EpisodeRepository
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
+from app.repositories.episode_repository import EpisodeRepository
 from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
 from app.validations.episode_validator import EpisodeValidator
 
@@ -196,8 +196,7 @@ class EpisodeService:
             Creates a relationship between an episode and an author.
 
             Args:
-                episode_id (int): The ID of the episode.
-                author_id (int): The ID of the author.
+                data_relation (EpisodeAuthorRelationSchema): Scheme with author and episode ids
 
             Returns:
                 EpisodeAuthorRelationSchema: The created relationship data.
