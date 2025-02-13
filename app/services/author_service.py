@@ -102,7 +102,7 @@ class AuthorService:
             start = start_index)
 
 
-    def get(self, author_id: int) -> Optional[Author]:
+    def get(self, author_id: int) -> Author:
         """
         Retrieves a specific author by ID, including related
         anime's and episodes.

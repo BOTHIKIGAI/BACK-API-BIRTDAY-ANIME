@@ -1,4 +1,3 @@
-
 """
 This module contains the routes for the management of the anime
 """
