@@ -14,7 +14,6 @@ from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
 from app.repositories.episode_repository import EpisodeRepository
 from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
-from app.services.anime_service import AnimeService
 from app.validations.anime_validator import AnimeValidator
 from app.validations.author_validator import AuthorValidator
 
@@ -34,15 +33,12 @@ class AuthorService:
         accessing Author data.
         author_validator (AuthorValidator): The validator used for
         validating Author data.
-        anime_service (AnimeService): The service used for accessing
-        Anime data.
         anime_validator (AnimeValidator): The validator used for
         validating Anime data.
     """
     # Attributes
     author_repository: AuthorRepository
     author_validator: AuthorValidator
-    anime_service: AnimeService
     anime_validator: AnimeValidator
     anime_repository: AnimeRepository
     episode_repository: EpisodeRepository
@@ -52,7 +48,6 @@ class AuthorService:
     def __init__(self,
                  author_repository: AuthorRepository = Depends(),
                  author_validator: AuthorValidator = Depends(),
-                 anime_service: AnimeService = Depends(),
                  anime_validator: AnimeValidator = Depends(),
                  anime_repositoy: AnimeRepository = Depends(),
                  episode_repository: EpisodeRepository = Depends()) -> None:
@@ -65,14 +60,11 @@ class AuthorService:
             for accessing Author data.
             author_validator (AuthorValidator): The validator used for
             validating Author data.
-            anime_service (AnimeService): The service used for accessing
-            Anime data.
             anime_validator (AnimeValidator): The validator used for
             validating Anime data.
         """
         self.author_repository = author_repository
         self.author_validator = author_validator
-        self.anime_service = anime_service
         self.anime_validator = anime_validator
         self.anime_repository = anime_repositoy
         self.episode_repository = episode_repository
