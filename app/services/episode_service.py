@@ -14,7 +14,6 @@ from app.repositories.episode_repository import EpisodeRepository
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
 from app.schemas.episode_schema import EpisodeAuthorRelationSchema, EpisodeSchema
-from app.validations.author_validator import AuthorValidator
 from app.validations.episode_validator import EpisodeValidator
 
 
@@ -38,7 +37,6 @@ class EpisodeService:
     episode_repository: EpisodeRepository
     episode_factory: EpisodeFactory
     episode_validator: EpisodeValidator
-    author_validator: AuthorValidator
     anime_repository: AnimeRepository
     author_repository: AuthorRepository
 
@@ -47,7 +45,6 @@ class EpisodeService:
                  episode_repository: EpisodeRepository = Depends(),
                  episode_factory: EpisodeFactory = Depends(),
                  episode_validator: EpisodeValidator = Depends(),
-                 author_validator: AuthorValidator = Depends(),
                  anime_repository: AnimeRepository = Depends(),
                  author_repository: AuthorRepository = Depends()) -> None:
         """
@@ -57,14 +54,12 @@ class EpisodeService:
         Args:
             episode_repository (EpisodeRepository): The repository used for accessing Episode data.
             episode_factory (EpisodeFactory): The factory used for creating Episode instances.
-            author_validator (AuthorValidator): The service used for accessing Author data.
             anime_repository (AnimeRepository): The service used for accessing Anime data.
             author_repository (AuthorRepository): The service used for accessing Author data.
         """
         self.episode_repository = episode_repository
         self.episode_factory = episode_factory
         self.episode_validator = episode_validator
-        self.author_validator = author_validator
         self.anime_repository = anime_repository
         self.author_repository = author_repository
 
