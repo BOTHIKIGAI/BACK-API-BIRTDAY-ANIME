@@ -84,16 +84,14 @@ class AnimeRepository:
     # CRUD Methods
     def get(self, anime_id: int) -> Anime:
         """
-        Retrieves a specific anime by ID, include related author
-        and episodes.
+        Retrieves a specific anime by ID, include related author and episodes.
 
         Args:
             anime_id (int): The ID of the anime to retrieve.
 
         Returns:
-            Optional[Anime]: The anime with the given ID,
-            including related author and episodes, or
-            None if no author is found.
+            Anime: The anime with the given ID, including related
+            author and episodes, or None if no author is found.
         """
         return self.db.query(Anime).filter_by(id=anime_id).first()
 

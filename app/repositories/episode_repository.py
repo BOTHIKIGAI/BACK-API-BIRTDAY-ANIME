@@ -102,7 +102,7 @@ class EpisodeRepository:
             episode_id (int): The ID of the episode to retrieve.
 
         Returns:
-            Optional[Episode]: The episode with the  given ID, including related author and
+            Episode: The episode with the  given ID, including related author and
             anime, or None if no author is found.
         """
         return self.db.query(Episode).filter_by(id=episode_id).first()

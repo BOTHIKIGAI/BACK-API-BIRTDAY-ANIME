@@ -80,7 +80,7 @@ class AuthorRepository:
         return query.offset(start).limit(limit).all()
 
 
-    def get(self, author_id: int) -> Optional[Author]:
+    def get(self, author_id: int) -> Author:
         """
         Retrieves a specific author by ID, including
         related anime and episodes.
@@ -90,7 +90,7 @@ class AuthorRepository:
             retrieve.
 
         Returns:
-            Optional[Author]: The author with the given ID,
+            Author: The author with the given ID,
             including related anime and episodes, or None
             if no author is found.
         """
@@ -165,7 +165,7 @@ class AuthorRepository:
             author (Author): The updated author data.
 
         Returns:
-            Optional[Author]: The updated author, or None
+            Author: The updated author, or None
             if no author is found with the given ID.
         """
         self.db.merge(author)
