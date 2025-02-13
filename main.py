@@ -6,8 +6,10 @@ requests related to anime episode release dates.
 """
 
 from fastapi import FastAPI
-from app.routers.v1.author_router import AuthorRouter
+
 from app.routers.v1.anime_router import AnimeRouter
+from app.routers.v1.author_router import AuthorRouter
+from app.routers.v1.birthday_router import BirthdayRouter
 from app.routers.v1.episode_router import EpisodeRouter
 
 app = FastAPI(
@@ -17,3 +19,4 @@ app = FastAPI(
 app.include_router(AuthorRouter, tags=["Author"], prefix='/v1/author')
 app.include_router(AnimeRouter, tags=["Anime"], prefix='/v1/anime')
 app.include_router(EpisodeRouter, tags=["Episode"], prefix='/v1/episode')
+app.include_router(BirthdayRouter, tags=["Birthday"], prefix='/v1/birthday')
