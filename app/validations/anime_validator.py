@@ -172,7 +172,7 @@ class AnimeValidator:
 
 
     # Exceptions
-    def exception_unique_name(self):
+    def exception_unique_name(self) -> None:
         """
         Raises an HTTPException if the given anime name already exists.
 
