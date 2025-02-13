@@ -1,6 +1,5 @@
 """
-This module contains the routes for the management
-of the authors
+This module contains the routes for the management of the authors
 """
 from typing import List, Optional
 
