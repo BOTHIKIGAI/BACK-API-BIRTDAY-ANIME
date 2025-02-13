@@ -2,6 +2,7 @@
 This module represents the abstraction of the Episode's data access logic.
 """
 
+from datetime import date
 from typing import List, Optional
 
 from fastapi import Depends
@@ -314,6 +315,26 @@ class EpisodeRepository:
             episode_author_association.c.author_id == author_id
         )
         return self.db.query(query.exists()).scalar()
+
+
+    def get_by_release_date(self, target_date: date) -> int:
+        """
+        Retrieves all episodes that were released on a specific date.
+
+        This method queries the database to find all episodes whose release date
+        matches exactly with the provided date parameter. It's useful for finding
+        episodes that premiered on a particular date.
+
+        Args:
+            release_date (date): The specific date to search for episode releases.
+
+        Returns:
+            List[Episode]: A list of Episode instances that were released on the
+                            specified date. Returns an empty list if no matches
+                            are found.
+        """
+        query = self.db.query(Episode).filter(Episode.air_date == target_date)
+        return query.count()
 
 
     # Query base
