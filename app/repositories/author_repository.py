@@ -9,6 +9,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Query, Session
 
 from app.config.database import get_db_connection
+from app.models.relationships.episode_author_association import episode_author_association
 from app.models.relationships.anime_author_association import anime_author_association
 from app.models.tables.author_models import Author
 from app.schemas.author_schema import AuthorAnimeRelationSchema
@@ -113,6 +114,27 @@ class AuthorRepository:
             anime_author_association,
             Author.id == anime_author_association.c.author_id,
         ).filter(anime_author_association.c.anime_id == anime_id)
+        return query.all()
+
+
+    def get_by_episode(self, episode_id: int) -> List[Author]:
+        """
+        Retrieve authors associated with a given episode.
+
+        This method queries the database to find all Author instances linked to the specified
+        episode. It performs a join on the episode_author_association table using the author ID
+        and then filters the results based on the provided episode ID.
+
+        Args:
+            episode_id (int): The unique identifier of the episode for which authors are retrieved.
+
+        Returns:
+            List[Author]: A list of Author objects associated with the given episode.
+        """
+        query = self.db.query(Author).join(
+            episode_author_association,
+            Author.id == episode_author_association.c.author_id,
+        ).filter(episode_author_association.c.episode_id == episode_id)
         return query.all()
 
 
