@@ -186,20 +186,25 @@ class AuthorRepository:
         self.db.commit()
 
 
-    def create_anime_relation(self, data_relation):
+    def create_anime_relation(
+        self,
+        data_relation: AuthorAnimeRelationSchema
+    ) -> AuthorAnimeRelationSchema:
         """
         Creates a relationship between an author and an anime.
 
         Args:
-            author_id (int): The ID of the author.
-            anime_id (int): The ID of the anime.
+            data_relation (AuthorAnimeRelationSchema): Scheme with author and episode ids
 
         Returns:
             dict: A dictionary containing the author_id and anime_id.
         """
 
-        insert_statement  = anime_author_association.insert().values(author_id = data_relation["author_id"],
-                                                                     anime_id = data_relation["anime_id"])
+        insert_statement  = anime_author_association.insert().\
+            values(
+                author_id = data_relation.author_id,
+                anime_id = data_relation.anime_id
+            )
         self.db.execute(insert_statement)
         self.db.commit()
         return data_relation
@@ -210,14 +215,16 @@ class AuthorRepository:
         Checks if the relationship between the author and anime exists.
 
         Args:
-            author_id (int): The ID of the author.
-            anime_id (int): The ID of the anime.
+            data_relation (AuthorAnimeRelationSchema): Scheme with author and episode ids
 
         Returns:
             bool: True if the relationship exists, False otherwise.
         """
-        query = self.db.query(anime_author_association).filter(anime_author_association.c.author_id == data_relation.author_id,
-                                                               anime_author_association.c.anime_id == data_relation.anime_id)
+        query = self.db.query(anime_author_association).\
+            filter(
+                anime_author_association.c.author_id == data_relation.author_id,
+                anime_author_association.c.anime_id == data_relation.anime_id
+            )
         return self.db.query(query.exists()).scalar()
 
 
