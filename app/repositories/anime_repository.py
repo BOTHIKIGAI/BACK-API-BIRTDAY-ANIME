@@ -10,6 +10,7 @@ from sqlalchemy.orm import Query, Session
 from app.config.database import get_db_connection
 from app.models.relationships.anime_author_association import anime_author_association
 from app.models.tables.anime_models import Anime
+from app.models.tables.episode_models import Episode
 
 
 class AnimeRepository:
@@ -117,6 +118,28 @@ class AnimeRepository:
             Anime.id == anime_author_association.c.anime_id
         ).filter(anime_author_association.c.author_id == author_id)
         return query.all()
+
+
+    def get_by_episode(self, episode_id: int) -> Anime:
+        """
+        Retrieve the Anime associated with a given episode.
+
+        This method performs a join between the Anime and Episode tables and filters
+        the result using the provided episode ID. It returns the first matching Anime
+        instance found.
+
+        Args:
+            episode_id (int): The unique identifier of the episode.
+
+        Returns:
+            Anime: The first Anime instance associated with the given episode ID,
+                    or None if no such Anime exists.
+        """
+        query = self.db.query(Anime).join(
+            Episode,
+            Anime.id == Episode.id
+        ).filter(Episode.id == episode_id)
+        return query.first()
 
 
     def create(self, anime: Anime) -> Anime:
