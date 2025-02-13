@@ -2,6 +2,7 @@
 This module represents the abstraction of the
 Anime's data access logic.
 """
+from datetime import date
 from typing import List, Optional
 
 from fastapi import Depends
@@ -242,6 +243,25 @@ class AnimeRepository:
         """
         query = self.is_name_taken(anime_name).filter(Anime.id != exclude_id)
         return self.db.query(query.exists()).scalar()
+
+
+    def get_by_release_date(self, targeet_date: date) -> List[Anime]:
+        """
+        Retrieves all anime that were released on a specific date.
+
+        This method fetches anime records from the database whose release date
+        matches exactly with the provided date parameter.
+
+        Args:
+            release_date (date): The specific date to search for anime releases.
+
+        Returns:
+            List[Anime]: A list of Anime instances that were released on the
+                        specified date. Returns an empty list if no matches
+                        are found.
+        """
+        query = self.db.query(Anime).filter(Anime.release_date == targeet_date)
+        return query.all()
 
 
     # Base Query
