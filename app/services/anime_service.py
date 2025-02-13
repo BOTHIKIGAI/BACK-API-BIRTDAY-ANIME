@@ -63,7 +63,7 @@ class AnimeService:
              category: Optional[str]=None,
              release_date: Optional[str]=None,
              page_size: Optional[int]=100,
-             start_index: Optional[int]=0) -> Optional[List[Anime]]:
+             start_index: Optional[int]=0) -> List[Anime]:
         """
         Retrieves a list of anime with optional filters for name, category, release_date, limit,
         start, and supports pagination.
@@ -86,7 +86,7 @@ class AnimeService:
             start=start_index)
 
 
-    def get(self, anime_id: int) -> Optional[Anime]:
+    def get(self, anime_id: int) -> Anime:
         """
         Retrieves a specific anime by ID, including related anime and episodes.
 

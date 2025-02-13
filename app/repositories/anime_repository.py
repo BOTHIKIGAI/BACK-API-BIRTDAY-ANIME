@@ -82,7 +82,7 @@ class AnimeRepository:
 
 
     # CRUD Methods
-    def get(self, anime_id: int) -> Optional[Anime]:
+    def get(self, anime_id: int) -> Anime:
         """
         Retrieves a specific anime by ID, include related author
         and episodes.
