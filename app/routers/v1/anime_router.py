@@ -1,6 +1,5 @@
 """
-This module contains the routes for the management
-of the anime
+This module contains the routes for the management of the anime
 """
 from typing import List, Optional
 
