@@ -2,7 +2,6 @@
 This module contains the schema to define and validate the Anime data structure.
 """
 from datetime import date, datetime
-from typing import Union
 
 from pydantic import BaseModel, field_validator
 
@@ -120,7 +119,7 @@ class AnimeSchema(BaseModel):
 
 
     @staticmethod
-    def create_date(value: Union[str, date]) -> date:
+    def create_date(value: str | date) -> date:
         """
         Create a date object from a string or validate an existing date object.
 
