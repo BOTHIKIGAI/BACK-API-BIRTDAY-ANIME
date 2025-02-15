@@ -89,6 +89,7 @@ class AnimeSchemaCreate(BaseModel):
         Raises:
             ValueError: If the date format is invalid or constraints are not met.
         """
+        validate_is_instance_str(attribute)
         validate_date_format(attribute)
         attribute_date = create_date(attribute)
         validate_date_not_in_the_future(attribute_date)
