@@ -13,6 +13,6 @@ RELEASE_DATES_NOT_VALID = {
     },
     "invalid_format": {
         "release_date": "not-a-date",
-        "error_message": "Invalid date format: 'not-a-date'. Date must be in ISO format (YYYY-MM-DD)"
+        "error_message": "not-a-date does not match the format YYYY-MM-DD"
     }
 }
