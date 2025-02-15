@@ -6,7 +6,7 @@ from datetime import date, datetime
 from fastapi import Depends, HTTPException
 
 from app.repositories.anime_repository import AnimeRepository
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaCreate
 
 
 class AnimeValidator:
@@ -46,7 +46,7 @@ class AnimeValidator:
         self.validate_exists_by_id(anime_id)
 
 
-    def validate_data_for_create(self, anime_body: AnimeSchema) -> None:
+    def validate_data_for_create(self, anime_body: AnimeSchemaCreate) -> None:
         """
         Validates the given anime data for creation.
 
@@ -61,7 +61,7 @@ class AnimeValidator:
         self.validate_release_date_not_in_future(anime_body.release_date)
 
 
-    def validate_data_for_update(self, anime_id: int, anime_body: AnimeSchema) -> None:
+    def validate_data_for_update(self, anime_id: int, anime_body: AnimeSchemaCreate) -> None:
         """
         Validates the given anime data for update.
 

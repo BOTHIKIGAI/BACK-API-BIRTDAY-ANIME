@@ -7,7 +7,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaResponse
 from app.schemas.author_schema import AuthorSchema
 
 
@@ -16,12 +16,12 @@ class BirthdaySchemaResponse(BaseModel):
     Schema for the response of a birthday match query.
 
     Attributes:
-        anime (List[AnimeSchema]): List of anime that match the given date.
+        anime (List[AnimeSchemaResponse]): List of anime that match the given date.
         author (List[AuthorSchema]): List of authors that match the given date.
         episode (int): Number of episodes that match the given date.
     """
 
     # Attributes
-    anime: List[AnimeSchema]
+    anime: List[AnimeSchemaResponse]
     author: List[AuthorSchema]
     episode: int = 0

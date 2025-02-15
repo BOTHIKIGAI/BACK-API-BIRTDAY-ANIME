@@ -13,7 +13,7 @@ from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
 from app.repositories.episode_repository import EpisodeRepository
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaCreate
 from app.validations.anime_validator import AnimeValidator
 
 
@@ -97,12 +97,12 @@ class AnimeService:
         return self.anime_repository.get(anime_id)
 
 
-    def create(self, anime_body: AnimeSchema) -> Anime:
+    def create(self, anime_body: AnimeSchemaCreate) -> Anime:
         """
         Creates a new anime in the database.
 
         Args:
-            anime_body (AnimeSchema): The data of the anime to create.
+            anime_body (AnimeSchemaCreate): The data of the anime to create.
 
         Returns:
             Author: The created anime with the assigned ID.
@@ -112,13 +112,13 @@ class AnimeService:
         return self.anime_repository.create(anime)
 
 
-    def update(self, anime_id: int, anime_body: AnimeSchema) -> Anime:
+    def update(self, anime_id: int, anime_body: AnimeSchemaCreate) -> Anime:
         """
         Updates an existing anime in the database with the provide data.
 
         Args:
             anime_id (int): The ID of the anime to update.
-            anime_body (AnimeSchema): The anime schema.
+            anime_body (AnimeSchemaCreate): The anime schema.
 
         Returns:
             Anime: The updated anime with the data.

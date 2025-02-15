@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, status
 
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaResponse
 from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
 from app.schemas.episode_schema import EpisodeSchema
 from app.services.author_service import AuthorService
@@ -109,7 +109,7 @@ def delete(author_id: int, author_service: AuthorService = Depends()):
     author_service.delete(author_id)
 
 
-@AuthorRouter.get('/{author_id}/anime', response_model = List[AnimeSchema])
+@AuthorRouter.get('/{author_id}/anime', response_model = List[AnimeSchemaResponse])
 def get_anime(author_id: int, author_service: AuthorService = Depends()):
     """
     Get anime author by their ID.

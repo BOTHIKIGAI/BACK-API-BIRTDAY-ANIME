@@ -8,7 +8,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status
 
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaResponse
 from app.schemas.author_schema import AuthorSchema
 from app.schemas.birthday_schema import BirthdaySchemaResponse
 from app.services.birthday_service import BirthdayService
@@ -57,7 +57,7 @@ def get_match_author(target_date: date, birthday_service: BirthdayService = Depe
 
 @BirthdayRouter.get(
     "/{target_date}/anime",
-    response_model=List[AnimeSchema],
+    response_model=List[AnimeSchemaResponse],
     status_code=status.HTTP_200_OK,
 )
 def get_match_anime(target_date: date, birthday_service: BirthdayService = Depends()):

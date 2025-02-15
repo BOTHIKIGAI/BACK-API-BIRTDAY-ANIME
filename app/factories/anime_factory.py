@@ -3,7 +3,7 @@ This module the factory for anime
 """
 
 from app.models.tables.anime_models import Anime
-from app.schemas.anime_schema import AnimeSchema
+from app.schemas.anime_schema import AnimeSchemaCreate
 
 
 class AnimeFactory:
@@ -11,14 +11,14 @@ class AnimeFactory:
     Creates an Anime instance from an AnimeSchema.
 
     Args:
-        anime_body (AnimeSchema): The schema containing the anime data.
+        anime_body (AnimeSchemaCreate): The schema containing the anime data.
 
     Returns:
         Anime: The created Anime instance.
     """
 
     @staticmethod
-    def create(anime_body: AnimeSchema) -> Anime:
+    def create(anime_body: AnimeSchemaCreate) -> Anime:
         return Anime(
             name=anime_body.name,
             category=anime_body.category,
@@ -27,7 +27,7 @@ class AnimeFactory:
 
 
     @staticmethod
-    def create_for_update(anime_id: int, anime_body: AnimeSchema) -> Anime:
+    def create_for_update(anime_id: int, anime_body: AnimeSchemaCreate) -> Anime:
         return Anime(
             id=anime_id,
             name=anime_body.name,
