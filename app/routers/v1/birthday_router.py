@@ -9,7 +9,7 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 
 from app.schemas.anime_schema import AnimeSchemaResponse
-from app.schemas.author_schema import AuthorSchema
+from app.schemas.author_schema import AuthorSchemaResponse
 from app.schemas.birthday_schema import BirthdaySchemaResponse
 from app.services.birthday_service import BirthdayService
 
@@ -38,7 +38,7 @@ def get_match(target_date: date, birthday_service: BirthdayService = Depends()):
 
 @BirthdayRouter.get(
     "/{target_date}/author",
-    response_model=List[AuthorSchema],
+    response_model=List[AuthorSchemaResponse],
     status_code=status.HTTP_200_OK,
 )
 def get_match_author(target_date: date, birthday_service: BirthdayService = Depends()):

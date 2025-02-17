@@ -8,7 +8,7 @@ from typing import List
 from pydantic import BaseModel
 
 from app.schemas.anime_schema import AnimeSchemaResponse
-from app.schemas.author_schema import AuthorSchema
+from app.schemas.author_schema import AuthorSchemaResponse
 
 
 class BirthdaySchemaResponse(BaseModel):
@@ -23,5 +23,5 @@ class BirthdaySchemaResponse(BaseModel):
 
     # Attributes
     anime: List[AnimeSchemaResponse]
-    author: List[AuthorSchema]
+    author: List[AuthorSchemaResponse]
     episode: int = 0

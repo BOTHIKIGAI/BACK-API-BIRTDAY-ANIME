@@ -6,13 +6,13 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, status
 
 from app.schemas.anime_schema import AnimeSchemaResponse
-from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchemaCreate, AuthorSchemaResponse
 from app.schemas.episode_schema import EpisodeSchema
 from app.services.author_service import AuthorService
 
 AuthorRouter = APIRouter()
 
-@AuthorRouter.get('/', response_model = List[AuthorSchema])
+@AuthorRouter.get('/', response_model = List[AuthorSchemaResponse])
 def index(
     author_service: AuthorService = Depends(),
     name: Optional[str] = None,
@@ -42,7 +42,7 @@ def index(
         start_index = start_index)
 
 
-@AuthorRouter.get('/{author_id}', response_model = AuthorSchema)
+@AuthorRouter.get('/{author_id}', response_model = AuthorSchemaResponse)
 def get(author_id: int, author_service: AuthorService = Depends()):
     """
     Retrieves an author by their ID.
@@ -57,8 +57,8 @@ def get(author_id: int, author_service: AuthorService = Depends()):
     return author_service.get(author_id)
 
 
-@AuthorRouter.post('/', response_model = AuthorSchema, status_code = status.HTTP_201_CREATED)
-def create(author: AuthorSchema, author_service: AuthorService = Depends()):
+@AuthorRouter.post('/', response_model = AuthorSchemaResponse, status_code = status.HTTP_201_CREATED)
+def create(author: AuthorSchemaCreate, author_service: AuthorService = Depends()):
     """
     Creates a new author.
 
@@ -72,8 +72,8 @@ def create(author: AuthorSchema, author_service: AuthorService = Depends()):
     return author_service.create(author)
 
 
-@AuthorRouter.put("/{author_id}", response_model = AuthorSchema)
-def update(author_id: int, author: AuthorSchema, author_service: AuthorService = Depends()):
+@AuthorRouter.put("/{author_id}", response_model = AuthorSchemaResponse)
+def update(author_id: int, author: AuthorSchemaCreate, author_service: AuthorService = Depends()):
     """
     Updates an existing author.
 

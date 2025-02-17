@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, status
 from app.models.tables.author_models import Author
 from app.models.tables.episode_models import Episode
 from app.schemas.anime_schema import AnimeSchemaCreate, AnimeSchemaResponse
-from app.schemas.author_schema import AuthorSchema
+from app.schemas.author_schema import AuthorSchemaResponse
 from app.schemas.episode_schema import EpisodeSchema
 from app.services.anime_service import AnimeService
 
@@ -108,7 +108,7 @@ def delete(anime_id: int, anime_service: AnimeService = Depends()) -> None:
     return anime_service.delete(anime_id)
 
 
-@AnimeRouter.get('/{anime_id}/authors', response_model = List[AuthorSchema])
+@AnimeRouter.get('/{anime_id}/authors', response_model = List[AuthorSchemaResponse])
 def get_authors(anime_id: int, anime_service: AnimeService = Depends()) -> List[Author]:
     """
     Get author anime by their ID.
@@ -118,7 +118,7 @@ def get_authors(anime_id: int, anime_service: AnimeService = Depends()) -> List[
         anime_service (AnimeService): The service to handle anime operations.
 
     Returns:
-        AuthorSchema: The author anime
+        AuthorSchemaResponse: The author anime
     """
     return anime_service.get_authors(anime_id)
 

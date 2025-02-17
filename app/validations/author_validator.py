@@ -6,7 +6,7 @@ from datetime import date, datetime
 from fastapi import Depends, HTTPException
 
 from app.repositories.author_repository import AuthorRepository
-from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchemaCreate
 
 
 class AuthorValidator:
@@ -50,7 +50,7 @@ class AuthorValidator:
         self.validate_exists_by_id(author_id)
 
 
-    def validate_data_for_create(self, author_body: AuthorSchema) -> None:
+    def validate_data_for_create(self, author_body: AuthorSchemaCreate) -> None:
         """
         Validates the given author data for creation.
 
@@ -65,7 +65,7 @@ class AuthorValidator:
         self.validate_birthday_date_not_in_future(author_body.birthday)
 
 
-    def validate_data_for_update(self, author_id: int, author_body: AuthorSchema) -> None:
+    def validate_data_for_update(self, author_id: int, author_body: AuthorSchemaCreate) -> None:
         """
         Validates the given author data for update.
 

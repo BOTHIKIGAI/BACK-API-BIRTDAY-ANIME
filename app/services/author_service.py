@@ -13,7 +13,7 @@ from app.models.tables.episode_models import Episode
 from app.repositories.anime_repository import AnimeRepository
 from app.repositories.author_repository import AuthorRepository
 from app.repositories.episode_repository import EpisodeRepository
-from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchema
+from app.schemas.author_schema import AuthorAnimeRelationSchema, AuthorSchemaCreate
 from app.validations.anime_validator import AnimeValidator
 from app.validations.author_validator import AuthorValidator
 
@@ -118,7 +118,7 @@ class AuthorService:
         return self.author_repository.get(author_id)
 
 
-    def create(self, author_body: AuthorSchema) -> Author:
+    def create(self, author_body: AuthorSchemaCreate) -> Author:
         """
         Creates a new author in the database.
 
@@ -134,7 +134,7 @@ class AuthorService:
         return self.author_repository.create(author)
 
 
-    def update(self, author_id: int, author_body: AuthorSchema) -> Author:
+    def update(self, author_id: int, author_body: AuthorSchemaCreate) -> Author:
         """
         Updates an existing author in the database with the provided data.
 
