@@ -136,7 +136,7 @@ class AnimeRepository:
         """
         query = self.db.query(Anime).join(
             Episode,
-            Anime.id == Episode.id
+            Anime.id == Episode.anime_id
         ).filter(Episode.id == episode_id)
         return query.first()
 
