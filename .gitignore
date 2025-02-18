@@ -28,3 +28,6 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+
+# Logs
+app/logs/app.log
