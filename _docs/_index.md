@@ -11,3 +11,6 @@
 ## Testing And Software Quality (q&a)
 5. [Testing](testing.md)
 6. [SonarQube](sonarqube.md)
+
+## Logging
+7. [Logging](logging.md)

@@ -17,6 +17,8 @@ This document contains:
 app
   ├── config
   ├── factories
+  ├── logs
+  ├── middlewares
   ├── models
   │   ├── relationships
   │   └── tables
@@ -40,5 +42,7 @@ app
 - **validations**: Contains the functions to validate the data before it is processed. It is mainly used in services.
 - **services**: Contains the business logic for operations.
 - **controllers**: Contains the routes and functions for handling requests and responses.
+- **middlewares**: Contains the middleware functions for handling requests and responses.
+- **logs**: contains the app.log file with the application logs.
 
 ### Test Structure
